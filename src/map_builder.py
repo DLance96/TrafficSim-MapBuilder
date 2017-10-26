@@ -3,7 +3,7 @@ import road
 import coordinates
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5 import QtGui, QtCore
 
 
@@ -11,6 +11,9 @@ class MapBuilder(QMainWindow):
     start_coord_to_obj = {}
     roads = []
     intersections = []
+    selected_object = None
+    add_to_start_action = None
+    add_to_end_action = None
 
     def __init__(self):
         super().__init__()
@@ -27,6 +30,7 @@ class MapBuilder(QMainWindow):
     def initUI(self):
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
+        selected_menu = menu_bar.addMenu("MapObject")
 
         # buttons
         button = QPushButton('PyQt5 button', self)
@@ -38,9 +42,19 @@ class MapBuilder(QMainWindow):
         open_action = QAction("Open", self)
         save_action = QAction("Save", self)
 
+        self.add_to_start_action = QAction("Add to Start", self)
+        self.add_to_end_action = QAction("Add to End", self)
+        edit_action = QAction("Edit", self)
+
         file_menu.addAction(new_action)
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
+
+        selected_menu.addAction(self.add_to_start_action)
+        selected_menu.addAction(self.add_to_end_action)
+        selected_menu.addAction(edit_action)
+
+        self.add_to_start_action.triggered.connect(self.adds_road)
 
         screen = app.primaryScreen()
         self.resize(screen.size().width(), screen.size().height())
@@ -60,6 +74,10 @@ class MapBuilder(QMainWindow):
         qp.begin(self)
         for obj in self.roads:
             self.draw_road(obj.get_points(), qp)
+        if self.selected_object is not None:
+            # qp.setPen(Qt.yellow)
+            qp.setBrush(Qt.yellow)
+            self.draw_road(self.selected_object.get_points(), qp)
         qp.end()
 
     def first_road(self):
@@ -79,13 +97,18 @@ class MapBuilder(QMainWindow):
         converted_position = coordinates.coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
         for obj in self.roads:
             if obj.is_on_road(converted_position):
-                self.adds_road(obj)
+                self.selected_object = obj
+                # self.adds_road()
                 break
+        if self.selected_object is not None:
+            if type(self.selected_object) is road.road:
+                # check if start/end connection is present
+                self.add_to_end_action.setEnabled(False)
+        self.update()
 
     @pyqtSlot()
     def add_road(self):
         prevr = self.roads[self.roads.__len__()-1]
-
         # self.sender().deleteLater()
         button2 = QPushButton('NEW', self)
         button2.setToolTip('This is an NEW button')
@@ -101,7 +124,9 @@ class MapBuilder(QMainWindow):
         # self.layout().addWidget(button2)
         self.update()
 
-    def adds_road(self, prevr):
+    def adds_road(self):
+        prevr = self.selected_object
+        print('hello')
         # self.sender().deleteLater()
         button2 = QPushButton('NEW', self)
         button2.setToolTip('This is an NEW button')
