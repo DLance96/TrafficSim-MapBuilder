@@ -40,7 +40,7 @@ class intersection(object):
         :type in_lanes: int
         :type out_lanes: int
 
-        :return: None
+        :return: returns road object for added connection
         """
 
         angle_rads = angle * (math.pi/180.0)
@@ -57,6 +57,8 @@ class intersection(object):
         r = road.road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
 
         self.connections.append(r)
+
+        return r
 
     def get_center(self):
         """
@@ -108,6 +110,25 @@ class intersection(object):
         :return: None
         """
         self.connections = new_connections
+
+    def is_on_intersection(self, coordinate):
+        """
+        Determines if a given coordinate point is within the boundaries of the current intersection
+        :param coordinate: coordinate point that will be tested for being within intersection boundaries
+        :type coordinate: coordinates.coordinates
+        :return: returns true if given coordinate is within the boundaries of the intersection. Otherwise, returns false
+        """
+        delta_x = self.center.get_x() - coordinate.x
+        delta_y = self.center.get_y() - coordinate.y
+
+        x_squared = delta_x * delta_x
+        y_squared = delta_y * delta_y
+
+        distance = math.sqrt(x_squared + y_squared)
+
+        if self.radius >= distance:
+            return True
+        return False
 
 
 def main():
