@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
 import sys
 import os
-=======
-from src.map.coordinates import Coordinates
-from src.map.constants import LANE_WIDTH
->>>>>>> Stashed changes
 import math
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
