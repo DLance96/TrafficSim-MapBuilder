@@ -28,11 +28,12 @@ class Intersection(object):
         """
         self.center = central_point
         self.radius = radius
-        self.connections = []
+        self.outgoing_connections = []
+        self.incoming_connections = []
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
 
-    def add_connection(self, angle, distance, in_lanes, out_lanes):
+    def add_outgoing_connection(self, angle, distance, in_lanes, out_lanes):
         """
         Currently adds a road to the intersection
         :param angle: angle that the road protrudes from the intersection relative to the intersection's origin
@@ -60,8 +61,21 @@ class Intersection(object):
         end_coord = Coordinates(end_x, end_y)
 
         r = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
+        r.add_start_connection(self)
 
-        self.connections.append(r)
+        self.outgoing_connections.append(r)
+
+    def add_incoming_connection(self, incoming_road):
+        """
+        Adds a road to the intersection. This intersection is the end connection for the road, meaning that cars on
+        the road will approach this intersection
+
+        :param incoming_road: a road incoming to this intersection
+        :type incoming_road: Road
+
+        :return: None
+        """
+        self.incoming_connections.append(incoming_road)
 
     def get_center(self):
         """
@@ -75,11 +89,17 @@ class Intersection(object):
         """
         return self.radius
 
-    def get_connections(self):
+    def get_outgoing_connections(self):
         """
-        :return: list of map objects that are connected to this intersection
+        :return: list of map objects that are connected to this intersection (cars on these roads are leaving)
         """
-        return self.connections
+        return self.outgoing_connections
+
+    def get_incoming_connections(self):
+        """
+        :return: list of map objects that are connected to this intersection (cars on these roads are approaching)
+        """
+        return self.incoming_connections
 
     def update_center(self, new_center):
         """
@@ -103,16 +123,27 @@ class Intersection(object):
         """
         self.radius = new_radius
 
-    def update_connections(self, new_connections):
+    def update_outgoing_connections(self, new_connections):
         """
-        Updates the list of connections for the intersection
+        Updates the list of outgoings connections for the intersection
 
         :param new_connections: new list of connections for the intersection
         :type new_connections: list consisting of map objects
 
         :return: None
         """
-        self.connections = new_connections
+        self.outgoing_connections = new_connections
+
+    def update_incoming_connections(self, new_connections):
+        """
+        Updates the list of incoming connections for the intersection
+
+        :param new_connections: new list of connections for the intersection
+        :type new_connections: list consisting of map objects
+
+        :return: None
+        """
+        self.incoming_connections = new_connections
 
 
 def main():
@@ -120,7 +151,7 @@ def main():
     radius = 4
     i = Intersection(center, radius)
 
-    i.add_connection(25.0, 6, 3, 2)
+    i.add_outgoing_connection(25.0, 6, 3, 2)
     print('main method goes here')
 
 
