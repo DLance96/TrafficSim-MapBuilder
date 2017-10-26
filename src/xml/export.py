@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from src.map.constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX
 
 
 def export(roads, intersections, save_location):
@@ -34,8 +35,8 @@ def make_xml(roads, intersections, save_location):
         ET.SubElement(temp_road, "outgoing_lanes").text = road.get_out_lanes()
 
         ET.SubElement(temp_road, "angle_radians").text = road.get_angle()
-        ET.SubElement(temp_road, "incoming_entrance_corner").text = ""
-        ET.SubElement(temp_road, "outgoing_entrance_corner").text = ""
+        ET.SubElement(temp_road, "incoming_entrance_corner").text = road.get_points()[ROAD_IN_ENTRANCE_PT_INDEX]
+        ET.SubElement(temp_road, "outgoing_entrance_corner").text = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
 
         ET.SubElement(temp_road, "speed_limit").text = ""  # TODO change when speed limit is added
 
