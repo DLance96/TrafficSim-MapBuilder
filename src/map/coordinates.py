@@ -1,4 +1,4 @@
-class coordinates:
+class Coordinates:
     """
     This class represents a two-dimensional coordinate point in the MapBuilder section of our application.
     The user interface / graphics side of the MapBuilder will have a two-dimensional "grid" that shows where roads
@@ -37,7 +37,7 @@ def main():
     Main method for the coordinates class
     :return: for now, prints information regarding points instantiated within the method
     """
-    coord = coordinates(2.1, 3.3)
+    coord = Coordinates(2.1, 3.3)
     print('x: ' + str(coord.get_x()))
     print('y: ' + str(coord.get_y()))
 

@@ -1,6 +1,6 @@
 import sys
-import road
-import coordinates
+import src.map.road
+import src.map.coordinates
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
 from PyQt5.QtCore import pyqtSlot

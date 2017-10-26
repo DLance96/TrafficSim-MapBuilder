@@ -2,7 +2,7 @@ import coordinates
 import math
 
 
-class road(object):
+class Road(object):
     """
     This class represents a road object in the MapBuilder section of our application
 
@@ -208,8 +208,8 @@ def main():
     length = 2
     angle = 45.0
 
-    r = road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
-    r2 = road(start_coord, end_coord, 12, 23, 54, 90.0)
+    r = Road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
+    r2 = Road(start_coord, end_coord, 12, 23, 54, 90.0)
 
     r.add_neighboring_road(r2)
 
@@ -268,7 +268,7 @@ def main():
     p_in_lanes = 3
     p_angle = 90.0
 
-    p = road(p_start_coord, p_end_coord, p_length, p_out_lanes, p_in_lanes, p_angle)
+    p = Road(p_start_coord, p_end_coord, p_length, p_out_lanes, p_in_lanes, p_angle)
 
     p_points = p.get_points()
 

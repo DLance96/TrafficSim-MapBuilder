@@ -1,9 +1,9 @@
-import coordinates
+import src.map.coordinates
+import src.map.road
 import math
-import road
 
 
-class intersection(object):
+class Intersection(object):
     """
     This class represents an intersection object in the MapBuilder section of our application.
     An intersection is represented in our implementation by a circle, where roads
@@ -113,7 +113,7 @@ class intersection(object):
 def main():
     center = coordinates.coordinates(1,1)
     radius = 4
-    i = intersection(center, radius)
+    i = Intersection(center, radius)
 
     i.add_connection(25.0, 6, 3, 2)
     print('main method goes here')
