@@ -103,6 +103,9 @@ class Intersection(object):
         """
         return self.incoming_connections
 
+    def get_connections(self):
+        return list(set().union(self.incoming_connections, self.outgoing_connections))
+
     def update_center(self, new_center):
         """
         Updates the center point of the intersection circle
