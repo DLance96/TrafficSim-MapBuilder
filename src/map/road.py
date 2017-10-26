@@ -13,6 +13,8 @@ class Road(object):
 
     """
 
+    LANE_LENGTH = 20
+
     def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle):
         """
         Establishes a road object
@@ -150,8 +152,8 @@ class Road(object):
         max_x_min_y = Coordinates(outgoing_start.get_x(), outgoing_end.get_y())
 
         if (coordinate.x > self.start_coord.x) & (coordinate.x < self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * 20)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * 20)):
+            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * self.LANE_LENGTH)):
+                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * self.LANE_LENGTH)):
                     return True
         return False
 
@@ -197,28 +199,28 @@ class Road(object):
         end_x = self.end_coord.get_x()
         end_y = self.end_coord.get_y()
 
-        left_rad = self.in_lanes
-        right_rad = self.out_lanes
+        left_rad = self.in_lanes * self.LANE_LENGTH
+        right_rad = self.out_lanes * self.LANE_LENGTH
 
-        right_angle = (math.pi/2) - self.angle
-        left_angle = (math.pi/2) + self.angle
+        right_angle = self.angle - (math.pi/2.0)
+        left_angle = self.angle + (math.pi/2.0)
 
-        x_left_of_start = start_x + (left_rad * math.cos(left_angle))
-        y_left_of_start = start_y + (left_rad * math.sin(left_angle))
+        x_left_of_start = start_x + (left_rad * math.sin(left_angle))
+        y_left_of_start = start_y + (left_rad * math.cos(left_angle))
 
-        x_right_of_start = start_x + (right_rad * math.cos(right_angle))
-        y_right_of_start = start_y + (right_rad * math.sin(right_angle))
+        x_right_of_start = start_x + (right_rad * math.sin(right_angle))
+        y_right_of_start = start_y + (right_rad * math.cos(right_angle))
 
-        x_left_of_end = end_x + (left_rad * math.cos(left_angle))
-        y_left_of_end = end_y + (left_rad * math.sin(left_angle))
+        x_left_of_end = end_x + (left_rad * math.sin(left_angle))
+        y_left_of_end = end_y + (left_rad * math.cos(left_angle))
 
-        x_right_of_end = end_x + (right_rad * math.cos(right_angle))
-        y_right_of_end = end_y + (right_rad * math.sin(right_angle))
+        x_right_of_end = end_x + (right_rad * math.sin(right_angle))
+        y_right_of_end = end_y + (right_rad * math.cos(right_angle))
 
         points.append(Coordinates(x_left_of_start, y_left_of_start))
         points.append(Coordinates(x_right_of_start, y_right_of_start))
-        points.append(Coordinates(x_left_of_end, y_left_of_end))
         points.append(Coordinates(x_right_of_end, y_right_of_end))
+        points.append(Coordinates(x_left_of_end, y_left_of_end))
 
         return points
 

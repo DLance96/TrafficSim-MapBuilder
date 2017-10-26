@@ -46,17 +46,17 @@ class Intersection(object):
         :type in_lanes: int
         :type out_lanes: int
 
-        :return: None
+        :return: returns road object for added connection
         """
 
         angle_rads = angle * (math.pi / 180.0)
-        start_x = self.center.get_x() + (self.radius * math.cos(angle_rads))
-        start_y = self.center.get_y() + (self.radius * math.sin(angle_rads))
+        start_x = self.center.get_x() + (self.radius * math.sin(angle_rads))
+        start_y = self.center.get_y() + (self.radius * math.cos(angle_rads))
 
         start_coord = Coordinates(start_x, start_y)
 
-        end_x = self.center.get_x() + ((self.radius + distance) * math.cos(angle_rads))
-        end_y = self.center.get_y() + ((self.radius + distance) * math.sin(angle_rads))
+        end_x = self.center.get_x() + ((self.radius + distance) * math.sin(angle_rads))
+        end_y = self.center.get_y() + ((self.radius + distance) * math.cos(angle_rads))
 
         end_coord = Coordinates(end_x, end_y)
 
@@ -64,6 +64,8 @@ class Intersection(object):
         r.add_start_connection(self)
 
         self.outgoing_connections.append(r)
+
+        return r
 
     def add_incoming_connection(self, incoming_road):
         """
@@ -144,6 +146,25 @@ class Intersection(object):
         :return: None
         """
         self.incoming_connections = new_connections
+
+    def is_on_intersection(self, coordinate):
+        """
+        Determines if a given coordinate point is within the boundaries of the current intersection
+        :param coordinate: coordinate point that will be tested for being within intersection boundaries
+        :type coordinate: coordinates.coordinates
+        :return: returns true if given coordinate is within the boundaries of the intersection. Otherwise, returns false
+        """
+        delta_x = self.center.get_x() - coordinate.x
+        delta_y = self.center.get_y() - coordinate.y
+
+        x_squared = delta_x * delta_x
+        y_squared = delta_y * delta_y
+
+        distance = math.sqrt(x_squared + y_squared)
+
+        if self.radius >= distance:
+            return True
+        return False
 
 
 def main():
