@@ -1,6 +1,7 @@
 import sys
-import src.map.road
-import src.map.coordinates
+from src.map.road import Road
+from src.map.coordinates import Coordinates
+from src.map.intersection import Intersection
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
 from PyQt5.QtCore import pyqtSlot
@@ -64,8 +65,8 @@ class MapBuilder(QMainWindow):
 
     def first_road(self):
         leng = 100
-        start_coord = coordinates.coordinates(100 - (leng / 2), 140)
-        r = road.road(start_coord, leng, 1, 1)
+        start_coord = Coordinates(100 - (leng / 2), 140)
+        r = Road(start_coord, leng, 1, 1)
         self.roads.append(r)
         self.start_coord_to_obj.update({str(50) + ' ' + str(140): r})
         self.update()
@@ -76,7 +77,7 @@ class MapBuilder(QMainWindow):
 
     def mousePressEvent(self, QMouseEvent):
         print(QMouseEvent.pos())
-        converted_position = coordinates.coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
+        converted_position = Coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
         for obj in self.roads:
             if obj.is_on_road(converted_position):
                 self.adds_road(obj)
@@ -92,12 +93,12 @@ class MapBuilder(QMainWindow):
         leng = 100
         button2.move(prevr.get_end_coords().x + (leng/2), 440)
         start_coord = prevr.get_end_coords()
-        r = road.road(start_coord, leng, 1, 1)
+        r = Road(start_coord, leng, 1, 1)
         self.roads.append(r)
         self.start_coord_to_obj.update({str(start_coord.x) + ' ' + str(start_coord.y): r})
         button2.clicked.connect(self.add_road)
 
-        self.x = self.x + 20
+        self.x += 20
         # self.layout().addWidget(button2)
         self.update()
 
@@ -108,7 +109,7 @@ class MapBuilder(QMainWindow):
         leng = 100
         button2.move(prevr.get_end_coords().x + (leng / 2), 440)
         start_coord = prevr.get_end_coords()
-        r = road.road(start_coord, leng, 1, 1)
+        r = Road(start_coord, leng, 1, 1)
         self.roads.append(r)
         self.start_coord_to_obj.update({str(start_coord.x) + ' ' + str(start_coord.y): r})
         button2.clicked.connect(self.add_road)

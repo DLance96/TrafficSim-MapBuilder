@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
-from src.map.constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX
+import math
+from src.map.coordinates import Coordinates
+from src.map.constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX, LANE_WIDTH
 
 
 def export_xml(roads, intersections, save_location):
@@ -30,22 +32,21 @@ def make_xml(roads, intersections, save_location):
 
     for index, road in enumerate(roads):
         temp_road = ET.SubElement(road_elements, "road", name=index)
-        ET.SubElement(temp_road, "length").text = road.get_length()
+        length, anchor_coordinate = convert_road_to_simulation_size(road)
+
+        ET.SubElement(temp_road, "length").text = length
         ET.SubElement(temp_road, "incoming_lanes").text = road.get_in_lanes()
         ET.SubElement(temp_road, "outgoing_lanes").text = road.get_out_lanes()
 
         ET.SubElement(temp_road, "angle_radians").text = road.get_angle()
-        temp_coord = road.get_points()[ROAD_IN_ENTRANCE_PT_INDEX]
-        ET.SubElement(temp_road, "incoming_entrance_corner").text = temp_coord.get_x() + " " + temp_coord.get_y()
-        temp_coord = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
-        ET.SubElement(temp_road, "outgoing_entrance_corner").text = temp_coord.get_x() + " " + temp_coord.get_y()
+        ET.SubElement(temp_road, "anchor_point").text = anchor_coordinate.get_x() + " " + anchor_coordinate.get_y()
 
         ET.SubElement(temp_road, "speed_limit").text = ""  # TODO change when speed limit is added
 
-        if road.get_out_intersection() is not None:
-            ET.SubElement(temp_road, "outgoing_intersection").text = intersections.index(road.get_out_intersection())
-        if road.get_in_intersection() is not None:
-            ET.SubElement(temp_road, "incoming_intersection").text = intersections.index(road.get_in_intersection())
+        if road.get_start_connection() is not None:
+            ET.SubElement(temp_road, "outgoing_intersection").text = intersections.index(road.get_start_connection())
+        if road.get_end_connection() is not None:
+            ET.SubElement(temp_road, "incoming_intersection").text = intersections.index(road.get_end_connection())
 
     for index, intersection in enumerate(intersections):
         temp_intersection = ET.SubElement(intersection_elements, "intersection", name=index)
@@ -57,6 +58,48 @@ def make_xml(roads, intersections, save_location):
 
     tree = ET.ElementTree(traffic_map)
     tree.write(save_location)
+
+
+def convert_road_to_simulation_size(road):
+    """
+    Takes a road and moves it slightly into the intersections on its ends so that the end of the road create a chord
+    with the intersection so that there is no place a car could be where it is not on road or intersection on the
+    simulation side of things
+    :param road: the Road to be adjusted
+    :return: tuple of length and anchor_coordinate to be added the the xml file
+    """
+    length = road.get_length()
+    anchor_coordinate = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
+    road_width = (road.get_in_lanes() + road.get_out_lanes()) * LANE_WIDTH
+
+    if road.get_start_connection() is not None:
+        intersection_radius = road.get_start_connection().get_radius()
+        # gets angle that the anchor point is from the midpoint
+        angle_to_anchor = math.asin((road_width/2)/intersection_radius)
+        # rotates to where the road is on the intersection
+        angle_to_anchor = angle_to_anchor + road.get_angle()
+        # removes over rotation
+        while angle_to_anchor > 2 * math.pi:
+            angle_to_anchor -= 2 * math.pi
+        # adds length between chord and original center point
+        length += road.get_start_connection().get_radius() - \
+                  math.cos(angle_to_anchor) * intersection_radius
+        # gets new anchor point with polar coordinates
+        anchor_coordinate = Coordinates(intersection_radius * math.cos(angle_to_anchor),
+                                                                       intersection_radius * math.sin(angle_to_anchor))
+    if road.get_end_connection() is not None:
+        intersection_radius = road.get_end_connection().get_radius()
+        angle_to_anchor = math.asin((road_width / 2) / intersection_radius)
+        # rotates to where the road is on the intersection (adds pi to get opposite angle because it is end connection)
+        angle_to_anchor = angle_to_anchor + road.get_angle() + math.pi
+        # removes over rotation
+        while angle_to_anchor > 2 * math.pi:
+            angle_to_anchor -= 2 * math.pi
+        # adds length between chord and original center point
+        length += road.get_start_connection().get_radius() - \
+            math.cos(angle_to_anchor) * intersection_radius
+
+    return length, anchor_coordinate
 
 
 def is_connected(roads, intersections):
@@ -81,12 +124,12 @@ def is_connected(roads, intersections):
     while len(to_visit_roads) > 0:
         road = to_visit_roads.pop()
         new_roads = []
-        if road.get_out_intersection() is not None and road.get_out_intersection() not in visited_intersections:
-            new_roads.extend(road.get_out_intersection().get_connections())
-            visited_intersections.extend(road.get_out_intersection())
-        if road.get_in_intersection() is not None and road.get_in_intersection() not in visited_intersections:
-            new_roads.extend(road.get_in_intersection().get_connections())
-            visited_intersections.extend(road.get_in_intersection())
+        if road.get_start_connection() is not None and road.get_start_connection() not in visited_intersections:
+            new_roads.extend(road.get_start_connection().get_connections())
+            visited_intersections.extend(road.get_start_connection())
+        if road.get_end_connection() is not None and road.get_end_connection() not in visited_intersections:
+            new_roads.extend(road.get_end_connection().get_connections())
+            visited_intersections.extend(road.get_end_connection())
         remove_visited_roads(new_roads, visited_roads)
 
     if len(roads) == len(visited_roads) and len(intersections) == len(visited_intersections):
@@ -118,4 +161,4 @@ def valid_intersections(intersections):
 
 
 if __name__ == '__main__':
-    export([], [], "temp.xml")
+    export_xml([], [], "temp.xml")

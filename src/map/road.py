@@ -136,8 +136,8 @@ class Road(object):
         :return: returns true if given coordinate is within the boundaries of the road. Otherwise, returns false
         """
         if (coordinate.x > self.start_coord.x) & (coordinate.x < self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * 20)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * 20)):
+            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
+                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
                     return True
         return False
 
