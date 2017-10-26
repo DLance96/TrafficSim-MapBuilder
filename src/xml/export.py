@@ -95,6 +95,9 @@ def convert_road_to_simulation_size(road):
         # removes over rotation
         while angle_to_anchor > 2 * math.pi:
             angle_to_anchor -= 2 * math.pi
+        # adds length between chord and original center point
+        length += road.get_start_connection().get_radius() - \
+            math.cos(angle_to_anchor) * intersection_radius
 
     return length, anchor_coordinate
 
