@@ -5,6 +5,7 @@ from src.map.constants import ROAD_OUT_ENTRANCE_PT_INDEX, ROAD_OUT_EXIT_PT_INDEX
 
 def import_xml(filename):
     # TODO check if file exists
+    return
 
 
 def valid_roads(roads):
