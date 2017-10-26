@@ -1,6 +1,6 @@
 import math
-from src.xml.constants import IMPORT_ROAD_TOLERANCE
-from src.map.constants import ROAD_OUT_ENTRANCE_PT_INDEX, ROAD_OUT_EXIT_PT_INDEX
+from src.xml.Constants import IMPORT_ROAD_TOLERANCE
+from src.map.Constants import ROAD_OUT_ENTRANCE_PT_INDEX, ROAD_OUT_EXIT_PT_INDEX
 
 
 def import_xml(filename):

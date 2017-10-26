@@ -4,8 +4,8 @@ import math
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from src.map.coordinates import Coordinates
-from src.map.road import Road
+from src.map.Coordinates import Coordinates
+from src.map.Road import Road
 
 
 class Intersection(object):
@@ -102,6 +102,9 @@ class Intersection(object):
         :return: list of map objects that are connected to this intersection (cars on these roads are approaching)
         """
         return self.incoming_connections
+
+    def get_connections(self):
+        return list(set().union(self.incoming_connections, self.outgoing_connections))
 
     def update_center(self, new_center):
         """
