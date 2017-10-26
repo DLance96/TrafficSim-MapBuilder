@@ -1,7 +1,7 @@
 import sys
-from src.map.road import Road
-from src.map.coordinates import Coordinates
-from src.map.intersection import Intersection
+from src.map.Road import Road
+from src.map.Coordinates import Coordinates
+from src.map.Intersection import Intersection
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
 from PyQt5.QtCore import pyqtSlot

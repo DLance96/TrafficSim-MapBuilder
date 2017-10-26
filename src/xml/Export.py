@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import math
-from src.map.coordinates import Coordinates
-from src.map.constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX, LANE_WIDTH
+from src.map.Coordinates import Coordinates
+from src.map.Constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX, LANE_WIDTH
 
 
 def export_xml(roads, intersections, save_location):
