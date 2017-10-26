@@ -1,5 +1,5 @@
-import src.map.coordinates
-import src.map.road
+from src.map.coordinates import Coordinates
+from src.map.road import Road
 import math
 
 
@@ -18,7 +18,7 @@ class Intersection(object):
         :param central_point: center point of the intersection circle
         :param radius: radius of the intersection circle
 
-        :type central_point: coordinates.coordinates
+        :type central_point: Coordinates
         :type radius: float
         """
         self.center = central_point
@@ -43,18 +43,18 @@ class Intersection(object):
         :return: None
         """
 
-        angle_rads = angle * (math.pi/180.0)
+        angle_rads = angle * (math.pi / 180.0)
         start_x = self.center.get_x() + (self.radius * math.cos(angle_rads))
         start_y = self.center.get_y() + (self.radius * math.sin(angle_rads))
 
-        start_coord = coordinates.coordinates(start_x, start_y)
+        start_coord = Coordinates(start_x, start_y)
 
         end_x = self.center.get_x() + ((self.radius + distance) * math.cos(angle_rads))
         end_y = self.center.get_y() + ((self.radius + distance) * math.sin(angle_rads))
 
-        end_coord = coordinates.coordinates(end_x, end_y)
+        end_coord = Coordinates(end_x, end_y)
 
-        r = road.road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
+        r = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
 
         self.connections.append(r)
 
@@ -81,7 +81,7 @@ class Intersection(object):
         Updates the center point of the intersection circle
 
         :param new_center: new center point of the intersection circle
-        :type new_center: coordinates.coordinates
+        :type new_center: Coordinates
 
         :return: None
         """
@@ -111,7 +111,7 @@ class Intersection(object):
 
 
 def main():
-    center = coordinates.coordinates(1,1)
+    center = Coordinates(1, 1)
     radius = 4
     i = Intersection(center, radius)
 
