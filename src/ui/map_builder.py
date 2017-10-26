@@ -134,10 +134,8 @@ class MapBuilder(QMainWindow):
         end_coord = Coordinates(start_coord.x + leng, start_coord.y)
 
         r = Road(start_coord, end_coord, leng, 1, 1, 90)
-
         self.roads.append(r)
         self.start_coord_to_obj.update({str(start_coord.x) + ' ' + str(start_coord.y): r})
-
         self.x = self.x + 20
         self.update()
 
