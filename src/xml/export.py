@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from src.map.constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX
 
 
-def export(roads, intersections, save_location):
+def export_xml(roads, intersections, save_location):
     """
     Main function of export that makes that the map is valid and then creates an xml file
     :param roads: list of the roads in the map
@@ -10,7 +10,7 @@ def export(roads, intersections, save_location):
     :param save_location: where to save the xml file
     :return:
     """
-    if is_connected(roads, intersections):
+    if is_connected(roads, intersections) and valid_intersections(intersections):
         make_xml(roads, intersections, save_location)
     else:
         return  # TODO decide what to do with incomplete map
@@ -35,8 +35,10 @@ def make_xml(roads, intersections, save_location):
         ET.SubElement(temp_road, "outgoing_lanes").text = road.get_out_lanes()
 
         ET.SubElement(temp_road, "angle_radians").text = road.get_angle()
-        ET.SubElement(temp_road, "incoming_entrance_corner").text = road.get_points()[ROAD_IN_ENTRANCE_PT_INDEX]
-        ET.SubElement(temp_road, "outgoing_entrance_corner").text = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
+        temp_coord = road.get_points()[ROAD_IN_ENTRANCE_PT_INDEX]
+        ET.SubElement(temp_road, "incoming_entrance_corner").text = temp_coord.get_x() + " " + temp_coord.get_y()
+        temp_coord = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
+        ET.SubElement(temp_road, "outgoing_entrance_corner").text = temp_coord.get_x() + " " + temp_coord.get_y()
 
         ET.SubElement(temp_road, "speed_limit").text = ""  # TODO change when speed limit is added
 
@@ -98,11 +100,21 @@ def remove_visited_roads(roads, visited_roads):
     Removes all the previous visted roads from the new roads list
     :param roads: list of new roads to be filtered
     :param visited_roads: list of roads that have already been visited
-    :return:
+    :return: removes duplicates between visted roads and roads
     """
     for road in roads:
         if road in visited_roads:
             roads.remove(roads)
+
+
+def valid_intersections(intersections):
+    """
+    Check to make sure that no intersection has roads that overlap
+    :param intersections: list of intersections to check
+    :return: boolean whether all intersections are valid
+    """
+    # TODO check to make sure no overlapping roads on any intersection
+    return True
 
 
 if __name__ == '__main__':
