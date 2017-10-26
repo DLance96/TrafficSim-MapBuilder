@@ -1,8 +1,13 @@
-import coordinates
+import sys
+import os
 import math
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-class road(object):
+from src.map.coordinates import Coordinates
+
+
+class Road(object):
     """
     This class represents a road object in the MapBuilder section of our application
 
@@ -21,8 +26,8 @@ class road(object):
         :param in_lanes: number of incoming lanes of the road
         :param angle: angle at which the road projects from the center of its connected intersection (in radians)
 
-        :type start_coord: coordinates.coordinates
-        :type end_coord: coordinates.coordinates
+        :type start_coord: Coordinates
+        :type end_coord: Coordinates
         :type length: float
         :type out_lanes: int
         :type in_lanes: int
@@ -34,6 +39,8 @@ class road(object):
         self.out_lanes = out_lanes
         self.in_lanes = in_lanes
         self.angle = angle * (math.pi / 180.0)
+        self.start_connection = None
+        self.end_connection = None
 
     def get_start_coords(self):
         """
@@ -67,15 +74,15 @@ class road(object):
 
     def get_angle(self):
         """
-        :return: angle from which this road projects from the center of its connected intersection (in degrees)
+        :return: angle from which this road projects from the center of its connected intersection (in radians)
         """
-        return self.angle * (180.0 / math.pi)
+        return self.angle
 
     def update_start_coords(self, new_start_coord):
         """
         Updates the start coordinates of the road
         :param new_start_coord: new start coordinates of the road
-        :type new_start_coord: coordinates.coordinates
+        :type new_start_coord: Coordinates
         :return: None
         """
         self.start_coord = new_start_coord
@@ -84,7 +91,7 @@ class road(object):
         """
         Updates the end coordinates of the road
         :param new_end_coord: new end coordinates of the road
-        :type new_end_coord: coordinates.coordinates
+        :type new_end_coord: Coordinates
         :return: None
         """
         self.end_coord = new_end_coord
@@ -119,7 +126,7 @@ class road(object):
     def update_angle(self, new_angle):
         """
         Updates the angle from which the road projects from the center of the intersection.
-        :param new_angle: new angle of the road
+        :param new_angle: new angle of the road (in degrees)
         :type new_angle: float
         :return: None
         """
@@ -129,37 +136,57 @@ class road(object):
         """
         Determines if a given coordinate point is within the boundaries of the current road
         :param coordinate: coordinate point that will be tested for being within road boundaries
-        :type coordinate: coordinates.coordinates
+        :type coordinate: Coordinates
         :return: returns true if given coordinate is within the boundaries of the road. Otherwise, returns false
         """
+        point_list = self.get_points()
+
+        incoming_start = point_list[0]
+        outgoing_start = point_list[1]
+        incoming_end = point_list[2]
+        outgoing_end = point_list[3]
+
+        min_x_min_y = Coordinates(incoming_start.get_x(), outgoing_start.get_y())
+        min_x_max_y = Coordinates(incoming_start.get_x(), incoming_end.get_y())
+        max_x_max_y = Coordinates(outgoing_end.get_x(), incoming_end.get_y())
+        max_x_min_y = Coordinates(outgoing_start.get_x(), outgoing_end.get_y())
+
         if (coordinate.x > self.start_coord.x) & (coordinate.x < self.end_coord.x):
             if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * self.LANE_LENGTH)):
                 if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * self.LANE_LENGTH)):
                     return True
         return False
 
-    # ------------------------------------------------------------------------------------------
+    def add_start_connection(self, start_connection):
+        """
+        Adds a connecting object to the start of the road
+        :param start_connection: object to be connected to the start of the road
+        :type start_connection: Intersection
+        :return: None
+        """
+        self.start_connection = start_connection
 
-    # This should be implemented to include previous and next neighbors
-    def add_neighboring_road(self, neighbor_road):
-        self.neighboring_road = neighbor_road
+    def add_end_connection(self, end_connection):
+        """
+        Adds a connecting object to the end of the road
+        :param end_connection: object to be connected to the end of the road
+        :type end_connection: Intersection
+        :return: None
+        """
+        self.end_connection = end_connection
+        self.end_connection.add_incoming_connection(self)
 
-    # This should be implemented to include previous and next neighbors
-    def add_neighboring_intersection(self, intersection):
-        self.neighboring_intersection = intersection
+    def get_start_connection(self):
+        """
+        :return: connecting object at the start of the road
+        """
+        return self.start_connection
 
-    # Returns the neighboring road.
-    def get_neighboring_road(self):
-        return self.neighboring_road
-
-    # Returns the neighboring intersection.
-    def get_neighboring_intersection(self):
-        return self.neighboring_intersection
-
-    # --------------SHOULD THE PREVIOUS FOUR METHODS EVEN BE IN THIS CODE???---------------------
-
-    def add_connection(self, map_object, direction):
-        print('add_connections')
+    def get_end_connection(self):
+        """
+        :return: connecting object at the end of the road
+        """
+        return self.end_connection
 
     def get_points(self):
         """
@@ -190,10 +217,10 @@ class road(object):
         x_right_of_end = end_x + (right_rad * math.sin(right_angle))
         y_right_of_end = end_y + (right_rad * math.cos(right_angle))
 
-        points.append(coordinates.coordinates(x_left_of_start, y_left_of_start))
-        points.append(coordinates.coordinates(x_right_of_start, y_right_of_start))
-        points.append(coordinates.coordinates(x_right_of_end, y_right_of_end))
-        points.append(coordinates.coordinates(x_left_of_end, y_left_of_end))
+        points.append(Coordinates(x_left_of_start, y_left_of_start))
+        points.append(Coordinates(x_right_of_start, y_right_of_start))
+        points.append(Coordinates(x_right_of_end, y_right_of_end))
+        points.append(Coordinates(x_left_of_end, y_left_of_end))
 
         return points
 
@@ -203,17 +230,15 @@ def main():
     Main method for the road class
     :return: Prints attribute values for the current road
     """
-    start_coord = coordinates.coordinates(3, 1)
-    end_coord = coordinates.coordinates(4, 8)
+    start_coord = Coordinates(3, 1)
+    end_coord = Coordinates(4, 8)
     out_lanes = 4
     in_lanes = 3
     length = 2
     angle = 45.0
 
-    r = road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
-    r2 = road(start_coord, end_coord, 12, 23, 54, 90.0)
-
-    r.add_neighboring_road(r2)
+    r = Road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
+    r2 = Road(start_coord, end_coord, 12, 23, 54, 90.0)
 
     road_coord = r.get_start_coords()
     end_road_coord = r.get_end_coords()
@@ -230,8 +255,8 @@ def main():
     print('end coords: (' + str(end_x) + ', ' + str(end_y) + ')')
     print(' ')
 
-    new_coord = coordinates.coordinates(7, 4)
-    new_end_coord = coordinates.coordinates(17, 9)
+    new_coord = Coordinates(7, 4)
+    new_end_coord = Coordinates(17, 9)
 
     r.update_start_coords(new_coord)
     r.update_end_coords(new_end_coord)
@@ -254,28 +279,31 @@ def main():
     print(' ')
 
     print('angle of road in radians: ' + str(r.angle))
-    print('angle of road in degrees: ' + str(r.get_angle()))
+    print('angle of road in degrees: ' + str(r.get_angle() * (180.0/math.pi)))
     print(' ')
 
     r.update_angle(87.5)
 
     print('updated angle of road in radians: ' + str(r.angle))
-    print('updated angle of road in degrees: ' + str(r.get_angle()))
+    print('updated angle of road in degrees: ' + str(r.get_angle() * (180.0/math.pi)))
     print(' ')
 
-    p_start_coord = coordinates.coordinates(1, 1)
-    p_end_coord = coordinates.coordinates(1, 5)
+    p_start_coord = Coordinates(1, 1)
+    p_end_coord = Coordinates(1, 5)
     p_length = 4
     p_out_lanes = 2
     p_in_lanes = 3
     p_angle = 90.0
 
-    p = road(p_start_coord, p_end_coord, p_length, p_out_lanes, p_in_lanes, p_angle)
+    p = Road(p_start_coord, p_end_coord, p_length, p_out_lanes, p_in_lanes, p_angle)
 
     p_points = p.get_points()
 
     for point in p_points:
         print('( ' + str(point.get_x()) + ', ' + str(point.get_y()) + ' )')
+
+    print(' ')
+    print(str(r.is_on_road(p_start_coord)))
 
 
 if __name__ == '__main__':

@@ -1,5 +1,11 @@
 import sys
-import road, intersection, coordinates, math
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from src.map.road import Road
+from src.map.intersection import Intersection
+from src.map.coordinates import Coordinates
+import math
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
 from PyQt5.QtCore import pyqtSlot, Qt
@@ -32,10 +38,10 @@ class MapBuilder(QMainWindow):
         selected_menu = menu_bar.addMenu("MapObject")
 
         # buttons
-        button = QPushButton('PyQt5 button', self)
-        button.setToolTip('This is an example button')
-        button.move(100, 440)
-        button.clicked.connect(self.add_road)
+        # button = QPushButton('PyQt5 button', self)
+        # button.setToolTip('This is an example button')
+        # button.move(100, 440)
+        # button.clicked.connect(self.add_road)
 
         new_action = QAction("New", self)
         open_action = QAction("Open", self)
@@ -80,23 +86,23 @@ class MapBuilder(QMainWindow):
             self.draw_intersection(obj.center, obj.radius, qp)
         if self.selected_object is not None:
             qp.setBrush(Qt.yellow)
-            if type(self.selected_object) is road.road:
+            if type(self.selected_object) is Road:
                 self.draw_road(self.selected_object.get_points(), qp)
-            if type(self.selected_object) is intersection.intersection:
+            if type(self.selected_object) is Intersection:
                 self.draw_intersection(self.selected_object.center, self.selected_object.radius, qp)
         qp.end()
 
     # change to first intersection!!!
     def first_road(self):
         leng = 100
-        start_coord = coordinates.coordinates(100 - (leng / 2), 140)
-        end_coord = coordinates.coordinates(start_coord.x + leng, start_coord.y)
-        r = road.road(start_coord, end_coord, leng, 2, 2, 90)
+        start_coord = Coordinates(100 - (leng / 2), 140)
+        end_coord = Coordinates(start_coord.x + leng, start_coord.y)
+        r = Road(start_coord, end_coord, leng, 2, 2, 90)
         self.roads.append(r)
         self.start_coord_to_obj.update({str(50) + ' ' + str(140): r})
 
-        center = coordinates.coordinates(start_coord.x, start_coord.y + 100)
-        i = intersection.intersection(center, 20)
+        center = Coordinates(start_coord.x, start_coord.y + 100)
+        i = Intersection(center, 20)
         self.intersections.append(i)
         self.update()
 
@@ -106,7 +112,7 @@ class MapBuilder(QMainWindow):
 
     def mousePressEvent(self, QMouseEvent):
         print(QMouseEvent.pos())
-        converted_position = coordinates.coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
+        converted_position = Coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
         for obj in self.roads:
             if obj.is_on_road(converted_position):
                 self.selected_object = obj
@@ -114,7 +120,7 @@ class MapBuilder(QMainWindow):
             if obj.is_on_intersection(converted_position):
                 self.selected_object = obj
         if self.selected_object is not None:
-            if type(self.selected_object) is road.road:
+            if type(self.selected_object) is Road:
                 # check if start/end connection is present
                 self.add_to_end_action.setEnabled(False)
         self.update()
@@ -125,9 +131,9 @@ class MapBuilder(QMainWindow):
         leng = 100
 
         start_coord = prevr.get_end_coords()
-        end_coord = coordinates.coordinates(start_coord.x + leng, start_coord.y)
+        end_coord = Coordinates(start_coord.x + leng, start_coord.y)
 
-        r = road.road(start_coord, end_coord, leng, 1, 1, 90)
+        r = Road(start_coord, end_coord, leng, 1, 1, 90)
 
         self.roads.append(r)
         self.start_coord_to_obj.update({str(start_coord.x) + ' ' + str(start_coord.y): r})
@@ -139,25 +145,25 @@ class MapBuilder(QMainWindow):
         prevr = self.selected_object
         if prevr is None:
             return
-        if type(prevr) is intersection.intersection:
+        if type(prevr) is Intersection:
 
             le = 100
             angle = 90
             in_lanes = 2
             out_lanes = 2
 
-            r = prevr.add_connection(angle, le, in_lanes, out_lanes)
+            r = prevr.add_outgoing_connection(angle, le, in_lanes, out_lanes)
             print(str(r.start_coord.x) + ", " + str(r.start_coord.y) + '\n')
             self.roads.append(r)
 
-        if type(prevr) is road.road:
+        if type(prevr) is Road:
 
             leng = 100
 
             start_coord = prevr.get_end_coords()
-            end_coord = coordinates.coordinates(start_coord.x + leng, start_coord.y)
+            end_coord = Coordinates(start_coord.x + leng, start_coord.y)
 
-            r = road.road(start_coord, end_coord, leng, 1, 1, 90)
+            r = Road(start_coord, end_coord, leng, 1, 1, 90)
 
             self.roads.append(r)
             self.start_coord_to_obj.update({str(start_coord.x) + ' ' + str(start_coord.y): r})
