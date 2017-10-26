@@ -1,6 +1,11 @@
+import sys
+import os
+import math
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
 from src.map.coordinates import Coordinates
 from src.map.road import Road
-import math
 
 
 class Intersection(object):
