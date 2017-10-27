@@ -58,12 +58,22 @@ class Intersection(object):
 
         end_coord = Coordinates(end_x, end_y)
 
-        r = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
-        r.add_start_connection(self)
+        road = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
+        road.add_start_connection(self)
 
-        self.connections.append(r)
+        self.connections.append(road)
 
-        return r
+        return road
+
+    def add_incoming_connection(self, road):
+        """
+        Adds an incoming road
+        :param road: road that is incoming
+        :return: the road that was input
+        """
+        self.connections.append(road)
+
+        return road
 
     def get_center(self):
         """
@@ -82,9 +92,6 @@ class Intersection(object):
         :return: list of map objects that are connected to this intersection
         """
         return self.connections
-
-    def get_connections(self):
-        return list(set().union(self.incoming_connections, self.outgoing_connections))
 
     def update_center(self, new_center):
         """

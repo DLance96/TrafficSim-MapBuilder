@@ -81,7 +81,6 @@ def convert_road_to_simulation_size(road):
     """
     length = road.get_length()
     anchor_coordinate = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
-    print("{} {}".format(anchor_coordinate.get_x(), anchor_coordinate.get_y()))
     road_width = (road.get_in_lanes() + road.get_out_lanes()) * LANE_WIDTH
 
     if road.get_start_connection() is not None:
