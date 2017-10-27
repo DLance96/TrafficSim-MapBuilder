@@ -38,7 +38,7 @@ class Road(object):
         self.length = length
         self.out_lanes = out_lanes
         self.in_lanes = in_lanes
-        self.angle = angle * (math.pi / 180.0)
+        self.angle = angle
         self.start_connection = None
         self.end_connection = None
 
@@ -174,7 +174,7 @@ class Road(object):
         :return: None
         """
         self.end_connection = end_connection
-        self.end_connection.add_incoming_connection(self)
+        # self.end_connection.add_incoming_connection(self)
 
     def get_start_connection(self):
         """
@@ -193,29 +193,30 @@ class Road(object):
         Retrieves the four corner points of the road
         :return: a list of all corner points of the road
         """
+        print('s_coord ' + str(self.start_coord.x) + ' ' + str(self.start_coord.y))
         points = []
         start_x = self.start_coord.get_x()
         start_y = self.start_coord.get_y()
         end_x = self.end_coord.get_x()
         end_y = self.end_coord.get_y()
 
-        left_rad = self.in_lanes * self.LANE_LENGTH
-        right_rad = self.out_lanes * self.LANE_LENGTH
+        left_radius = self.in_lanes * self.LANE_LENGTH
+        right_radius = self.out_lanes * self.LANE_LENGTH
 
-        right_angle = self.angle - (math.pi/2.0)
-        left_angle = self.angle + (math.pi/2.0)
+        right_angle = self.angle + (math.pi/2.0)
+        left_angle = self.angle - (math.pi/2.0)
 
-        x_left_of_start = start_x + (left_rad * math.sin(left_angle))
-        y_left_of_start = start_y + (left_rad * math.cos(left_angle))
+        x_left_of_start = start_x + (left_radius * math.sin(left_angle))
+        y_left_of_start = start_y + (left_radius * math.cos(left_angle))
 
-        x_right_of_start = start_x + (right_rad * math.sin(right_angle))
-        y_right_of_start = start_y + (right_rad * math.cos(right_angle))
+        x_right_of_start = start_x + (right_radius * math.sin(right_angle))
+        y_right_of_start = start_y + (right_radius * math.cos(right_angle))
 
-        x_left_of_end = end_x + (left_rad * math.sin(left_angle))
-        y_left_of_end = end_y + (left_rad * math.cos(left_angle))
+        x_left_of_end = end_x + (left_radius * math.sin(left_angle))
+        y_left_of_end = end_y + (left_radius * math.cos(left_angle))
 
-        x_right_of_end = end_x + (right_rad * math.sin(right_angle))
-        y_right_of_end = end_y + (right_rad * math.cos(right_angle))
+        x_right_of_end = end_x + (right_radius * math.sin(right_angle))
+        y_right_of_end = end_y + (right_radius * math.cos(right_angle))
 
         points.append(Coordinates(x_left_of_start, y_left_of_start))
         points.append(Coordinates(x_right_of_start, y_right_of_start))

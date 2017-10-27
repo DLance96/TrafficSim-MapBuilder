@@ -49,14 +49,13 @@ class Intersection(object):
         :return: returns road object for added connection
         """
 
-        angle_rads = angle * (math.pi / 180.0)
-        start_x = self.center.get_x() + (self.radius * math.sin(angle_rads))
-        start_y = self.center.get_y() + (self.radius * math.cos(angle_rads))
+        start_x = self.center.get_x() + (self.radius * math.sin(angle))
+        start_y = self.center.get_y() + (self.radius * math.cos(angle))
 
         start_coord = Coordinates(start_x, start_y)
 
-        end_x = self.center.get_x() + ((self.radius + distance) * math.sin(angle_rads))
-        end_y = self.center.get_y() + ((self.radius + distance) * math.cos(angle_rads))
+        end_x = self.center.get_x() + ((self.radius + distance) * math.sin(angle))
+        end_y = self.center.get_y() + ((self.radius + distance) * math.cos(angle))
 
         end_coord = Coordinates(end_x, end_y)
 
