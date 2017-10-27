@@ -5,6 +5,7 @@ import math
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.map.Coordinates import Coordinates
+from src.map.Constants import LANE_WIDTH
 
 
 class Road(object):

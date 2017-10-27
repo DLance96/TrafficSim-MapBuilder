@@ -5,6 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from src.map.Road import Road
 from src.map.Intersection import Intersection
 from src.map.Coordinates import Coordinates
+from src.map.Constants import LANE_WIDTH
 import math
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
@@ -142,7 +143,7 @@ class MapBuilder(QMainWindow):
             in_lanes = 1
             out_lanes = 1
 
-            new_road = prev_road.add_outgoing_connection(angle, length, out_lanes, in_lanes)
+            new_road = prev_road.add_connection(angle, length, out_lanes, in_lanes)
             self.roads.append(new_road)
 
         if type(prev_road) is Road:
@@ -178,7 +179,7 @@ class MapBuilder(QMainWindow):
             in_lanes = 2
             out_lanes = 2
 
-            new_road = prev_road.add_outgoing_connection(angle, length, out_lanes, in_lanes)
+            new_road = prev_road.add_connection(angle, length, out_lanes, in_lanes)
             self.roads.append(new_road)
 
         if type(prev_road) is Road:
