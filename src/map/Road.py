@@ -192,7 +192,6 @@ class Road(object):
         Retrieves the four corner points of the road
         :return: a list of all corner points of the road
         """
-        print('s_coord ' + str(self.start_coord.x) + ' ' + str(self.start_coord.y))
         points = []
         start_x = self.start_coord.get_x()
         start_y = self.start_coord.get_y()
