@@ -13,8 +13,6 @@ class Road(object):
 
     """
 
-    LANE_LENGTH = 20
-
     def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle):
         """
         Establishes a road object
@@ -126,11 +124,11 @@ class Road(object):
     def update_angle(self, new_angle):
         """
         Updates the angle from which the road projects from the center of the intersection.
-        :param new_angle: new angle of the road (in degrees)
+        :param new_angle: new angle of the road (in radians)
         :type new_angle: float
         :return: None
         """
-        self.angle = new_angle * (math.pi / 180.0)
+        self.angle = new_angle
 
     def is_on_road(self, coordinate):
         """
@@ -152,8 +150,8 @@ class Road(object):
         max_x_min_y = Coordinates(outgoing_start.get_x(), outgoing_end.get_y())
 
         if (coordinate.x > self.start_coord.x) & (coordinate.x < self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * self.LANE_LENGTH)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * self.LANE_LENGTH)):
+            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
+                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
                     return True
         return False
 
@@ -200,8 +198,8 @@ class Road(object):
         end_x = self.end_coord.get_x()
         end_y = self.end_coord.get_y()
 
-        left_radius = self.in_lanes * self.LANE_LENGTH
-        right_radius = self.out_lanes * self.LANE_LENGTH
+        left_radius = self.in_lanes * LANE_WIDTH
+        right_radius = self.out_lanes * LANE_WIDTH
 
         right_angle = self.angle + (math.pi/2.0)
         left_angle = self.angle - (math.pi/2.0)

@@ -35,12 +35,6 @@ class MapBuilder(QMainWindow):
         file_menu = menu_bar.addMenu("File")
         selected_menu = menu_bar.addMenu("MapObject")
 
-        # buttons
-        # button = QPushButton('PyQt5 button', self)
-        # button.setToolTip('This is an example button')
-        # button.move(100, 440)
-        # button.clicked.connect(self.add_road)
-
         new_action = QAction("New", self)
         open_action = QAction("Open", self)
         save_action = QAction("Save", self)
