@@ -53,7 +53,7 @@ class MapBuilder(QMainWindow):
         selected_menu.addAction(edit_action)
 
         self.add_to_end_action.triggered.connect(self.add_road_to_end_coord)
-        # self.add_to_start_action.triggered.connect(self.add_road_to_start_coord)
+        self.add_to_start_action.triggered.connect(self.add_road_to_start_coord)
 
         screen = app.primaryScreen()
         self.resize(screen.size().width(), screen.size().height())
@@ -129,6 +129,9 @@ class MapBuilder(QMainWindow):
                     self.add_to_end_action.setEnabled(True)
                 else:
                     self.add_to_end_action.setEnabled(False)
+            else:
+                self.add_to_start_action.setEnabled(True)
+                self.add_to_end_action.setEnabled(True)
 
         self.update()
 
@@ -139,7 +142,7 @@ class MapBuilder(QMainWindow):
 
         if type(prev_road) is Intersection:
             length = 75
-            angle = 90 * (math.pi/180)
+            angle = 45 * (math.pi/180)
             in_lanes = 1
             out_lanes = 1
 
@@ -147,24 +150,16 @@ class MapBuilder(QMainWindow):
             self.roads.append(new_road)
 
         if type(prev_road) is Road:
-            length = 100
-            angle = 90 * (math.pi/180)
-            in_lanes = 1
-            out_lanes = 1
+            length = 40
 
             if prev_road.get_end_connection() is not None:
                 return
 
-            start_coord = prev_road.get_end_coords()
-            end_coord = Coordinates(start_coord.x + length, start_coord.y)
-
-            new_road = Road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
-            prev_road.add_end_connection(new_road)
-            new_road.add_start_connection(prev_road)
+            new_intersection = prev_road.generate_end_connection(length)
 
             self.add_to_end_action.setEnabled(False)
 
-            self.roads.append(new_road)
+            self.intersections.append(new_intersection)
 
         self.update()
 
@@ -174,33 +169,25 @@ class MapBuilder(QMainWindow):
             return
 
         if type(prev_road) is Intersection:
-            length = 100
-            angle = 270 * (math.pi/180)
-            in_lanes = 2
-            out_lanes = 2
+            length = 75
+            angle = -90 * (math.pi/180)
+            in_lanes = 1
+            out_lanes = 1
 
             new_road = prev_road.add_connection(angle, length, out_lanes, in_lanes)
             self.roads.append(new_road)
 
         if type(prev_road) is Road:
-            length = 100
-            angle = 270 * (math.pi/180)
-            in_lanes = 1
-            out_lanes = 1
+            length = 40
 
-            if prev_road.get_end_connection() is not None:
+            if prev_road.get_start_connection() is not None:
                 return
 
-            start_coord = prev_road.get_end_coords()
-            end_coord = Coordinates(start_coord.x - length, start_coord.y)
+            new_intersection = prev_road.generate_start_connection(length)
 
-            new_road = Road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
-            prev_road.add_end_connection(new_road)
-            new_road.add_start_connection(prev_road)
+            self.add_to_start_action.setEnabled(False)
 
-            self.add_to_end_action.setEnabled(False)
-
-            self.roads.append(new_road)
+            self.intersections.append(new_intersection)
 
         self.update()
 
