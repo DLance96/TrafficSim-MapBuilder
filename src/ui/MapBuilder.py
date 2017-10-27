@@ -2,9 +2,9 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from src.map.road import Road
-from src.map.intersection import Intersection
-from src.map.coordinates import Coordinates
+from src.map.Road import Road
+from src.map.Intersection import Intersection
+from src.map.Coordinates import Coordinates
 import math
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
