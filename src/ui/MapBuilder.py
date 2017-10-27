@@ -142,7 +142,7 @@ class MapBuilder(QMainWindow):
 
         if type(prev_road) is Intersection:
             length = 75
-            angle = 90 * (math.pi/180)
+            angle = 45 * (math.pi/180)
             in_lanes = 1
             out_lanes = 1
 
