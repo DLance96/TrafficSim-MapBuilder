@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.map.Coordinates import Coordinates
 from src.map.Constants import LANE_WIDTH
+import src.map as heyo
 
 
 class Road(object):
@@ -154,6 +155,12 @@ class Road(object):
             if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
                 if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
                     return True
+
+        if (coordinate.x < self.start_coord.x) & (coordinate.x > self.end_coord.x):
+            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
+                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
+                    return True
+
         return False
 
     def add_start_connection(self, start_connection):
@@ -164,6 +171,44 @@ class Road(object):
         :return: None
         """
         self.start_connection = start_connection
+
+    def generate_start_connection(self, length):
+        """
+        Adds a connecting object to the start of the road
+        :param length: length of intersection connection to be created
+        :return: new Intersection map object
+        """
+        corrected_angle = angle + math.pi
+
+        start_x = self.start_coord.x + (length * math.sin(corrected_angle))
+        start_y = self.start_coord.y + (length * math.cos(corrected_angle))
+
+        central_point = Coordinates(start_x, start_y)
+
+        intersection = heyo.Intersection.Intersection(central_point, length)
+
+        intersection.add_incoming_connection(self)
+        self.start_connection = intersection
+
+        return intersection
+
+    def generate_end_connection(self, length):
+        """
+        Adds a connecting object to the start of the road
+        :param length: length of intersection connection to be created
+        :return: new Intersection map object
+        """
+        start_x = self.end_coord.x + (length * math.sin(self.angle))
+        start_y = self.end_coord.y + (length * math.cos(self.angle))
+
+        central_point = Coordinates(start_x, start_y)
+
+        intersection = heyo.Intersection.Intersection(central_point, length)
+
+        intersection.add_incoming_connection(self)
+        self.end_connection = intersection
+
+        return intersection
 
     def add_end_connection(self, end_connection):
         """

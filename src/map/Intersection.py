@@ -4,8 +4,8 @@ import math
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from src.map.Coordinates import Coordinates
 from src.map.Road import Road
+from src.map.Coordinates import Coordinates
 
 
 class Intersection(object):
