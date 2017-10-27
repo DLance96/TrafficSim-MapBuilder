@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.map.Coordinates import Coordinates
 from src.map.Constants import LANE_WIDTH
-import src.map as heyo
+import src.map as traffic_map
 
 
 class Road(object):
@@ -185,7 +185,7 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = heyo.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length)
 
         intersection.add_incoming_connection(self)
         self.start_connection = intersection
@@ -203,7 +203,7 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = heyo.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length)
 
         intersection.add_incoming_connection(self)
         self.end_connection = intersection
