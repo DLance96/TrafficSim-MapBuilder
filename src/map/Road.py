@@ -141,27 +141,88 @@ class Road(object):
         """
         point_list = self.get_points()
 
-        incoming_start = point_list[0]
-        outgoing_start = point_list[1]
-        incoming_end = point_list[2]
-        outgoing_end = point_list[3]
+        # left of the starting point
+        p_1 = point_list[0]
 
-        min_x_min_y = Coordinates(incoming_start.get_x(), outgoing_start.get_y())
-        min_x_max_y = Coordinates(incoming_start.get_x(), incoming_end.get_y())
-        max_x_max_y = Coordinates(outgoing_end.get_x(), incoming_end.get_y())
-        max_x_min_y = Coordinates(outgoing_start.get_x(), outgoing_end.get_y())
+        # right of the starting point
+        p_2 = point_list[1]
 
-        if (coordinate.x > self.start_coord.x) & (coordinate.x < self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
-                    return True
+        # right of the ending point
+        p_3 = point_list[2]
 
-        if (coordinate.x < self.start_coord.x) & (coordinate.x > self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
-                    return True
+        # left of the ending point
+        p_4 = point_list[3]
 
-        return False
+        # this chunk of code determines the area of the rectangle
+        width_delta_x = p_2.get_x() - p_1.get_x()
+        width_delta_y = p_2.get_y() - p_1.get_y()
+        length_delta_x = p_4.get_x() - p_1.get_x()
+        length_delta_y = p_4.get_y() - p_1.get_y()
+
+        rect_width = math.sqrt((width_delta_x * width_delta_x) + (width_delta_y * width_delta_y))
+        rect_length = math.sqrt((length_delta_x * length_delta_x) + (length_delta_y * length_delta_y))
+
+        # area of the rectangle (road)
+        rect_area = rect_width * rect_length
+
+        # this next chunk of code determines the lengths of triangles created between rect sides and the coord point
+        # for reference, point 1 = A, point 2 = B, point 3 = C, and point 4 = D
+        ab_delta_x = p_2.get_x() - p_1.get_x()
+        ab_delta_y = p_2.get_y() - p_1.get_y()
+
+        dc_delta_x = p_4.get_x() - p_3.get_x()
+        dc_delta_y = p_4.get_y() - p_3.get_y()
+
+        ad_delta_x = p_4.get_x() - p_1.get_x()
+        ad_delta_y = p_4.get_y() - p_1.get_y()
+
+        bc_delta_x = p_3.get_x() - p_2.get_x()
+        bc_delta_y = p_3.get_y() - p_2.get_y()
+
+        length_ab = math.sqrt((ab_delta_x * ab_delta_x) + (ab_delta_y * ab_delta_y))
+        length_dc = math.sqrt((dc_delta_x * dc_delta_x) + (dc_delta_y * dc_delta_y))
+        length_ad = math.sqrt((ad_delta_x * ad_delta_x) + (ad_delta_y * ad_delta_y))
+        length_bc = math.sqrt((bc_delta_x * bc_delta_x) + (bc_delta_y * bc_delta_y))
+
+        pa_delta_x = coordinate.get_x() - p_1.get_x()
+        pa_delta_y = coordinate.get_y() - p_1.get_y()
+
+        pb_delta_x = coordinate.get_x() - p_2.get_x()
+        pb_delta_y = coordinate.get_y() - p_2.get_y()
+
+        pc_delta_x = coordinate.get_x() - p_3.get_x()
+        pc_delta_y = coordinate.get_y() - p_3.get_y()
+
+        pd_delta_x = coordinate.get_x() - p_4.get_x()
+        pd_delta_y = coordinate.get_y() - p_4.get_y()
+
+        length_pa = math.sqrt((pa_delta_x * pa_delta_x) + (pa_delta_y * pa_delta_y))
+        length_pb = math.sqrt((pb_delta_x * pb_delta_x) + (pb_delta_y * pb_delta_y))
+        length_pc = math.sqrt((pc_delta_x * pc_delta_x) + (pc_delta_y * pc_delta_y))
+        length_pd = math.sqrt((pd_delta_x * pd_delta_x) + (pd_delta_y * pd_delta_y))
+
+        # this chunk of code determines the sum of the area of the triangles generated above
+        pab_half_perim = (length_pa + length_ab + length_pb) / 2.0
+        pbc_half_perim = (length_pb + length_pc + length_bc) / 2.0
+        pcd_half_perim = (length_pc + length_pd + length_dc) / 2.0
+        pad_half_perim = (length_pa + length_pd + length_ad) / 2.0
+
+        sqrt_inner_pab = pab_half_perim * (pab_half_perim - length_pa) * (pab_half_perim - length_ab) * (pab_half_perim - length_pb)
+        sqrt_inner_pbc = pbc_half_perim * (pbc_half_perim - length_pb) * (pbc_half_perim - length_bc) * (pbc_half_perim - length_pc)
+        sqrt_inner_pcd = pcd_half_perim * (pcd_half_perim - length_pc) * (pcd_half_perim - length_pd) * (pcd_half_perim - length_dc)
+        sqrt_inner_pad = pad_half_perim * (pad_half_perim - length_pa) * (pad_half_perim - length_pd) * (pad_half_perim - length_ad)
+
+        area_pab = math.sqrt(sqrt_inner_pab)
+        area_pbc = math.sqrt(sqrt_inner_pbc)
+        area_pcd = math.sqrt(sqrt_inner_pcd)
+        area_pad = math.sqrt(sqrt_inner_pad)
+
+        tot_triangle_sum = area_pab + area_pbc + area_pcd + area_pad
+
+        if tot_triangle_sum <= rect_area:
+            return True
+        else:
+            return False
 
     def add_start_connection(self, start_connection):
         """
@@ -274,6 +335,7 @@ def main():
     Main method for the road class
     :return: Prints attribute values for the current road
     """
+
     start_coord = Coordinates(3, 1)
     end_coord = Coordinates(4, 8)
     out_lanes = 4
@@ -347,7 +409,22 @@ def main():
         print('( ' + str(point.get_x()) + ', ' + str(point.get_y()) + ' )')
 
     print(' ')
-    print(str(r.is_on_road(p_start_coord)))
+
+    r.is_on_road(p_start_coord)
+
+    s = Coordinates(1, 0)
+    e = Coordinates(4, 0)
+    i = 3
+    o = 4
+    len = 3
+    a = 0
+    test_road = Road(s, e, len, o, i, a)
+
+    should_work = Coordinates(1, 0)
+    shouldnt_work = Coordinates(7, 7)
+
+    print("should return true: " + str(test_road.is_on_road(should_work)))
+    print("should return false: " + str(test_road.is_on_road(shouldnt_work)))
 
 
 if __name__ == '__main__':

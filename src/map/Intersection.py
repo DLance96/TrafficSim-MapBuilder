@@ -151,7 +151,27 @@ def main():
     radius = 4
     i = Intersection(center, radius)
 
-    i.add_connection(25.0, 6, 3, 2)
+    i.add_connection(math.pi/2, 3, 3, 4)
+
+    road = i.get_connections()[0]
+
+    road_points = road.get_points()
+
+    should_work = Coordinates(5.0, -79.0)
+    should_work2 = Coordinates(6.5, 0)
+    shouldnt_work = Coordinates(4.5, 60)
+    shouldnt_work2 = Coordinates(4.99, 61.01)
+
+    p_1 = road_points[0]
+    p_2 = road_points[1]
+    p_3 = road_points[2]
+    p_4 = road_points[3]
+
+    print('testing isonroad (true) = ' + str(road.is_on_road(should_work)))
+    print('testing isonroad2 (true) = ' + str(road.is_on_road(should_work2)))
+    print('testing isonroad3 (false) = ' + str(road.is_on_road(shouldnt_work)))
+    print('testing isonroad4 (false) = ' + str(road.is_on_road(shouldnt_work2)))
+
     print('main method goes here')
 
 
