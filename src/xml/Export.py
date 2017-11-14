@@ -63,9 +63,6 @@ def make_xml(roads, intersections, save_location):
         ET.SubElement(temp_intersection, "center_point").text = "{} {}".format(intersection.get_center().get_x(),
                                                                                intersection.get_center().get_y())
         ET.SubElement(temp_intersection, "radius").text = str(intersection.get_radius())
-        temp_connections = ET.SubElement(temp_intersection, "connections")
-        for connected_road in intersection.get_connections():
-            ET.SubElement(temp_connections, "connection_road").text = str(roads.index(connected_road))
 
     tree = ET.ElementTree(traffic_map)
     tree.write(save_location)
