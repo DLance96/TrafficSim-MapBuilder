@@ -1,32 +1,45 @@
 import math
-from src.xml.Constants import IMPORT_ROAD_TOLERANCE
-from src.map.Constants import ROAD_OUT_ENTRANCE_PT_INDEX, ROAD_OUT_EXIT_PT_INDEX
+import sys
+import os
+import xml.etree.ElementTree as ET
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
 def import_xml(filename):
-    # TODO check if file exists
-    return
+
+    roads = []
+    intersections = []
+
+    if not os.path.isfile(filename):
+        raise FileNotFoundError()
+    traffic_map = ET.parse(filename)
+    root = traffic_map.getroot()
+    for road in root.find('roads'):
+        roads.append(parse_road(road))
+    for intersection in root.find('intersections'):
+        intersections.append(generate_intersection(intersection, roads))
+
+    validate_connected(roads, intersections)
+    validate_geometry(roads, intersections)
+
+    return roads, intersections
 
 
-def valid_roads(roads):
-    """
-    Checks that roads values are consistent
-    :param roads: list of roads to check
-    :return: boolean whether or not all the roads are consistent
-    """
-    for road in roads:
-        matching_length = math.isclose(
-            distance(road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX], road.get_points()[ROAD_OUT_EXIT_PT_INDEX]),
-            road.get_length(), abs_tol=IMPORT_ROAD_TOLERANCE
-        )
-        x_diff = road.get_points()[ROAD_OUT_EXIT_PT_INDEX].get_x() - \
-                 road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX].get_x()
-        y_diff = road.get_points()[ROAD_OUT_EXIT_PT_INDEX].get_y() - \
-                 road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX].get_y()
-        matching_angle = math.isclose(math.atan(y_diff / x_diff), road.get_angle(), abs_tol=IMPORT_ROAD_TOLERANCE)
-        if not matching_length or not matching_angle:
-            return False
-    return True
+def parse_road(road):
+    pass
+
+
+def generate_intersection(intersection):
+    pass
+
+
+def validate_connected(roads, intersections):
+    pass
+
+
+def validate_geometry(roads, intersections):
+    pass
 
 
 def distance(coord1, coord2):
@@ -40,3 +53,6 @@ def distance(coord1, coord2):
     y_diff = coord1.get_y() - coord2.get_y()
     dist = (x_diff ** 2 + y_diff ** 2) ** .5
     return dist
+
+if __name__ == '__main__':
+    import_xml('temp.xml')
