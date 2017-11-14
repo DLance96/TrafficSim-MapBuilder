@@ -239,7 +239,7 @@ class Road(object):
         :param length: length of intersection connection to be created
         :return: new Intersection map object
         """
-        corrected_angle = angle + math.pi
+        corrected_angle = self.angle + math.pi
 
         start_x = self.start_coord.x + (length * math.sin(corrected_angle))
         start_y = self.start_coord.y + (length * math.cos(corrected_angle))
@@ -399,7 +399,7 @@ def main():
     p_length = 4
     p_out_lanes = 2
     p_in_lanes = 3
-    p_angle = 90.0
+    p_angle = 90
 
     p = Road(p_start_coord, p_end_coord, p_length, p_out_lanes, p_in_lanes, p_angle)
 
@@ -409,22 +409,6 @@ def main():
         print('( ' + str(point.get_x()) + ', ' + str(point.get_y()) + ' )')
 
     print(' ')
-
-    r.is_on_road(p_start_coord)
-
-    s = Coordinates(1, 0)
-    e = Coordinates(4, 0)
-    i = 3
-    o = 4
-    len = 3
-    a = 0
-    test_road = Road(s, e, len, o, i, a)
-
-    should_work = Coordinates(1, 0)
-    shouldnt_work = Coordinates(7, 7)
-
-    print("should return true: " + str(test_road.is_on_road(should_work)))
-    print("should return false: " + str(test_road.is_on_road(shouldnt_work)))
 
 
 if __name__ == '__main__':

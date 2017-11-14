@@ -162,10 +162,10 @@ def main():
     shouldnt_work = Coordinates(4.5, 60)
     shouldnt_work2 = Coordinates(4.99, 61.01)
 
-    p_1 = road_points[0]
-    p_2 = road_points[1]
-    p_3 = road_points[2]
-    p_4 = road_points[3]
+    for point in road_points:
+        print('( ' + str(point.get_x()) + ', ' + str(point.get_y()) + ' )')
+
+    print(' ')
 
     print('testing isonroad (true) = ' + str(road.is_on_road(should_work)))
     print('testing isonroad2 (true) = ' + str(road.is_on_road(should_work2)))
