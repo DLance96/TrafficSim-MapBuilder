@@ -23,12 +23,14 @@ road = []
 intersection = []
 driver_profiles = []
 vehicle_profiles = []
+app = None
 
 class MapBuilder(QMainWindow):
     global road
     global intersection
     global driver_profiles
     global vehicle_profiles
+    global app
 
     selected_object = None
     profile_action_num = None
@@ -549,6 +551,21 @@ class AddDialog(QDialog):
                                            self.in_lanes.value(), self.out_lanes.value()))
         self.close()
 
+
+class TestClass:
+
+    def setup(self):
+        global app
+
+        app = QApplication(sys.argv)
+        mb = MapBuilder()
+        mb.first_road()
+
+    def map_builder_start(self):
+        global intersection
+
+        self.setup()
+        return intersection
 
 
 if __name__ == '__main__':
