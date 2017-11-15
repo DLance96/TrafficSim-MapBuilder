@@ -8,17 +8,23 @@ from src.map.Coordinates import Coordinates
 from src.map.Constants import LANE_WIDTH
 import math
 
-from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, QPushButton, QGridLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, \
+    QPushButton, QGridLayout, QComboBox, QDialog, QDialogButtonBox, \
+    QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, \
+    QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit, QVBoxLayout
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5 import QtGui, QtCore
 
+selected_object = None
 
 class MapBuilder(QMainWindow):
     roads = []
     intersections = []
-    selected_object = None
+    # selected_object = None
     add_to_start_action = None
     add_to_end_action = None
+    edit_action = None
+    selected_menu = None
 
     def __init__(self):
         super().__init__()
@@ -34,7 +40,7 @@ class MapBuilder(QMainWindow):
     def initUI(self):
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
-        selected_menu = menu_bar.addMenu("MapObject")
+        self.selected_menu = menu_bar.addMenu("MapObject")
 
         new_action = QAction("New", self)
         open_action = QAction("Open", self)
@@ -42,18 +48,23 @@ class MapBuilder(QMainWindow):
 
         self.add_to_start_action = QAction("Add to Start", self)
         self.add_to_end_action = QAction("Add to End", self)
-        edit_action = QAction("Edit", self)
+        self.edit_action = QAction("Edit", self)
 
         file_menu.addAction(new_action)
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
 
-        selected_menu.addAction(self.add_to_start_action)
-        selected_menu.addAction(self.add_to_end_action)
-        selected_menu.addAction(edit_action)
+        self.selected_menu.addAction(self.add_to_start_action)
+        self.selected_menu.addAction(self.add_to_end_action)
+        self.selected_menu.addAction(self.edit_action)
 
         self.add_to_end_action.triggered.connect(self.add_road_to_end_coord)
         self.add_to_start_action.triggered.connect(self.add_road_to_start_coord)
+        self.edit_action.triggered.connect(self.open_dialog)
+
+        self.add_to_start_action.setEnabled(False)
+        self.add_to_end_action.setEnabled(False)
+        self.edit_action.setEnabled(False)
 
         screen = app.primaryScreen()
         self.resize(screen.size().width(), screen.size().height())
@@ -81,6 +92,7 @@ class MapBuilder(QMainWindow):
         qp.drawEllipse(center.x - radius, center.y - radius, radius * 2, radius * 2)
 
     def paintEvent(self, e):
+        global selected_object
         qp = QtGui.QPainter()
         qp.begin(self)
         qp.setBrush(Qt.darkGray)
@@ -89,12 +101,12 @@ class MapBuilder(QMainWindow):
         qp.setBrush(Qt.darkGray)
         for obj in self.intersections:
             self.draw_intersection(obj.center, obj.radius, qp)
-        if self.selected_object is not None:
+        if selected_object is not None:
             qp.setBrush(Qt.yellow)
-            if type(self.selected_object) is Road:
-                self.draw_road(self.selected_object, qp)
-            if type(self.selected_object) is Intersection:
-                self.draw_intersection(self.selected_object.center, self.selected_object.radius, qp)
+            if type(selected_object) is Road:
+                self.draw_road(selected_object, qp)
+            if type(selected_object) is Intersection:
+                self.draw_intersection(selected_object.center, selected_object.radius, qp)
         qp.end()
 
     # change to first intersection!!!
@@ -107,36 +119,43 @@ class MapBuilder(QMainWindow):
         self.update()
 
     def mousePressEvent(self, QMouseEvent):
+        global selected_object
         print(QMouseEvent.pos())
         converted_position = Coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
         for obj in self.roads:
             if obj.is_on_road(converted_position):
-                self.selected_object = obj
+                selected_object = obj
 
         for obj in self.intersections:
             if obj.is_on_intersection(converted_position):
-                self.selected_object = obj
+                selected_object = obj
 
-        if self.selected_object is not None:
-            if type(self.selected_object) is Road:
+        if selected_object is not None:
+            self.edit_action.setEnabled(True)
+            if type(selected_object) is Road:
                 # check if start/end connection is present
-                if self.selected_object.start_connection is None:
+                if selected_object.start_connection is None:
                     self.add_to_start_action.setEnabled(True)
                 else:
                     self.add_to_start_action.setEnabled(False)
 
-                if self.selected_object.end_connection is None:
+                if selected_object.end_connection is None:
                     self.add_to_end_action.setEnabled(True)
                 else:
                     self.add_to_end_action.setEnabled(False)
             else:
                 self.add_to_start_action.setEnabled(True)
                 self.add_to_end_action.setEnabled(True)
+        else:
+            self.add_to_start_action.setEnabled(False)
+            self.add_to_end_action.setEnabled(False)
+            self.edit_action.setEnabled(False)
 
         self.update()
 
     def add_road_to_end_coord(self):
-        prev_road = self.selected_object
+        global selected_object
+        prev_road = selected_object
         if prev_road is None:
             return
 
@@ -164,7 +183,8 @@ class MapBuilder(QMainWindow):
         self.update()
 
     def add_road_to_start_coord(self):
-        prev_road = self.selected_object
+        global selected_object
+        prev_road = selected_object
         if prev_road is None:
             return
 
@@ -190,6 +210,68 @@ class MapBuilder(QMainWindow):
             self.intersections.append(new_intersection)
 
         self.update()
+
+    def open_dialog(self):
+        dialog = Dialog()
+        dialog.exec_()
+        dialog.show()
+
+
+class Dialog(QDialog):
+    radius = None
+    in_lanes = None
+    out_lanes = None
+
+    def __init__(self):
+        super(Dialog, self).__init__()
+        self.createFormGroupBox()
+
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(self.formGroupBox)
+        mainLayout.addWidget(buttonBox)
+        self.setLayout(mainLayout)
+
+        self.setWindowTitle("Edit")
+
+    def createFormGroupBox(self):
+        global selected_object
+        layout = QFormLayout()
+
+        if type(selected_object) is Intersection:
+            self.formGroupBox = QGroupBox("Intersection")
+            self.radius = QSpinBox(self)
+            self.radius.setMinimum(1)
+            self.radius.setMaximum(100)
+            self.radius.setValue(selected_object.radius)
+            layout.addRow(QLabel("Radius:"), self.radius)
+        else:
+            self.formGroupBox = QGroupBox("Road")
+            self.in_lanes = QSpinBox(self)
+            self.in_lanes.setMinimum(0)
+            self.in_lanes.setMaximum(10)
+            self.in_lanes.setValue(selected_object.in_lanes)
+            self.out_lanes = QSpinBox(self)
+            self.out_lanes.setMinimum(0)
+            self.out_lanes.setMaximum(10)
+            self.out_lanes.setValue(selected_object.out_lanes)
+            layout.addRow(QLabel("In Lanes:"), self.in_lanes)
+            layout.addRow(QLabel("Out Lanes:"), self.out_lanes)
+
+        self.formGroupBox.setLayout(layout)
+
+    def accept(self):
+        global selected_object
+        if type(selected_object) is Intersection:
+            selected_object.radius = self.radius.value()
+        else:
+            selected_object.in_lanes = self.in_lanes.value()
+            selected_object.out_lanes = self.out_lanes.value()
+        self.close()
+
 
 
 if __name__ == '__main__':
