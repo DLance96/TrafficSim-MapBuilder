@@ -25,6 +25,8 @@ driver_profiles = []
 vehicle_profiles = []
 app = None
 
+testing = False
+
 class MapBuilder(QMainWindow):
     global road
     global intersection
@@ -436,6 +438,8 @@ class EditDialog(QDialog):
 
     def createFormGroupBox(self):
         global selected_object
+        global testing
+
         layout = QFormLayout()
 
         if type(selected_object) is Intersection:
@@ -444,6 +448,8 @@ class EditDialog(QDialog):
             self.radius.setMinimum(1)
             self.radius.setMaximum(100)
             self.radius.setValue(selected_object.radius)
+            if testing:
+                self.radius.setValue(90)
             layout.addRow(QLabel("Radius:"), self.radius)
         else:
             self.formGroupBox = QGroupBox("Road")
@@ -455,6 +461,9 @@ class EditDialog(QDialog):
             self.out_lanes.setMinimum(0)
             self.out_lanes.setMaximum(10)
             self.out_lanes.setValue(selected_object.out_lanes)
+            if testing:
+                self.in_lanes.setValue(3)
+                self.out_lanes.setValue(2)
             layout.addRow(QLabel("In Lanes:"), self.in_lanes)
             layout.addRow(QLabel("Out Lanes:"), self.out_lanes)
 
@@ -522,9 +531,9 @@ class AddDialog(QDialog):
             self.angle.setValue(0)
             layout.addRow(QLabel("Angle:"), self.angle)
             self.radius = QSpinBox(self)
-            self.radius.setMinimum(1)
-            self.radius.setMaximum(100)
-            self.radius.setValue(40)
+            self.radius.setMinimum(10)
+            self.radius.setMaximum(400)
+            self.radius.setValue(100)
             layout.addRow(QLabel("Length:"), self.radius)
             self.in_lanes = QSpinBox(self)
             self.in_lanes.setMinimum(0)
@@ -549,6 +558,7 @@ class AddDialog(QDialog):
         else:
             road.append(selected_object.add_connection(self.angle.value() * math.pi / 180, self.radius.value(),
                                            self.in_lanes.value(), self.out_lanes.value()))
+
         self.close()
 
 
@@ -565,7 +575,60 @@ class TestClass:
         global intersection
 
         self.setup()
+
         return intersection
+
+    def add_dialog_road(self):
+        global selected_object
+        global road
+        global intersection
+
+        selected_object = intersection[0]
+
+        dialog = AddDialog()
+        dialog.accept()
+
+        return road
+
+    def edit_dialog_road(self):
+        global selected_object
+        global road
+        global testing
+
+        testing = True
+
+        selected_object = road[0]
+
+        dialog = EditDialog()
+        dialog.accept()
+
+        return selected_object
+
+    def add_dialog_intersection(self):
+        global selected_object
+        global road
+        global intersection
+
+        selected_object = road[0]
+
+        dialog = AddDialog()
+        dialog.accept()
+
+        return intersection
+
+    def edit_dialog_intersection(self):
+        global selected_object
+        global road
+        global testing
+
+        testing = True
+
+        selected_object = intersection[0]
+
+        dialog = EditDialog()
+        dialog.accept()
+
+        return selected_object
 
 
 if __name__ == '__main__':
