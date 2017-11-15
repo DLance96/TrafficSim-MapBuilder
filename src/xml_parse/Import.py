@@ -162,4 +162,9 @@ def in_intersection(intersection, point):
 
 
 if __name__ == '__main__':
+    chord_center = get_chord_center(0, 10, Coordinates(0, -5))
+    x = chord_center.get_x()
+    y = chord_center.get_y()
+    checkx = math.isclose(x, 0, rel_tol=.00001)
+    checky = -.1 < y < .1
     import_xml('temp.xml')
