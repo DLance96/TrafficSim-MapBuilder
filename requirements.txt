@@ -1,5 +1,6 @@
+coverage==4.4.2
 py==1.4.34
 PyQt5==5.9
 pytest==3.2.2
-sip==4.19.3
 pytest-cov==2.5.1
+sip==4.19.3
