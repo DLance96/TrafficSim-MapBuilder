@@ -269,6 +269,7 @@ class ProfileDialog(QDialog):
             self.formGroupBox = QGroupBox("Attribute Input - Please fill in appropriate values below")
 
             self.driver_name = QLineEdit(self)
+            self.driver_name.insert('testDriverName')
 
             self.over_braking_factor = QSpinBox(self)
             self.over_braking_factor.setMinimum(1)
@@ -276,7 +277,7 @@ class ProfileDialog(QDialog):
 
 
             self.following_time = QSpinBox(self)
-            self.following_time.setMinimum(1)
+            self.following_time.setMinimum(2)
             self.following_time.setMaximum(25)
 
             self.d_max_accel = QSpinBox(self)
@@ -284,7 +285,7 @@ class ProfileDialog(QDialog):
             self.d_max_accel.setMaximum(14)
 
             self.d_min_accel = QSpinBox(self)
-            self.d_min_accel.setMinimum(1)
+            self.d_min_accel.setMinimum(0)
             self.d_min_accel.setMaximum(4)
 
             self.d_max_speed = QSpinBox(self)
@@ -292,7 +293,7 @@ class ProfileDialog(QDialog):
             self.d_max_speed.setMaximum(200)
 
             self.d_accel_time = QSpinBox(self)
-            self.d_accel_time.setMinimum(1)
+            self.d_accel_time.setMinimum(3)
             self.d_accel_time.setMaximum(30)
 
             self.update_time_ms = QSpinBox(self)
@@ -312,6 +313,7 @@ class ProfileDialog(QDialog):
             self.formGroupBox = QGroupBox("Attribute Input - Please fill in appropriate values below")
 
             self.vehicle_name = QLineEdit(self)
+            self.vehicle_name.insert('testVehicleName')
 
             self.width = QSpinBox(self)
             self.width.setMinimum(5)
@@ -401,10 +403,10 @@ class ProfileDialog(QDialog):
             if self.vehicle_name.text() != '':
                 vehicle_profiles.append(vehicle)
 
-        print('num driver profiles = ' + str(len(driver_profiles)))
+        # print('num driver profiles = ' + str(len(driver_profiles)))
 
         # print('driver profile name = ' + driver_profiles[0].get_driver_profile_name())
-        print('num vehicle profiles = ' + str(len(vehicle_profiles)))
+        # print('num vehicle profiles = ' + str(len(vehicle_profiles)))
 
         self.close()
 
@@ -566,6 +568,44 @@ class TestClass:
 
         self.setup()
         return intersection
+
+
+    def get_empty_driver_profile_list(self):
+        global driver_profiles
+
+        return driver_profiles
+
+
+    def get_empty_vehicle_profile_list(self):
+        global vehicle_profiles
+
+        return vehicle_profiles
+
+
+    def populate_driver_profile_list(self):
+        global profile_action_type
+        global driver_profiles
+
+        profile_action_type = 0
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return driver_profiles
+
+
+    def populate_vehicle_profile_list(self):
+        global profile_action_type
+        global vehicle_profiles
+
+        profile_action_type = 1
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return vehicle_profiles
 
 
 if __name__ == '__main__':
