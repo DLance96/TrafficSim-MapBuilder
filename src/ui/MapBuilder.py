@@ -20,7 +20,9 @@ selected_object = None
 class MapBuilder(QMainWindow):
     roads = []
     intersections = []
-    # selected_object = None
+    driver_profiles = []
+    vehicle_profiles = []
+    selected_object = None
     add_to_start_action = None
     add_to_end_action = None
     edit_action = None
@@ -36,15 +38,27 @@ class MapBuilder(QMainWindow):
         self.initUI()
         self.roads = []
         self.intersections = []
+        self.driver_profiles = []
+        self.vehicle_profiles = []
 
     def initUI(self):
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
         self.selected_menu = menu_bar.addMenu("MapObject")
+        profile_menu = menu_bar.addMenu("Profile")
 
         new_action = QAction("New", self)
         open_action = QAction("Open", self)
         save_action = QAction("Save", self)
+        add_driver_action = QAction("Add Driver Profile", self)
+        delete_driver_action = QAction("Delete Driver Profile", self)
+        add_vehicle_action = QAction("Add Vehicle Profile", self)
+        delete_vehicle_action = QAction("Delete Vehicle Profile", self)
+
+        profile_menu.addAction(add_driver_action)
+        profile_menu.addAction(add_vehicle_action)
+        profile_menu.addAction(delete_driver_action)
+        profile_menu.addAction(delete_vehicle_action)
 
         self.add_to_start_action = QAction("Add to Start", self)
         self.add_to_end_action = QAction("Add to End", self)

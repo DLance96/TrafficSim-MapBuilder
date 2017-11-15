@@ -213,6 +213,85 @@ def get_angle(start_coords, end_coords, length, out_ln, in_ln, angle):
     return road.get_angle()
 
 
+def generate_start_connection(road, radius):
+    """
+    Generates an intersection at the start of a road
+    :param road: Road that the intersection will be added to
+    :param radius: Radius of the intersection
+    :return: A road with an updated start connection
+    """
+    road.generate_start_connection(radius)
+
+
+def generate_end_connection(road, radius):
+    """
+    Generates an intersection at the end of a road
+    :param road: Road that the intersection will be connected to
+    :param radius: Radius of the intersection
+    :return: A road with an updated end connection
+    """
+    road.generate_end_connection(radius)
+
+
+def test_generate_start_connection():
+    """
+    Tests the generate_start_connection function of Road
+    :return: Tests pass if start connection is generated properly. Fail if otherwise.
+    """
+
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 1
+    in_ln = 1
+    angle = math.pi / 2
+
+    road = Road(start, end, length, out_ln, in_ln, angle)
+
+    assert (road.get_start_connection() is None)
+    assert (road.get_end_connection() is None)
+
+    generate_start_connection(road, 10)
+
+    assert (road.get_start_connection() is not None)
+    assert (road.get_end_connection() is None)
+
+    i = road.get_start_connection()
+
+    assert i.get_radius() == 10
+    assert i.get_center().get_x() == 80
+    assert i.get_center().get_y() == 70
+
+
+def test_generate_end_connection():
+    """
+    Tests the generate_end_connection function of Road
+    :return: Tests pass if end connection is generated properly. Fail if otherwise.
+    """
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 1
+    in_ln = 1
+    angle = math.pi / 2
+
+    road = Road(start, end, length, out_ln, in_ln, angle)
+
+    assert (road.get_start_connection() is None)
+    assert (road.get_end_connection() is None)
+
+    generate_end_connection(road, 15)
+
+    assert (road.get_start_connection() is None)
+    assert (road.get_end_connection() is not None)
+
+    i = road.get_end_connection()
+
+    assert i.get_radius() == 15
+    assert i.get_center().get_x() == 85
+    assert i.get_center().get_y() == 70
+
+
 def test_get_points():
     """
     Tests the get_points function
@@ -229,40 +308,22 @@ def test_get_points():
 
     road_points = road.get_points()
 
-    start_x = start.get_x()
-    start_y = start.get_y()
-    end_x = end.get_x()
-    end_y = end.get_y()
+    left_start = Coordinates(90, 50)
+    right_start = Coordinates(90, 90)
+    left_end = Coordinates(70, 50)
+    right_end = Coordinates(70, 90)
 
-    left = in_ln * LANE_WIDTH
-    right = out_ln * LANE_WIDTH
+    assert road_points[0].get_x() == right_start.get_x()
+    assert road_points[0].get_y() == right_start.get_y()
 
-    right_angle = angle + (math.pi / 2.0)
-    left_angle = angle - (math.pi / 2.0)
+    assert road_points[1].get_x() == left_start.get_x()
+    assert road_points[1].get_y() == left_start.get_y()
 
-    x_left_of_start = start_x + (left * math.sin(left_angle))
-    y_left_of_start = start_y + (left * math.cos(left_angle))
+    assert road_points[2].get_x() == left_end.get_x()
+    assert road_points[2].get_y() == left_end.get_y()
 
-    x_right_of_start = start_x + (right * math.sin(right_angle))
-    y_right_of_start = start_y + (right * math.cos(right_angle))
-
-    x_left_of_end = end_x + (left * math.sin(left_angle))
-    y_left_of_end = end_y + (left * math.cos(left_angle))
-
-    x_right_of_end = end_x + (right * math.sin(right_angle))
-    y_right_of_end = end_y + (right * math.cos(right_angle))
-
-    assert road_points[0].get_x() == x_left_of_start
-    assert road_points[0].get_y() == y_left_of_start
-
-    assert road_points[1].get_x() == x_right_of_start
-    assert road_points[1].get_y() == y_right_of_start
-
-    assert road_points[2].get_x() == x_right_of_end
-    assert road_points[2].get_y() == y_right_of_end
-
-    assert road_points[3].get_x() == x_left_of_end
-    assert road_points[3].get_y() == y_left_of_end
+    assert road_points[3].get_x() == right_end.get_x()
+    assert road_points[3].get_y() == right_end.get_y()
 
 
 def test_is_on_road():
@@ -270,20 +331,28 @@ def test_is_on_road():
     Tests the is_on_road function
     :return: Asserts true if test cases pass, false if otherwise
     """
-    start = Coordinates(1, 5)
-    end = Coordinates(1, 10)
-    len = 10
-    out_ln = 3
-    in_ln = 2
-    angle = math.pi/2
 
-    road = Road(start, end, len, out_ln, in_ln, angle)
+    center = Coordinates(1, 1)
+    radius = 4
+    i = Intersection(center, radius)
 
-    out_of_bounds = Coordinates(14, 25)
+    i.add_connection(math.pi/2, 3, 3, 4)
 
-    assert not is_on_road(road, out_of_bounds)
+    road = i.get_connections()[0]
 
-    # more testing will need to be conducted after is_on_road is fully implemented.
+    on_border = Coordinates(5.0, -79.0)
+    on_border2 = Coordinates(5, 50)
+    outside_border = Coordinates(4.99, 61.01)
+    inside_border = Coordinates(7.9, 60.9)
+    within_road = Coordinates(6.5, 0)
+    outside_road = Coordinates(4.5, 60)
+
+    assert road.is_on_road(on_border)
+    assert road.is_on_road(within_road)
+    assert road.is_on_road(inside_border)
+    assert road.is_on_road(on_border2)
+    assert not road.is_on_road(outside_border)
+    assert not road.is_on_road(outside_road)
 
 
 def test_add_start_connection():
