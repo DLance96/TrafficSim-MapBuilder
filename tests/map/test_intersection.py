@@ -143,9 +143,16 @@ def test_add_connection():
     in_ln3 = 5
     out_ln3 = 8
 
+    len4 = 20
+    in_ln4 = 25
+    out_ln4 = 27
+    ang4 = 3 * math.pi / 2
+
     add_connection(i, ang1, len1, in_ln1, out_ln1)
 
     assert i.get_connections()
+
+    assert len(i.get_connections()) == 1
 
     assert i.get_connections()[0].get_length() == 20
     assert i.get_connections()[0].get_angle() == ang1
@@ -153,20 +160,60 @@ def test_add_connection():
     assert i.get_connections()[0].get_out_lanes() == out_ln1
     assert i.get_connections()[0].get_angle() == math.pi
 
+    add_connection(i, ang4, len4, in_ln4, out_ln4)
+
+    assert i.get_connections()[0].get_length() == 20
+    assert i.get_connections()[0].get_angle() == ang1
+    assert i.get_connections()[0].get_in_lanes() == in_ln1
+    assert i.get_connections()[0].get_out_lanes() == out_ln1
+    assert i.get_connections()[0].get_angle() == math.pi
+    assert i.get_connections()[1].get_length() == len4
+    assert i.get_connections()[1].get_angle() == ang4
+    assert i.get_connections()[1].get_in_lanes() == in_ln4
+    assert i.get_connections()[1].get_out_lanes() == out_ln4
+
     add_incoming_connection(i, separate_road)
 
-    add_connection(i, ang3, len3, in_ln3, out_ln3)
+    assert len(i.get_connections()) == 3
 
     assert i.get_connections()[0].get_length() == len1
     assert i.get_connections()[0].get_angle() == ang1
     assert i.get_connections()[0].get_in_lanes() == in_ln1
     assert i.get_connections()[0].get_out_lanes() == out_ln1
 
-    assert i.get_connections()[2].get_length() == len3
-    assert i.get_connections()[2].get_angle() == ang3
-    assert i.get_connections()[2].get_in_lanes() == in_ln3
-    assert i.get_connections()[2].get_out_lanes() == out_ln3
+    assert i.get_connections()[1].get_length() == len4
+    assert i.get_connections()[1].get_angle() == ang4
+    assert i.get_connections()[1].get_in_lanes() == in_ln4
+    assert i.get_connections()[1].get_out_lanes() == out_ln4
 
+    assert i.get_connections()[2].get_length() == len2
+    assert i.get_connections()[2].get_angle() == ang2
+    assert i.get_connections()[2].get_in_lanes() == in_ln2
+    assert i.get_connections()[2].get_out_lanes() == out_ln2
+
+    add_connection(i, ang3, len3, in_ln3, out_ln3)
+
+    assert len(i.get_connections()) == 4
+
+    assert i.get_connections()[0].get_length() == len1
+    assert i.get_connections()[0].get_angle() == ang1
+    assert i.get_connections()[0].get_in_lanes() == in_ln1
+    assert i.get_connections()[0].get_out_lanes() == out_ln1
+
+    assert i.get_connections()[1].get_length() == len4
+    assert i.get_connections()[1].get_angle() == ang4
+    assert i.get_connections()[1].get_in_lanes() == in_ln4
+    assert i.get_connections()[1].get_out_lanes() == out_ln4
+
+    assert i.get_connections()[2].get_length() == len2
+    assert i.get_connections()[2].get_angle() == ang2
+    assert i.get_connections()[2].get_in_lanes() == in_ln2
+    assert i.get_connections()[2].get_out_lanes() == out_ln2
+
+    assert i.get_connections()[3].get_length() == len3
+    assert i.get_connections()[3].get_angle() == ang3
+    assert i.get_connections()[3].get_in_lanes() == in_ln3
+    assert i.get_connections()[3].get_out_lanes() == out_ln3
 
 
 def test_add_incoming_connection():
@@ -197,8 +244,16 @@ def test_add_incoming_connection():
     out_ln2 = 1
     ang2 = math.pi/4
 
+    start3 = Coordinates(7, 8)
+    end3 = Coordinates(10, 12)
+    len3 = 20
+    in_ln3 = 25
+    out_ln3 = 27
+    ang3 = 3 * math.pi / 2
+
     r1 = Road(start1, end1, len1, out_ln1, in_ln1, ang1)
     r2 = Road(start2, end2, len2, out_ln2, in_ln2, ang2)
+    r3 = Road(start3, end3, len3, out_ln3, in_ln3, ang3)
 
     add_incoming_connection(i, r1)
 
@@ -211,19 +266,54 @@ def test_add_incoming_connection():
     assert non_empty[0].get_in_lanes() == in_ln1
     assert non_empty[0].get_out_lanes() == out_ln1
 
-    i.add_connection(math.pi, 20, 21, 22)
+    add_incoming_connection(i, r3)
 
-    add_incoming_connection(i, r2)
+    assert len(i.get_connections()) == 2
+
+    assert non_empty[0].get_length() == 10
+    assert non_empty[0].get_angle() == ang1
+    assert non_empty[0].get_in_lanes() == in_ln1
+    assert non_empty[0].get_out_lanes() == out_ln1
+    assert non_empty[1].get_length() == len3
+    assert non_empty[1].get_angle() == ang3
+    assert non_empty[1].get_in_lanes() == in_ln3
+    assert non_empty[1].get_out_lanes() == out_ln3
+
+    add_connection(i, math.pi, 20, 21, 22)
 
     assert len(i.get_connections()) == 3
     assert non_empty[0].get_length() == 10
     assert non_empty[0].get_angle() == ang1
     assert non_empty[0].get_in_lanes() == in_ln1
     assert non_empty[0].get_out_lanes() == out_ln1
-    assert non_empty[2].get_length() == 15
-    assert non_empty[2].get_angle() == ang2
-    assert non_empty[2].get_in_lanes() == in_ln2
-    assert non_empty[2].get_out_lanes() == out_ln2
+    assert non_empty[1].get_length() == len3
+    assert non_empty[1].get_angle() == ang3
+    assert non_empty[1].get_in_lanes() == in_ln3
+    assert non_empty[1].get_out_lanes() == out_ln3
+    assert non_empty[2].get_length() == 20
+    assert non_empty[2].get_angle() == math.pi
+    assert non_empty[2].get_in_lanes() == 21
+    assert non_empty[2].get_out_lanes() == 22
+
+    add_incoming_connection(i, r2)
+
+    assert len(i.get_connections()) == 4
+    assert non_empty[0].get_length() == 10
+    assert non_empty[0].get_angle() == ang1
+    assert non_empty[0].get_in_lanes() == in_ln1
+    assert non_empty[0].get_out_lanes() == out_ln1
+    assert non_empty[1].get_length() == len3
+    assert non_empty[1].get_angle() == ang3
+    assert non_empty[1].get_in_lanes() == in_ln3
+    assert non_empty[1].get_out_lanes() == out_ln3
+    assert non_empty[2].get_length() == 20
+    assert non_empty[2].get_angle() == math.pi
+    assert non_empty[2].get_in_lanes() == 21
+    assert non_empty[2].get_out_lanes() == 22
+    assert non_empty[3].get_length() == 15
+    assert non_empty[3].get_angle() == ang2
+    assert non_empty[3].get_in_lanes() == in_ln2
+    assert non_empty[3].get_out_lanes() == out_ln2
 
 
 def test_get_connections():
@@ -238,6 +328,15 @@ def test_get_connections():
     in_ln = 3
     out_ln = 2
 
+    start1 = Coordinates(7, 8)
+    end1 = Coordinates(10, 12)
+    len1 = 20
+    in_ln1 = 25
+    out_ln1 = 27
+    ang1 = 3 * math.pi / 2
+
+    incoming = Road(start1, end1, len1, out_ln1, in_ln1, ang1)
+
     i1 = Intersection(center, radius)
 
     empty_connections = get_connections(i1)
@@ -245,7 +344,7 @@ def test_get_connections():
     assert not empty_connections
 
     i2 = Intersection(center, radius)
-    i2.add_connection(angle, len, in_ln, out_ln)
+    add_connection(i2, angle, len, in_ln, out_ln)
 
     non_empty_connections = get_connections(i2)
 
@@ -254,6 +353,33 @@ def test_get_connections():
     assert non_empty_connections[0].get_angle() == angle
     assert non_empty_connections[0].get_in_lanes() == in_ln
     assert non_empty_connections[0].get_out_lanes() == out_ln
+
+    add_incoming_connection(i2, incoming)
+
+    assert non_empty_connections[0].get_length() == 10
+    assert non_empty_connections[0].get_angle() == angle
+    assert non_empty_connections[0].get_in_lanes() == in_ln
+    assert non_empty_connections[0].get_out_lanes() == out_ln
+    assert non_empty_connections[1].get_length() == len1
+    assert non_empty_connections[1].get_angle() == ang1
+    assert non_empty_connections[1].get_in_lanes() == in_ln1
+    assert non_empty_connections[1].get_out_lanes() == out_ln1
+
+    add_connection(i2, math.pi, 15, 1, 4)
+
+    assert non_empty_connections
+    assert non_empty_connections[0].get_length() == 10
+    assert non_empty_connections[0].get_angle() == angle
+    assert non_empty_connections[0].get_in_lanes() == in_ln
+    assert non_empty_connections[0].get_out_lanes() == out_ln
+    assert non_empty_connections[1].get_length() == len1
+    assert non_empty_connections[1].get_angle() == ang1
+    assert non_empty_connections[1].get_in_lanes() == in_ln1
+    assert non_empty_connections[1].get_out_lanes() == out_ln1
+    assert non_empty_connections[2].get_length() == 15
+    assert non_empty_connections[2].get_angle() == math.pi
+    assert non_empty_connections[2].get_in_lanes() == 1
+    assert non_empty_connections[2].get_out_lanes() == 4
 
 
 def test_get_radius():
