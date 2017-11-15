@@ -6,11 +6,12 @@ class DriverProfile:
     Essentially, it represents the characteristics of the driver behind the wheel.
     """
 
-    def __init__(self, over_braking_factor, following_time, max_accel, min_accel, max_speed, accel_time, update_time_ms):
+    def __init__(self, profile_name, over_braking_factor, following_time, max_accel, min_accel, max_speed, accel_time, update_time_ms):
 
         """
         Establishes a Driver Profile object
 
+        :param profile_name: name of the driver profile
         :param over_braking_factor: factor by which the driver will over-brake
         :param following_time: the distance that the driver is comfortable driving behind the next closest car
         :param max_accel: the max acceleration that a driver is comfortable with
@@ -19,6 +20,7 @@ class DriverProfile:
         :param accel_time: time driver wishes to take to approach desired speed
         :param update_time_ms: interval at which driver checks their surroundings
         """
+        self.driver_profile_name = profile_name
         self.over_braking_factor = over_braking_factor
         self.following_time = following_time
         self.max_accel = max_accel
@@ -26,6 +28,12 @@ class DriverProfile:
         self.max_speed = max_speed
         self.accel_time = accel_time
         self.update_time_ms = update_time_ms
+
+    def get_driver_profile_name(self):
+        """
+        :return: the driver profile name
+        """
+        return self.driver_profile_name
 
     def get_over_braking_factor(self):
         """
