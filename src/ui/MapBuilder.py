@@ -412,7 +412,7 @@ class EditDialog(QDialog):
     global intersection
     global driver_profiles
     global vehicle_profiles
-    
+
     radius = None
     in_lanes = None
     out_lanes = None
