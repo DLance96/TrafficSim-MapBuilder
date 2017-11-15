@@ -46,3 +46,17 @@ def test_generate_road():
         import_xml("{}/resources/road6.xml".format(os.path.dirname(__file__)))
     with pytest.raises(XMLFormatError):
         import_xml("{}/resources/road7.xml".format(os.path.dirname(__file__)))
+
+
+def test_generate_intersection():
+    with pytest.raises(XMLFormatError):
+        import_xml("{}/resources/intersection1.xml".format(os.path.dirname(__file__)))
+    with pytest.raises(XMLFormatError):
+        import_xml("{}/resources/intersection2.xml".format(os.path.dirname(__file__)))
+    with pytest.raises(XMLFormatError):
+        import_xml("{}/resources/intersection3.xml".format(os.path.dirname(__file__)))
+
+def test_import_xml():
+    with pytest.raises(FileNotFoundError):
+        import_xml("{}/resources/NOTAFILE.xml".format(os.path.dirname(__file__)))
+    import_xml("{}/resources/make_xml.xml".format(os.path.dirname(__file__)))

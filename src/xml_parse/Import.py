@@ -87,11 +87,11 @@ def validate_geometry(roads, intersections):
 
         if start_intersection is not None:
             if not math.isclose(distance(road.get_start_coords(), start_intersection.get_center()),
-                                start_intersection.get_radius(), IMPORT_ROAD_TOLERANCE):
+                                start_intersection.get_radius(), rel_tol=IMPORT_ROAD_TOLERANCE):
                 raise XMLFormatError('Road start point not on intersection edge')
         if end_intersection is not None:
             if not math.isclose(distance(road.get_end_coords(), end_intersection.get_center()),
-                                end_intersection.get_radius(), IMPORT_ROAD_TOLERANCE):
+                                end_intersection.get_radius(), rel_tol=IMPORT_ROAD_TOLERANCE):
                 raise XMLFormatError('Road end point not on intersection edge')
         # TODO: add overloaded intersections
     return True
