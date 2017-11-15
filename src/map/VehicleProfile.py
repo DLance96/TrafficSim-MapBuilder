@@ -116,15 +116,3 @@ class VehicleProfile:
         :return: None
         """
         self.max_speed = new_max_speed
-
-
-def main():
-    """
-    Main method for the coordinates class
-    :return: for now, prints information regarding points instantiated within the method
-    """
-    print('Hello World! Vehicle Profile')
-
-
-if __name__ == '__main__':
-    main()

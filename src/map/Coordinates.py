@@ -30,17 +30,3 @@ class Coordinates:
         :return: y value of the current coordinate point
         """
         return self.y
-
-
-def main():
-    """
-    Main method for the coordinates class
-    :return: for now, prints information regarding points instantiated within the method
-    """
-    coord = Coordinates(2.1, 3.3)
-    print('x: ' + str(coord.get_x()))
-    print('y: ' + str(coord.get_y()))
-
-
-if __name__ == '__main__':
-    main()

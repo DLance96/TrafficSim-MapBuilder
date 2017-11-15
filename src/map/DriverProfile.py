@@ -132,15 +132,3 @@ class DriverProfile:
         :return: None
         """
         self.update_time_ms = new_update_time_ms
-
-
-def main():
-    """
-    Main method for the coordinates class
-    :return: for now, prints information regarding points instantiated within the method
-    """
-    print('Hello World! Driver Profile')
-
-
-if __name__ == '__main__':
-    main()
