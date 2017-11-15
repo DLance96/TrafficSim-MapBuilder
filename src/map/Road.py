@@ -42,6 +42,11 @@ class Road(object):
         self.start_connection = None
         self.end_connection = None
 
+    @classmethod
+    def create_import_road(cls, length, out_lanes, in_lanes, angle):
+        obj = cls(Coordinates(0, 0), Coordinates(0, 0), length, out_lanes, in_lanes, angle)
+        return obj
+
     def get_start_coords(self):
         """
         :return: starting coordinates of the road

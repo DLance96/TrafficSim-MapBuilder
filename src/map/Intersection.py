@@ -75,6 +75,16 @@ class Intersection(object):
 
         return road
 
+    def add_outgoing_connection(self, road):
+        """
+        Adds an outgoing road
+        :param road: road that is outgoing
+        :return: the road that was input
+        """
+        self.connections.append(road)
+
+        return road
+
     def get_center(self):
         """
         :return: center point of the intersection circle
