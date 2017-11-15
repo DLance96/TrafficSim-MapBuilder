@@ -9,7 +9,7 @@ from src.xml_parse.Utils import is_connected_traffic_map
 from src.map.Coordinates import Coordinates
 from src.map.Road import Road
 from src.map.Intersection import Intersection
-from src.map.Constants import ROAD_IN_ENTRANCE_PT_INDEX, ROAD_OUT_ENTRANCE_PT_INDEX, LANE_WIDTH
+from src.map.Constants import LANE_WIDTH
 
 
 def export_xml(roads, intersections, save_location):
@@ -81,17 +81,20 @@ def convert_road_to_simulation_size(road):
     road_width = (road.get_in_lanes() + road.get_out_lanes()) * LANE_WIDTH
 
     if road.get_start_connection() is not None:
+        intersection = road.get_start_connection()
         intersection_radius = road.get_start_connection().get_radius()
         # gets angle that the anchor point is from the midpoint
         angle_to_anchor = math.asin((road_width/2)/intersection_radius)
         # rotates to where the road is on the intersection
-        angle_to_anchor = angle_to_anchor + road.get_angle()
+        angle_to_anchor = road.get_angle() - angle_to_anchor
         # adds length between chord and original center point
         length += road.get_start_connection().get_radius() - \
                   math.cos(angle_to_anchor) * intersection_radius
         # gets new anchor point with polar coordinates
-        anchor_coordinate = Coordinates(intersection_radius * math.cos(angle_to_anchor),
-                                                                       intersection_radius * math.sin(angle_to_anchor))
+        anchor_coordinate = Coordinates(intersection.get_center().get_x() + intersection_radius *
+                                        math.cos(angle_to_anchor),
+                                        intersection.get_center().get_y() + intersection_radius *
+                                        math.sin(angle_to_anchor))
     else:
         anchor_coordinate = Coordinates(road.get_start_coords().get_x() +
                                         math.cos(road.get_angle() - math.pi / 2) * (road_width / 2),
@@ -120,13 +123,14 @@ def valid_intersections(intersections):
 
 
 if __name__ == '__main__':
-    roads = []
-    intersections = []
-    intersection = Intersection(Coordinates(50, 70), 20)
-    road = Road(Coordinates(90, 70), Coordinates(70, 70), 20, 1, 1, math.pi)
-    intersection.add_incoming_connection(road)
-    road.add_end_connection(intersection)
-    roads.append(road)
-    intersections.append(intersection)
-    export_xml(roads, intersections, "temp.xml")
+    # roads = []
+    # intersections = []
+    # intersection = Intersection(Coordinates(50, 70), 20)
+    # road = Road(Coordinates(90, 70), Coordinates(70, 70), 20, 1, 1, math.pi)
+    # intersection.add_incoming_connection(road)
+    # road.add_end_connection(intersection)
+    # roads.append(road)
+    # intersections.append(intersection)
+    # export_xml(roads, intersections, "temp.xml")
+    pass
 
