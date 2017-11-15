@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
+from src.xml.Utils import is_connected_traffic_map
 from src.map.Coordinates import Coordinates
 from src.map.Road import Road
 from src.map.Intersection import Intersection
@@ -19,7 +20,7 @@ def export_xml(roads, intersections, save_location):
     :param save_location: where to save the xml file
     :return:
     """
-    if is_connected(roads, intersections) and valid_intersections(intersections):
+    if is_connected_traffic_map(roads, intersections) and valid_intersections(intersections):
         make_xml(roads, intersections, save_location)
     else:
         return  # TODO decide what to do with incomplete map
@@ -52,10 +53,10 @@ def make_xml(roads, intersections, save_location):
         ET.SubElement(temp_road, "speed_limit").text = "200"  # TODO change when speed limit is added
 
         if road.get_start_connection() is not None:
-            ET.SubElement(temp_road, "outgoing_intersection").text = \
+            ET.SubElement(temp_road, "start_intersection").text = \
                 str(intersections.index(road.get_start_connection()))
         if road.get_end_connection() is not None:
-            ET.SubElement(temp_road, "incoming_intersection").text = \
+            ET.SubElement(temp_road, "end_intersection").text = \
                 str(intersections.index(road.get_end_connection()))
 
     for index, intersection in enumerate(intersections):
@@ -108,55 +109,6 @@ def convert_road_to_simulation_size(road):
             math.cos(angle_to_anchor) * intersection_radius
 
     return length, anchor_coordinate
-
-
-def is_connected(roads, intersections):
-    """
-    Verifies that a collection of intersections and roads is fully connected
-    :param roads: list of roads in the map
-    :param intersections: list of intersections in the map
-    :return: boolean on whether the map is fully connected
-    """
-    to_visit_roads = []
-    visited_roads = []
-    visited_intersections = []
-
-    if len(roads) == 0:
-        if len(intersections) == 0 or len(intersections) == 1:
-            return True
-        else:
-            return False
-
-    to_visit_roads.append(roads[0])
-
-    while len(to_visit_roads) > 0:
-        road = to_visit_roads.pop()
-        new_roads = []
-        if road.get_start_connection() is not None and road.get_start_connection() not in visited_intersections:
-            new_roads.extend(road.get_start_connection().get_connections())
-            visited_intersections.append(road.get_start_connection())
-        if road.get_end_connection() is not None and road.get_end_connection() not in visited_intersections:
-            new_roads.extend(road.get_end_connection().get_connections())
-            visited_intersections.append(road.get_end_connection())
-        remove_visited_roads(new_roads, visited_roads)
-        visited_roads.append(road)
-
-    if len(roads) == len(visited_roads) and len(intersections) == len(visited_intersections):
-        return True
-    else:
-        return False
-
-
-def remove_visited_roads(roads, visited_roads):
-    """
-    Removes all the previous visted roads from the new roads list
-    :param roads: list of new roads to be filtered
-    :param visited_roads: list of roads that have already been visited
-    :return: removes duplicates between visted roads and roads
-    """
-    for road in roads:
-        if road in visited_roads:
-            roads.remove(road)
 
 
 def valid_intersections(intersections):
