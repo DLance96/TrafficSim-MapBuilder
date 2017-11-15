@@ -1,4 +1,4 @@
-def XMLFormatError(Exeception):
+class XMLFormatError(Exception):
     """
     Import Exception for issues with XML formatting
     :param Exeception:
@@ -6,3 +6,6 @@ def XMLFormatError(Exeception):
     """
     def __init__(self, msg):
         self.msg = msg
+
+    def __str__(self):
+        return self.msg

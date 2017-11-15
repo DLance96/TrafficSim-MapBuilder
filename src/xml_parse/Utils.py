@@ -1,4 +1,5 @@
 import math
+from src.xml_parse.Constants import SIG_FIGS
 
 
 def is_connected_traffic_map(roads, intersections):
@@ -69,4 +70,4 @@ def distance(coord1, coord2):
     x_diff = coord1.get_x() - coord2.get_x()
     y_diff = coord1.get_y() - coord2.get_y()
     dist = (x_diff ** 2 + y_diff ** 2) ** .5
-    return dist
+    return round(dist, SIG_FIGS)

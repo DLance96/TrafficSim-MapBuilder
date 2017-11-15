@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from src.xml.Utils import is_connected_traffic_map
+from src.xml_parse.Utils import is_connected_traffic_map
 from src.map.Coordinates import Coordinates
 from src.map.Road import Road
 from src.map.Intersection import Intersection
@@ -78,7 +78,6 @@ def convert_road_to_simulation_size(road):
     :return: tuple of length and anchor_coordinate to be added the the xml file
     """
     length = road.get_length()
-    anchor_coordinate = road.get_points()[ROAD_OUT_ENTRANCE_PT_INDEX]
     road_width = (road.get_in_lanes() + road.get_out_lanes()) * LANE_WIDTH
 
     if road.get_start_connection() is not None:
@@ -87,23 +86,22 @@ def convert_road_to_simulation_size(road):
         angle_to_anchor = math.asin((road_width/2)/intersection_radius)
         # rotates to where the road is on the intersection
         angle_to_anchor = angle_to_anchor + road.get_angle()
-        # removes over rotation
-        while angle_to_anchor > 2 * math.pi:
-            angle_to_anchor -= 2 * math.pi
         # adds length between chord and original center point
         length += road.get_start_connection().get_radius() - \
                   math.cos(angle_to_anchor) * intersection_radius
         # gets new anchor point with polar coordinates
         anchor_coordinate = Coordinates(intersection_radius * math.cos(angle_to_anchor),
                                                                        intersection_radius * math.sin(angle_to_anchor))
+    else:
+        anchor_coordinate = Coordinates(road.get_start_coords().get_x() +
+                                        math.cos(road.get_angle() - math.pi / 2) * (road_width / 2),
+                                        road.get_start_coords().get_y() +
+                                        math.sin(road.get_angle() - math.pi / 2) * (road_width / 2))
     if road.get_end_connection() is not None:
         intersection_radius = road.get_end_connection().get_radius()
         angle_to_anchor = math.asin((road_width / 2) / intersection_radius)
-        # rotates to where the road is on the intersection (adds pi to get opposite angle because it is end connection)
-        angle_to_anchor = angle_to_anchor + road.get_angle() + math.pi
-        # removes over rotation
-        while angle_to_anchor > 2 * math.pi:
-            angle_to_anchor -= 2 * math.pi
+        # rotates to where the road is
+        angle_to_anchor = road.get_angle() + math.pi - angle_to_anchor
         # adds length between chord and original center point
         length += road.get_end_connection().get_radius() - \
             math.cos(angle_to_anchor) * intersection_radius
@@ -125,7 +123,7 @@ if __name__ == '__main__':
     roads = []
     intersections = []
     intersection = Intersection(Coordinates(50, 70), 20)
-    road = Road(Coordinates(90, 70), Coordinates(70, 70), 20, 1, 1, math.pi / 2)
+    road = Road(Coordinates(90, 70), Coordinates(70, 70), 20, 1, 1, math.pi)
     intersection.add_incoming_connection(road)
     road.add_end_connection(intersection)
     roads.append(road)
