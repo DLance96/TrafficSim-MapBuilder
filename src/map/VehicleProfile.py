@@ -6,11 +6,12 @@ class VehicleProfile:
     Essentially, it represents the characteristics of the vehicle spawned.
     """
 
-    def __init__(self, width, length, max_accel, max_braking_decel, mass, max_speed):
+    def __init__(self, profile_name, width, length, max_accel, max_braking_decel, mass, max_speed):
 
         """
         Establishes a Vehicle Profile object
 
+        :param profile_name: Name of Vehicle Profile
         :param width: width of the car
         :param length: length of the car
         :param max_accel: maximum acceleration of the car
@@ -18,13 +19,19 @@ class VehicleProfile:
         :param mass: mass of the car
         :param max_speed: maximum speed of the car
         """
-
+        self.profile_name = profile_name
         self.width = width
         self.length = length
         self.max_accel = max_accel
         self.max_braking_decel = max_braking_decel
         self.mass = mass
         self.max_speed = max_speed
+
+    def get_vehicle_profile_name(self):
+        """
+        :return: Name of the vehicle profile
+        """
+        return self.profile_name
 
     def get_width(self):
         """
