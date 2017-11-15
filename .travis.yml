@@ -8,4 +8,4 @@ install:
 script:
   # run test scripts
   - pytest
-  - py.test --cov=src test/
+  - py.test --cov=src tests/
