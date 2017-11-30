@@ -30,8 +30,28 @@ class Intersection(object):
         self.radius = radius
         self.speed_limit = speed_limit
         self.connections = []
+        self.spawn_profiles = []
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
+
+    def add_spawning_profile(self, spawning_profile):
+        if spawning_profile is not None:
+            self.spawn_profiles.append(spawning_profile)
+
+    def remove_spawning_profile(self, deleted_profile):
+
+        is_in_list = False
+
+        if deleted_profile is not None:
+            for profile in self.spawn_profiles:
+                if profile.get_spawning_profile_name() == deleted_profile.get_spawning_profile_name():
+                    is_in_list = True
+                    break
+
+            if is_in_list:
+                self.spawn_profiles.remove(deleted_profile)
+            else:
+                print('Profile not found in list!')
 
     def get_speed_limit(self):
         return self.speed_limit
