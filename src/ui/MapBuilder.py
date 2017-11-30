@@ -167,7 +167,7 @@ class MapBuilder(QMainWindow):
         start_coord = Coordinates(250, 250)
 
         center = Coordinates(start_coord.x, start_coord.y)
-        i = Intersection(center, 40)
+        i = Intersection(center, 40, 25)
         intersection.append(i)
         self.update()
 
@@ -616,6 +616,7 @@ class EditDialog(QDialog):
     in_lanes = None
     out_lanes = None
     speed_limit = None
+    intersection_speed = None
 
     def __init__(self):
         super(EditDialog, self).__init__()
@@ -647,6 +648,12 @@ class EditDialog(QDialog):
             if testing:
                 self.radius.setValue(90)
             layout.addRow(QLabel("Radius:"), self.radius)
+            self.intersection_speed = QSpinBox(self)
+            self.intersection_speed.setMinimum(10)
+            self.intersection_speed.setMaximum(50)
+            self.intersection_speed.setValue(selected_object.speed_limit)
+            layout.addRow(QLabel("Speed Limit:"), self.intersection_speed)
+
         else:
             self.formGroupBox = QGroupBox("Road")
             self.in_lanes = QSpinBox(self)
@@ -674,6 +681,7 @@ class EditDialog(QDialog):
         global selected_object
         if type(selected_object) is Intersection:
             selected_object.radius = self.radius.value()
+            selected_object.speed_limit = self.intersection_speed.value()
         else:
             selected_object.in_lanes = self.in_lanes.value()
             selected_object.out_lanes = self.out_lanes.value()
@@ -693,6 +701,7 @@ class AddDialog(QDialog):
     out_lanes = None
     angle = None
     speed_limit = None
+    intersection_speed_limit = None
 
     def __init__(self):
         super(AddDialog, self).__init__()
@@ -726,6 +735,12 @@ class AddDialog(QDialog):
             self.radius.setMaximum(100)
             self.radius.setValue(40)
             layout.addRow(QLabel("Radius:"), self.radius)
+            self.intersection_speed_limit = QSpinBox(self)
+            self.intersection_speed_limit.setMinimum(10)
+            self.intersection_speed_limit.setMaximum(50)
+            self.intersection_speed_limit.setValue(25)
+            layout.addRow(QLabel("Speed Limit (MPH):"), self.intersection_speed_limit)
+
         else:
             self.formGroupBox = QGroupBox("Add Road")
             self.angle = QSpinBox(self)
@@ -760,9 +775,11 @@ class AddDialog(QDialog):
         global selected_object
         if type(selected_object) is Road:
             if self.add_position.currentText() == "End":
-                intersection.append(selected_object.generate_end_connection(self.radius.value()))
+                intersection.append(selected_object.generate_end_connection(self.radius.value(),
+                                                                            self.intersection_speed_limit.value()))
             else:
-                intersection.append(selected_object.generate_start_connection(self.radius.value()))
+                intersection.append(selected_object.generate_start_connection(self.radius.value(),
+                                                                              self.intersection_speed_limit.value()))
         else:
             road.append(selected_object.add_connection(self.angle.value() * math.pi / 180, self.radius.value(),
                                            self.in_lanes.value(), self.out_lanes.value(), self.speed_limit.value()))

@@ -16,7 +16,7 @@ class Intersection(object):
 
     """
 
-    def __init__(self, central_point, radius):
+    def __init__(self, central_point, radius, speed_limit):
         """
         Establishes an intersection object
 
@@ -28,9 +28,16 @@ class Intersection(object):
         """
         self.center = central_point
         self.radius = radius
+        self.speed_limit = speed_limit
         self.connections = []
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
+
+    def get_speed_limit(self):
+        return self.speed_limit
+
+    def update_speed_limit(self, new_speed):
+        self.speed_limit = new_speed
 
     def add_connection(self, angle, distance, in_lanes, out_lanes, speed_limit):
         """

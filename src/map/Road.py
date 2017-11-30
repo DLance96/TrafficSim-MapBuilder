@@ -240,7 +240,7 @@ class Road(object):
         """
         self.start_connection = start_connection
 
-    def generate_start_connection(self, length):
+    def generate_start_connection(self, length, speed_limit):
         """
         Adds a connecting object to the start of the road
         :param length: length of intersection connection to be created
@@ -253,14 +253,14 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = traffic_map.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length, speed_limit)
 
         intersection.add_incoming_connection(self)
         self.start_connection = intersection
 
         return intersection
 
-    def generate_end_connection(self, length):
+    def generate_end_connection(self, length, speed_limit):
         """
         Adds a connecting object to the start of the road
         :param length: length of intersection connection to be created
@@ -271,7 +271,7 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = traffic_map.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length, speed_limit)
 
         intersection.add_incoming_connection(self)
         self.end_connection = intersection
