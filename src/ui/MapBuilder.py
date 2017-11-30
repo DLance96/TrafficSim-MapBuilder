@@ -7,6 +7,7 @@ from src.map.Intersection import Intersection
 from src.map.Coordinates import Coordinates
 from src.map.DriverProfile import DriverProfile
 from src.map.VehicleProfile import VehicleProfile
+from src.map.SpawningProfile import SpawningProfile
 from src.map.Constants import LANE_WIDTH
 import math
 
@@ -23,6 +24,7 @@ road = []
 intersection = []
 driver_profiles = []
 vehicle_profiles = []
+spawning_profiles = []
 app = None
 
 testing = False
@@ -32,14 +34,17 @@ class MapBuilder(QMainWindow):
     global intersection
     global driver_profiles
     global vehicle_profiles
+    global spawning_profiles
     global app
 
     selected_object = None
     profile_action_num = None
     add_driver_action = None
     add_vehicle_action = None
+    add_spawn_action = None
     delete_driver_action = None
     delete_vehicle_action = None
+    delete_spawn_action = None
     add_action = None
     edit_action = None
     selected_menu = None
@@ -53,6 +58,12 @@ class MapBuilder(QMainWindow):
         self.width = 300
         self.height = 200
         self.initUI()
+
+        default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+        default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+        driver_profiles.append(default_driver)
+        vehicle_profiles.append(default_vehicle)
 
     def initUI(self):
         menu_bar = self.menuBar()
@@ -68,11 +79,17 @@ class MapBuilder(QMainWindow):
         self.delete_driver_action = QAction("Delete Driver Profile", self)
         self.add_vehicle_action = QAction("Add Vehicle Profile", self)
         self.delete_vehicle_action = QAction("Delete Vehicle Profile", self)
+        self.add_spawn_action = QAction("Add Spawning Profile", self)
+        self.delete_spawn_action = QAction("Delete Spawning Profile", self)
 
         self.profile_menu.addAction(self.add_driver_action)
         self.profile_menu.addAction(self.add_vehicle_action)
+        self.profile_menu.addAction(self.add_spawn_action)
         self.profile_menu.addAction(self.delete_driver_action)
         self.profile_menu.addAction(self.delete_vehicle_action)
+        self.profile_menu.addAction(self.delete_spawn_action)
+
+        # stopped implementation here
 
         self.add_action = QAction("Add Connection", self)
         self.edit_action = QAction("Edit", self)
@@ -89,14 +106,18 @@ class MapBuilder(QMainWindow):
 
         self.add_driver_action.triggered.connect(self.open_add_driver_profile_dialog)
         self.add_vehicle_action.triggered.connect(self.open_add_vehicle_profile_dialog)
+        self.add_spawn_action.triggered.connect(self.open_add_spawn_profile_dialog)
         self.delete_driver_action.triggered.connect(self.open_delete_driver_profile_dialog)
         self.delete_vehicle_action.triggered.connect(self.open_delete_vehicle_profile_dialog)
+        self.delete_spawn_action.triggered.connect(self.open_delete_spawn_profile_dialog)
 
         self.add_action.setEnabled(False)
         self.edit_action.setEnabled(False)
 
+        # need some means of setting these active once a vehicle/driver/spawn profile is added.
         # self.delete_vehicle_action.setEnabled(False)
         # self.delete_driver_action.setEnabled(False)
+        # self.delete_spawn_action.setEnabled(False)
 
         screen = app.primaryScreen()
         self.resize(screen.size().width(), screen.size().height())
@@ -221,6 +242,20 @@ class MapBuilder(QMainWindow):
         dialog.exec_()
         dialog.show()
 
+    def open_add_spawn_profile_dialog(self):
+        global profile_action_type
+        profile_action_type = 4
+        dialog = ProfileDialog()
+        dialog.exec_()
+        dialog.show()
+
+    def open_delete_spawn_profile_dialog(self):
+        global profile_action_type
+        profile_action_type = 5
+        dialog = ProfileDialog()
+        dialog.exec_()
+        dialog.show()
+
 class ProfileDialog(QDialog):
     vehicle_name = None
     width = None
@@ -239,6 +274,8 @@ class ProfileDialog(QDialog):
     d_accel_time = None
     update_time_ms = None
 
+    spawn_name = None
+
     def __init__(self):
         global profile_action_type
         super(ProfileDialog, self).__init__()
@@ -253,14 +290,19 @@ class ProfileDialog(QDialog):
         mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
 
+
         if profile_action_type == 0:
             self.setWindowTitle("Add Driver Profile")
         elif profile_action_type == 1:
             self.setWindowTitle("Add Vehicle Profile")
         elif profile_action_type == 2:
             self.setWindowTitle("Delete Driver Profile")
-        else:
+        elif profile_action_type == 3:
             self.setWindowTitle("Delete Vehicle Profile")
+        elif profile_action_type == 4:
+            self.setWindowTitle("Add Spawning Profile")
+        else:
+            self.setWindowTitle("Delete Spawning Profile")
 
     def createFormGroupBox(self):
         global profile_action_type
@@ -356,7 +398,8 @@ class ProfileDialog(QDialog):
 
             for prof_name in driver_profiles:
                 name = prof_name.get_driver_profile_name()
-                driver_profile_names.append(name)
+                if name != 'Default':
+                    driver_profile_names.append(name)
 
             name_list = QComboBox(self)
 
@@ -365,14 +408,15 @@ class ProfileDialog(QDialog):
 
             layout.addRow(QLabel("Profile to be deleted: "), name_list)
 
-        else:
+        elif profile_action_type == 3:
             self.formGroupBox = QGroupBox("Select Vehicle Profile to delete")
 
             vehicle_profile_names = []
 
             for prof_name in vehicle_profiles:
                 name = prof_name.get_vehicle_profile_name()
-                vehicle_profile_names.append(name)
+                if name != 'Default':
+                    vehicle_profile_names.append(name)
 
             name_list = QComboBox(self)
 
@@ -381,6 +425,51 @@ class ProfileDialog(QDialog):
 
             layout.addRow(QLabel("Profile to be deleted: "), name_list)
 
+        elif profile_action_type == 4:
+            self.formGroupBox = QGroupBox("Attribute Input - Please select appropriate values below")
+
+            vehicle_profile_name_list = []
+            driver_profile_name_list = []
+
+            for v in vehicle_profiles:
+                name = v.get_vehicle_profile_name()
+                vehicle_profile_name_list.append(name)
+
+
+            for d in driver_profiles:
+                name = d.get_driver_profile_name()
+                driver_profile_name_list.append(name)
+
+            self.spawn_name = QLineEdit(self)
+
+            vehicle_profile_dropdown = QComboBox(self)
+            driver_profile_dropdown = QComboBox(self)
+
+            for name in vehicle_profile_name_list:
+                vehicle_profile_dropdown.addItem(name)
+
+            for name in driver_profile_name_list:
+                driver_profile_dropdown.addItem(name)
+
+            layout.addRow(QLabel("Name of Spawning Profile"), self.spawn_name)
+            layout.addRow(QLabel("Vehicle Profile: "), vehicle_profile_dropdown)
+            layout.addRow(QLabel("Driver Profile: "), driver_profile_dropdown)
+
+        else:
+            self.formGroupBox = QGroupBox("Select Spawning Profile to delete")
+
+            spawning_profile_names = []
+
+            for prof_name in spawning_profiles:
+                name = prof_name.get_spawning_profile_name()
+                spawning_profile_names.append(name)
+
+            name_list = QComboBox(self)
+
+            for name in spawning_profile_names:
+                name_list.addItem(name)
+
+            layout.addRow(QLabel("Profile to be deleted: "), name_list)
 
         self.formGroupBox.setLayout(layout)
 
@@ -388,6 +477,7 @@ class ProfileDialog(QDialog):
         global profile_action_type
         global driver_profiles
         global vehicle_profiles
+        global spawning_profiles
 
         if profile_action_type == 0:
             driver = DriverProfile(self.driver_name.text(), self.over_braking_factor.value(),
@@ -396,6 +486,8 @@ class ProfileDialog(QDialog):
                                    self.d_accel_time.value(), self.update_time_ms.value())
             if self.driver_name.text() != '':
                 driver_profiles.append(driver)
+                # need to enable the delete_driver_action
+                # need to display error message of some sort when no name is given
 
         elif profile_action_type == 1:
             vehicle = VehicleProfile(self.vehicle_name.text(), self.width.value(), self.length.value(),
@@ -404,6 +496,12 @@ class ProfileDialog(QDialog):
 
             if self.vehicle_name.text() != '':
                 vehicle_profiles.append(vehicle)
+
+        elif profile_action_type == 4:
+            spawn = SpawningProfile(self.spawn_name.text(), None, None)
+
+            if self.spawn_name.text() != '':
+                spawning_profiles.append(spawn)
 
         # print('num driver profiles = ' + str(len(driver_profiles)))
 
