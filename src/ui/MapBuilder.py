@@ -274,6 +274,18 @@ class ProfileDialog(QDialog):
     d_accel_time = None
     update_time_ms = None
 
+    deleted_driver = None
+    deleted_vehicle = None
+    deleted_spawn = None
+
+    driver_name_list = None
+    vehicle_name_list = None
+    spawn_name_list = None
+
+    driver_for_spawn = None
+    driver_name_for_spawn = None
+    vehicle_for_spawn = None
+    vehicle_name_for_spawn = None
     spawn_name = None
 
     def __init__(self):
@@ -391,7 +403,7 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("Mass (kg): "), self.v_mass)
             layout.addRow(QLabel("Maximum Speed (MPH): "), self.v_max_speed)
 
-        elif profile_action_type == 2:
+        elif profile_action_type == 2: #CORRECT IMPLEMENTATION OF QCOMBOBOX
             self.formGroupBox = QGroupBox("Select Driver Profile to delete")
 
             driver_profile_names = []
@@ -401,12 +413,12 @@ class ProfileDialog(QDialog):
                 if name != 'Default':
                     driver_profile_names.append(name)
 
-            name_list = QComboBox(self)
+            self.driver_name_list = QComboBox(self)
 
             for name in driver_profile_names:
-                name_list.addItem(name)
+                self.driver_name_list.addItem(name)
 
-            layout.addRow(QLabel("Profile to be deleted: "), name_list)
+            layout.addRow(QLabel("Profile to be deleted: "), self.driver_name_list)
 
         elif profile_action_type == 3:
             self.formGroupBox = QGroupBox("Select Vehicle Profile to delete")
@@ -418,12 +430,12 @@ class ProfileDialog(QDialog):
                 if name != 'Default':
                     vehicle_profile_names.append(name)
 
-            name_list = QComboBox(self)
+            self.vehicle_name_list = QComboBox(self)
 
             for name in vehicle_profile_names:
-                name_list.addItem(name)
+                self.vehicle_name_list.addItem(name)
 
-            layout.addRow(QLabel("Profile to be deleted: "), name_list)
+            layout.addRow(QLabel("Profile to be deleted: "), self.vehicle_name_list)
 
         elif profile_action_type == 4:
             self.formGroupBox = QGroupBox("Attribute Input - Please select appropriate values below")
@@ -441,19 +453,18 @@ class ProfileDialog(QDialog):
                 driver_profile_name_list.append(name)
 
             self.spawn_name = QLineEdit(self)
-
-            vehicle_profile_dropdown = QComboBox(self)
-            driver_profile_dropdown = QComboBox(self)
+            self.driver_for_spawn = QComboBox(self)
+            self.vehicle_for_spawn = QComboBox(self)
 
             for name in vehicle_profile_name_list:
-                vehicle_profile_dropdown.addItem(name)
+                self.vehicle_for_spawn.addItem(name)
 
             for name in driver_profile_name_list:
-                driver_profile_dropdown.addItem(name)
+                self.driver_for_spawn.addItem(name)
 
             layout.addRow(QLabel("Name of Spawning Profile"), self.spawn_name)
-            layout.addRow(QLabel("Vehicle Profile: "), vehicle_profile_dropdown)
-            layout.addRow(QLabel("Driver Profile: "), driver_profile_dropdown)
+            layout.addRow(QLabel("Vehicle Profile: "), self.vehicle_for_spawn)
+            layout.addRow(QLabel("Driver Profile: "), self.driver_for_spawn)
 
         else:
             self.formGroupBox = QGroupBox("Select Spawning Profile to delete")
@@ -464,12 +475,12 @@ class ProfileDialog(QDialog):
                 name = prof_name.get_spawning_profile_name()
                 spawning_profile_names.append(name)
 
-            name_list = QComboBox(self)
+            self.spawn_name_list = QComboBox(self)
 
             for name in spawning_profile_names:
-                name_list.addItem(name)
+                self.spawn_name_list.addItem(name)
 
-            layout.addRow(QLabel("Profile to be deleted: "), name_list)
+            layout.addRow(QLabel("Profile to be deleted: "), self.spawn_name_list)
 
         self.formGroupBox.setLayout(layout)
 
@@ -497,11 +508,95 @@ class ProfileDialog(QDialog):
             if self.vehicle_name.text() != '':
                 vehicle_profiles.append(vehicle)
 
+        elif profile_action_type == 2:
+            self.deleted_driver = self.driver_name_list.currentText()
+
+            deleted_profile = None
+
+            for profile in driver_profiles:
+                name = profile.get_driver_profile_name()
+                if name == str(self.deleted_driver):
+                    deleted_profile = profile
+                    break
+
+            if deleted_profile is not None:
+                driver_profiles.remove(deleted_profile)
+
+            #Remaining code in this else if statement is used for testing.
+            print(str(len(driver_profiles)))
+
+            for profile in driver_profiles:
+                print(str(profile.get_driver_profile_name()) + ' ')
+
+        elif profile_action_type == 3:
+            self.deleted_vehicle = self.vehicle_name_list.currentText()
+
+            deleted_profile = None
+
+            for profile in vehicle_profiles:
+                name = profile.get_vehicle_profile_name()
+                if name == str(self.deleted_vehicle):
+                    deleted_profile = profile
+                    break
+
+            if deleted_profile is not None:
+                vehicle_profiles.remove(deleted_profile)
+
+            #Remaining code in this else if statement is used for testing.
+            print(str(len(vehicle_profiles)))
+
+            for profile in vehicle_profiles:
+                print(str(profile.get_vehicle_profile_name()) + ' ')
+
         elif profile_action_type == 4:
-            spawn = SpawningProfile(self.spawn_name.text(), None, None)
+            # spawn = SpawningProfile(self.spawn_name.text(), None, None)
+            self.vehicle_name_for_spawn = self.vehicle_for_spawn.currentText()
+            self.driver_name_for_spawn = self.driver_for_spawn.currentText()
+
+            selected_driver = None
+            selected_vehicle = None
+
+            for profile in driver_profiles:
+                name = profile.get_driver_profile_name()
+                if name == str(self.driver_name_for_spawn):
+                    selected_driver = profile
+                    break
+
+            for vprofile in vehicle_profiles:
+                name = vprofile.get_vehicle_profile_name()
+                if name == str(self.vehicle_name_for_spawn):
+                    selected_vehicle = vprofile
+
 
             if self.spawn_name.text() != '':
-                spawning_profiles.append(spawn)
+                spawning_profile = SpawningProfile(self.spawn_name.text(), selected_driver, selected_vehicle)
+                spawning_profiles.append(spawning_profile)
+
+            #Remaining code in this else if statement is used for testing.
+            print(str(len(spawning_profiles)))
+
+            for profile in spawning_profiles:
+                print(str(profile.get_spawning_profile_name()) + ' ')
+
+        else:
+            self.deleted_spawn = self.spawn_name_list.currentText()
+
+            deleted_profile = None
+
+            for profile in spawning_profiles:
+                name = profile.get_spawning_profile_name()
+                if name == str(self.deleted_spawn):
+                    deleted_profile = profile
+                    break
+
+            if deleted_profile is not None:
+                spawning_profiles.remove(deleted_profile)
+
+            # Remaining code in this else if statement is used for testing.
+            print(str(len(spawning_profiles)))
+
+            for profile in spawning_profiles:
+                print(str(profile.get_spawning_profile_name()) + ' ')
 
         # print('num driver profiles = ' + str(len(driver_profiles)))
 
