@@ -32,7 +32,7 @@ class Intersection(object):
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
 
-    def add_connection(self, angle, distance, in_lanes, out_lanes):
+    def add_connection(self, angle, distance, in_lanes, out_lanes, speed_limit):
         """
         Currently adds a road to the intersection
         :param angle: angle that the road protrudes from the intersection relative to the intersection's origin
@@ -58,7 +58,7 @@ class Intersection(object):
 
         end_coord = Coordinates(end_x, end_y)
 
-        road = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle)
+        road = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle, speed_limit)
         road.add_start_connection(self)
 
         self.connections.append(road)

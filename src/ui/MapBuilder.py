@@ -520,6 +520,7 @@ class EditDialog(QDialog):
     radius = None
     in_lanes = None
     out_lanes = None
+    speed_limit = None
 
     def __init__(self):
         super(EditDialog, self).__init__()
@@ -566,6 +567,11 @@ class EditDialog(QDialog):
                 self.out_lanes.setValue(2)
             layout.addRow(QLabel("In Lanes:"), self.in_lanes)
             layout.addRow(QLabel("Out Lanes:"), self.out_lanes)
+            self.speed_limit = QSpinBox(self)
+            self.speed_limit.setMinimum(20)
+            self.speed_limit.setMaximum(75)
+            self.speed_limit.setValue(selected_object.speed_limit)
+            layout.addRow(QLabel("Speed Limit (MPH):"), self.speed_limit)
 
         self.formGroupBox.setLayout(layout)
 
@@ -576,6 +582,7 @@ class EditDialog(QDialog):
         else:
             selected_object.in_lanes = self.in_lanes.value()
             selected_object.out_lanes = self.out_lanes.value()
+            selected_object.speed_limit = self.speed_limit.value()
         self.close()
 
 
@@ -590,6 +597,7 @@ class AddDialog(QDialog):
     in_lanes = None
     out_lanes = None
     angle = None
+    speed_limit = None
 
     def __init__(self):
         super(AddDialog, self).__init__()
@@ -645,6 +653,11 @@ class AddDialog(QDialog):
             self.out_lanes.setValue(1)
             layout.addRow(QLabel("In Lanes:"), self.in_lanes)
             layout.addRow(QLabel("Out Lanes:"), self.out_lanes)
+            self.speed_limit = QSpinBox(self)
+            self.speed_limit.setMinimum(20)
+            self.speed_limit.setMaximum(75)
+            self.speed_limit.setValue(35)
+            layout.addRow(QLabel("Speed Limit (MPH): "), self.speed_limit)
 
         self.formGroupBox.setLayout(layout)
 
@@ -657,7 +670,7 @@ class AddDialog(QDialog):
                 intersection.append(selected_object.generate_start_connection(self.radius.value()))
         else:
             road.append(selected_object.add_connection(self.angle.value() * math.pi / 180, self.radius.value(),
-                                           self.in_lanes.value(), self.out_lanes.value()))
+                                           self.in_lanes.value(), self.out_lanes.value(), self.speed_limit.value()))
 
         self.close()
 
