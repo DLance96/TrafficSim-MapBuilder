@@ -437,8 +437,8 @@ class ConnectDialog(QDialog):
 
         connected = False
 
-        for road in start_roads:
-            if road in end_roads:
+        for s_road in start_roads:
+            if s_road in end_roads:
                 connected = True
                 break
 
@@ -471,20 +471,20 @@ class ConnectDialog(QDialog):
                 angle = add_theta
             elif (deltax > 0) & (deltay > 0):
                 add_theta = math.pi / 2
-                theta = math.tan((deltay / deltax))
+                theta = math.atan((deltay / deltax))
                 angle = add_theta - theta
             elif (deltax > 0) & (deltay < 0):
                 add_theta = math.pi / 2
-                theta = math.tan((deltay / deltax))
-                angle = add_theta + theta
+                theta = math.atan((deltay / deltax))
+                angle = add_theta - theta
             elif (deltax < 0) & (deltay < 0):
                 add_theta = (3 * math.pi) / 2
-                theta = math.tan((deltay / deltax))
+                theta = math.atan((deltay / deltax))
                 angle = add_theta - theta
             else:
                 add_theta = (3 * math.pi) / 2
-                theta = math.tan((deltay / deltax))
-                angle = add_theta + theta
+                theta = math.atan((deltay / deltax))
+                angle = add_theta - theta
 
             start_rad = selected_object.get_radius()
             end_rad = dest_intersect.get_radius()
@@ -495,9 +495,11 @@ class ConnectDialog(QDialog):
 
             road_length = total_dist - (start_rad + end_rad)
 
-            road = selected_object.add_connection(angle, road_length, 2, 2, 50, 'ConnectingRoad')
+            new_road = selected_object.add_connection(angle, road_length, 1, 1, 50, 'ConnectingRoad')
 
-            dest_intersect.add_incoming_connection(road)
+            road.append(new_road)
+
+            dest_intersect.add_incoming_connection(new_road)
 
         self.close()
 
