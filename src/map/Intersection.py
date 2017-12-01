@@ -45,6 +45,10 @@ class Intersection(object):
         self.green_cycle_roads.append(roads)
         self.green_cycle_times.append(time)
 
+
+    def get_frequency(self):
+        return 10000
+
     def remove_cycle(self, name):
         i = 0
 
