@@ -16,6 +16,8 @@ class Intersection(object):
 
     """
 
+    default_yellow_length = 4000
+
     def __init__(self, central_point, radius, speed_limit):
         """
         Establishes an intersection object
@@ -31,8 +33,38 @@ class Intersection(object):
         self.speed_limit = speed_limit
         self.connections = []
         self.spawn_profiles = []
+        self.cycle_names = []
+        self.green_cycle_roads = []
+        self.green_cycle_times = []
+        self.yellow_light_length = self.default_yellow_length  # time in milliseconds
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
+
+    def add_cycle(self, name, roads, time):
+        self.cycle_names.append(name)
+        self.green_cycle_roads.append(roads)
+        self.green_cycle_times.append(time)
+
+    def remove_cycle(self, name):
+        i = 0
+
+        for cycle_name in self.cycle_names:
+            if name == cycle_name:
+                break
+            i = i + 1
+
+        self.cycle_names.pop(i)
+        self.green_cycle_roads.pop(i)
+        self.green_cycle_times.pop(i)
+
+    def reset_light(self):
+        self.cycle_names = []
+        self.green_cycle_roads = []
+        self.green_cycle_times = []
+        self.yellow_light_length = self.default_yellow_length
+
+    def set_yellow_length(self, length):
+        self.yellow_light_length = length
 
     def add_spawning_profile(self, spawning_profile):
         if spawning_profile is not None:
@@ -53,13 +85,16 @@ class Intersection(object):
             else:
                 print('Profile not found in list!')
 
+    def get_spawning_profile_list(self):
+        return self.spawn_profiles
+
     def get_speed_limit(self):
         return self.speed_limit
 
     def update_speed_limit(self, new_speed):
         self.speed_limit = new_speed
 
-    def add_connection(self, angle, distance, in_lanes, out_lanes, speed_limit):
+    def add_connection(self, angle, distance, in_lanes, out_lanes, speed_limit, name):
         """
         Currently adds a road to the intersection
         :param angle: angle that the road protrudes from the intersection relative to the intersection's origin
@@ -85,7 +120,7 @@ class Intersection(object):
 
         end_coord = Coordinates(end_x, end_y)
 
-        road = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle, speed_limit)
+        road = Road(start_coord, end_coord, distance, out_lanes, in_lanes, angle, speed_limit, name)
         road.add_start_connection(self)
 
         self.connections.append(road)
