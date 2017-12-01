@@ -88,11 +88,11 @@ def make_xml(roads, intersections, save_location):
 
         if len(intersection.green_cycle_roads) > 0:
             traffic_cycle = ET.SubElement(temp_intersection, "traffic_cycle")
-            ET.SubElement(traffic_cycle, "yellow_light").text = intersection.yellow_light_length
-            for index, cycle in enumerate(intersection.green_cycle_roads):
-                cycle = ET.SubElement(traffic_cycle, "cycle")
-                ET.SubElement(cycle, 'timing').text = " ".join(cycle)
-                ET.SubElement(cycle, 'timing').text = intersection.green_cycle_times[index]
+            ET.SubElement(traffic_cycle, "yellow_light").text = str(intersection.yellow_light_length)
+            for i, cycle in enumerate(intersection.green_cycle_roads):
+                temp_cycle = ET.SubElement(traffic_cycle, "cycle")
+                ET.SubElement(temp_cycle, 'roads').text = str(cycle).replace('[','').replace(']','').replace(',','')
+                ET.SubElement(temp_cycle, 'timing').text = str(intersection.green_cycle_times[i])
 
     tree = ET.ElementTree(traffic_map)
     tree.write(save_location)
