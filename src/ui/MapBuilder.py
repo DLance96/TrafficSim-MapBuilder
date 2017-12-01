@@ -101,6 +101,8 @@ class MapBuilder(QMainWindow):
         self.traffic_light_menu.addAction(self.reset_light)
         self.edit_yellow_light.triggered.connect(self.open_update_yellow_dialog)
         self.add_cycle.triggered.connect(self.open_add_cycle_dialog)
+        self.reset_light.triggered.connect(self.reset_stoplight)
+        self.traffic_light_menu.setEnabled(False)
 
         self.driver_profile_menu = menu_bar.addMenu("Driver Profile")
         self.vehicle_profile_menu = menu_bar.addMenu("Vehicle Profile")
@@ -198,8 +200,6 @@ class MapBuilder(QMainWindow):
 
         polygon = QtGui.QPolygonF()
 
-        print("This is an road: start" + str(road.start_coord.x) + ", " + str(road.start_coord.y) + " end" + str(road.end_coord.x) + ", " + str(road.end_coord.y) + " angle: " + str(road.angle) + "\n")
-
         for point in road.get_points():
             polygon.append(QtCore.QPoint(point.x, point.y))
 
@@ -212,12 +212,10 @@ class MapBuilder(QMainWindow):
         qp.setPen(Qt.black)
 
     def draw_intersection(self, center, radius, qp):
-        print("This is an intersection: " + str(center.x) + ", " + str(center.y) + "\n")
         qp.drawEllipse(center.x - radius, center.y - radius, radius * 2, radius * 2)
 
     def paintEvent(self, e):
         global selected_object
-        print("NEW PAINT \n")
 
         qp = QtGui.QPainter()
         qp.begin(self)
@@ -237,7 +235,7 @@ class MapBuilder(QMainWindow):
         qp.end()
 
     def first_road(self):
-        start_coord = Coordinates(400, 250)
+        start_coord = Coordinates(400,250)
 
         center = Coordinates(start_coord.x, start_coord.y)
         i = Intersection(center, 40, 25)
@@ -263,6 +261,7 @@ class MapBuilder(QMainWindow):
         if selected_object is not None:
             self.edit_action.setEnabled(True)
             if type(selected_object) is Road:
+                self.traffic_light_menu.setEnabled(False)
                 # check if start/end connection is present
                 self.auto_connect.setEnabled(False)
                 if selected_object.start_connection is None:
@@ -276,6 +275,8 @@ class MapBuilder(QMainWindow):
                 else:
                     self.add_action.setEnabled(False)
             else:
+                self.traffic_light_menu.setEnabled(True)
+                self.remove_cycle.setEnabled(False)
                 self.auto_connect.setEnabled(True)
                 self.add_action.setEnabled(True)
                 self.add_spawn.setEnabled(True)
@@ -303,6 +304,11 @@ class MapBuilder(QMainWindow):
             self.delete_spawn_action.setEnabled(True)
         else:
             self.delete_spawn_action.setEnabled(False)
+
+    def reset_stoplight(self):
+        global selected_object
+
+        selected_object.reset_light()
 
     def open_edit_dialog(self):
         dialog = EditDialog()
@@ -1034,11 +1040,11 @@ class AddDialog(QDialog):
             self.in_lanes = QSpinBox(self)
             self.in_lanes.setMinimum(0)
             self.in_lanes.setMaximum(10)
-            self.in_lanes.setValue(1)
+            self.in_lanes.setValue(3)
             self.out_lanes = QSpinBox(self)
             self.out_lanes.setMinimum(0)
             self.out_lanes.setMaximum(10)
-            self.out_lanes.setValue(1)
+            self.out_lanes.setValue(3)
             layout.addRow(QLabel("In Lanes:"), self.in_lanes)
             layout.addRow(QLabel("Out Lanes:"), self.out_lanes)
             self.speed_limit = QSpinBox(self)
