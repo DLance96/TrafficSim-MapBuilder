@@ -11,7 +11,7 @@ from src.map.Intersection import Intersection
 
 
 def test_in_intersection():
-    intersection = Intersection(Coordinates(0, 0), 10)
+    intersection = Intersection(Coordinates(0, 0), 10, 40)
 
     assert in_intersection(intersection, Coordinates(1, 1))
     assert in_intersection(intersection, Coordinates(0, 9.9))

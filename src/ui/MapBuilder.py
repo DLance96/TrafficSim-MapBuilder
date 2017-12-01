@@ -9,12 +9,14 @@ from src.map.DriverProfile import DriverProfile
 from src.map.VehicleProfile import VehicleProfile
 from src.map.SpawningProfile import SpawningProfile
 from src.map.Constants import LANE_WIDTH
+from src.xml_parse.Import import import_xml
+from src.xml_parse.Export import export_xml
 import math
 
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, \
     QPushButton, QGridLayout, QComboBox, QDialog, QButtonGroup, QDialogButtonBox, \
     QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QCheckBox, QLabel, QLineEdit, \
-    QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit, QVBoxLayout
+    QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit, QVBoxLayout, QFileDialog
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5 import QtGui, QtCore
 
@@ -49,6 +51,8 @@ class MapBuilder(QMainWindow):
     edit_action = None
     selected_menu = None
     profile_menu = None
+    save_action = None
+    open_action = None
 
     def __init__(self):
         super().__init__()
@@ -72,8 +76,10 @@ class MapBuilder(QMainWindow):
         self.profile_menu = menu_bar.addMenu("Profile")
 
         new_action = QAction("New", self)
-        open_action = QAction("Open", self)
-        save_action = QAction("Save", self)
+        self.open_action = QAction("Open", self)
+        self.open_action.triggered.connect(self.import_to_file)
+        self.save_action = QAction("Save", self)
+        self.save_action.triggered.connect(self.export_to_file)
 
         self.add_driver_action = QAction("Add Driver Profile", self)
         self.delete_driver_action = QAction("Delete Driver Profile", self)
@@ -95,8 +101,8 @@ class MapBuilder(QMainWindow):
         self.edit_action = QAction("Edit", self)
 
         file_menu.addAction(new_action)
-        file_menu.addAction(open_action)
-        file_menu.addAction(save_action)
+        file_menu.addAction(self.open_action)
+        file_menu.addAction(self.save_action)
 
         self.selected_menu.addAction(self.add_action)
         self.selected_menu.addAction(self.edit_action)
@@ -125,6 +131,20 @@ class MapBuilder(QMainWindow):
         self.setFixedSize(self.size())
 
         self.show()
+
+    def export_to_file(self):
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "XML Files (*.xml)", options=options)
+        if filename:
+            print(filename)
+            export_xml(road, intersection, filename)
+
+    def import_to_file(self):
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "XML Files (*.xml)", options=options)
+        if filename:
+            print(filename)
+            import_xml(filename)
 
     def draw_road(self, road, qp):
 
