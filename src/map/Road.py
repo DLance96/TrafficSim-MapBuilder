@@ -15,7 +15,7 @@ class Road(object):
 
     """
 
-    def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle):
+    def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle, speed_limit):
         """
         Establishes a road object
 
@@ -39,13 +39,21 @@ class Road(object):
         self.out_lanes = out_lanes
         self.in_lanes = in_lanes
         self.angle = angle
+        self.speed_limit = speed_limit
         self.start_connection = None
         self.end_connection = None
+
 
     @classmethod
     def create_import_road(cls, length, out_lanes, in_lanes, angle):
         obj = cls(Coordinates(0, 0), Coordinates(0, 0), length, out_lanes, in_lanes, angle)
         return obj
+
+    def get_speed_limit(self):
+        return self.speed_limit
+
+    def update_speed_limit(self, new_speed):
+        self.speed_limit = new_speed
 
     def get_start_coords(self):
         """
@@ -238,7 +246,7 @@ class Road(object):
         """
         self.start_connection = start_connection
 
-    def generate_start_connection(self, length):
+    def generate_start_connection(self, length, speed_limit):
         """
         Adds a connecting object to the start of the road
         :param length: length of intersection connection to be created
@@ -251,14 +259,14 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = traffic_map.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length, speed_limit)
 
         intersection.add_incoming_connection(self)
         self.start_connection = intersection
 
         return intersection
 
-    def generate_end_connection(self, length):
+    def generate_end_connection(self, length, speed_limit):
         """
         Adds a connecting object to the start of the road
         :param length: length of intersection connection to be created
@@ -269,7 +277,7 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = traffic_map.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length, speed_limit)
 
         intersection.add_incoming_connection(self)
         self.end_connection = intersection

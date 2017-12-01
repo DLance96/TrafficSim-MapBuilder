@@ -24,7 +24,7 @@ def is_on_intersection(intersection, coord):
     return intersection.is_on_intersection(coord)
 
 
-def add_connection(intersection, angle, distance, in_ln, out_ln):
+def add_connection(intersection, angle, distance, in_ln, out_ln, speed_limit):
     """
     Adds an outgoing road to the current intersection.
     :param intersection: intersection where road is added
@@ -41,7 +41,7 @@ def add_connection(intersection, angle, distance, in_ln, out_ln):
 
     :return: intersection with the new outgoing road connected
     """
-    intersection.add_connection(angle, distance, in_ln, out_ln)
+    intersection.add_connection(angle, distance, in_ln, out_ln, speed_limit)
 
 
 def add_incoming_connection(intersection, road):
@@ -54,7 +54,7 @@ def add_incoming_connection(intersection, road):
     intersection.add_incoming_connection(road)
 
 
-def get_center(center, rad):
+def get_center(center, rad, speed_limit):
     """
     Retrieves the center coordinate of the intersection
     :param center: center coordinate point of the intersection circle
@@ -63,11 +63,11 @@ def get_center(center, rad):
     :type rad: float
     :return: center coordinate point of the intersection circle
     """
-    i = Intersection(center, rad)
+    i = Intersection(center, rad, speed_limit)
     return i.get_center()
 
 
-def get_radius(center, rad):
+def get_radius(center, rad, speed_limit):
     """
     Retrieves the radius of the intersection circle
     :param center: center coordinate point of the intersection circle
@@ -76,7 +76,7 @@ def get_radius(center, rad):
     :type rad: float
     :return: radius of the intersection circle
     """
-    i = Intersection(center, rad)
+    i = Intersection(center, rad, speed_limit)
     return i.get_radius()
 
 
@@ -97,7 +97,7 @@ def test_is_on_connection():
     center = Coordinates(1, 1)
     radius = 10
 
-    i = Intersection(center, radius)
+    i = Intersection(center, radius, 20)
 
     in_circle = Coordinates(2, 2)
     not_in_circle = Coordinates(100, 150)
@@ -120,7 +120,7 @@ def test_add_connection():
     center = Coordinates(5, 5)
     radius = 3
 
-    i = Intersection(center, radius)
+    i = Intersection(center, radius, 30)
 
     assert not i.get_connections()
 
@@ -136,7 +136,7 @@ def test_add_connection():
     in_ln2 = 1
     ang2 = 3 * math.pi / 2
 
-    separate_road = Road(start2, end2, len2, out_ln2, in_ln2, ang2)
+    separate_road = Road(start2, end2, len2, out_ln2, in_ln2, ang2, 20)
 
     ang3 = math.pi / 4
     len3 = 10
@@ -148,7 +148,7 @@ def test_add_connection():
     out_ln4 = 27
     ang4 = 3 * math.pi / 2
 
-    add_connection(i, ang1, len1, in_ln1, out_ln1)
+    add_connection(i, ang1, len1, in_ln1, out_ln1, 10)
 
     assert i.get_connections()
 
@@ -160,7 +160,7 @@ def test_add_connection():
     assert i.get_connections()[0].get_out_lanes() == out_ln1
     assert i.get_connections()[0].get_angle() == math.pi
 
-    add_connection(i, ang4, len4, in_ln4, out_ln4)
+    add_connection(i, ang4, len4, in_ln4, out_ln4, 50)
 
     assert i.get_connections()[0].get_length() == 20
     assert i.get_connections()[0].get_angle() == ang1
@@ -191,7 +191,7 @@ def test_add_connection():
     assert i.get_connections()[2].get_in_lanes() == in_ln2
     assert i.get_connections()[2].get_out_lanes() == out_ln2
 
-    add_connection(i, ang3, len3, in_ln3, out_ln3)
+    add_connection(i, ang3, len3, in_ln3, out_ln3, 25)
 
     assert len(i.get_connections()) == 4
 
@@ -224,7 +224,7 @@ def test_add_incoming_connection():
     center = Coordinates(4, 4)
     radius = 10
 
-    i = Intersection(center, radius)
+    i = Intersection(center, radius, 15)
 
     empty_connections = i.get_connections()
 
@@ -251,9 +251,9 @@ def test_add_incoming_connection():
     out_ln3 = 27
     ang3 = 3 * math.pi / 2
 
-    r1 = Road(start1, end1, len1, out_ln1, in_ln1, ang1)
-    r2 = Road(start2, end2, len2, out_ln2, in_ln2, ang2)
-    r3 = Road(start3, end3, len3, out_ln3, in_ln3, ang3)
+    r1 = Road(start1, end1, len1, out_ln1, in_ln1, ang1, 20)
+    r2 = Road(start2, end2, len2, out_ln2, in_ln2, ang2, 25)
+    r3 = Road(start3, end3, len3, out_ln3, in_ln3, ang3, 30)
 
     add_incoming_connection(i, r1)
 
@@ -279,7 +279,7 @@ def test_add_incoming_connection():
     assert non_empty[1].get_in_lanes() == in_ln3
     assert non_empty[1].get_out_lanes() == out_ln3
 
-    add_connection(i, math.pi, 20, 21, 22)
+    add_connection(i, math.pi, 20, 21, 22, 40)
 
     assert len(i.get_connections()) == 3
     assert non_empty[0].get_length() == 10
@@ -335,16 +335,16 @@ def test_get_connections():
     out_ln1 = 27
     ang1 = 3 * math.pi / 2
 
-    incoming = Road(start1, end1, len1, out_ln1, in_ln1, ang1)
+    incoming = Road(start1, end1, len1, out_ln1, in_ln1, ang1, 25)
 
-    i1 = Intersection(center, radius)
+    i1 = Intersection(center, radius, 20)
 
     empty_connections = get_connections(i1)
 
     assert not empty_connections
 
-    i2 = Intersection(center, radius)
-    add_connection(i2, angle, len, in_ln, out_ln)
+    i2 = Intersection(center, radius, 30)
+    add_connection(i2, angle, len, in_ln, out_ln, 40)
 
     non_empty_connections = get_connections(i2)
 
@@ -365,7 +365,7 @@ def test_get_connections():
     assert non_empty_connections[1].get_in_lanes() == in_ln1
     assert non_empty_connections[1].get_out_lanes() == out_ln1
 
-    add_connection(i2, math.pi, 15, 1, 4)
+    add_connection(i2, math.pi, 15, 1, 4, 60)
 
     assert non_empty_connections
     assert non_empty_connections[0].get_length() == 10
@@ -390,7 +390,7 @@ def test_get_radius():
     center = Coordinates(7, 3)
     radius = 12
 
-    returned_rad = get_radius(center, radius)
+    returned_rad = get_radius(center, radius, 30)
 
     assert returned_rad == radius
     assert returned_rad != center.get_x()
@@ -405,7 +405,7 @@ def test_get_center():
     center = Coordinates(7, 3)
     radius = 12
 
-    returned_center = get_center(center, radius)
+    returned_center = get_center(center, radius, 25)
 
     assert returned_center.get_x() == center.get_x()
     assert returned_center.get_y() == center.get_y()
