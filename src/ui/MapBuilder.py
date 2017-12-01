@@ -59,6 +59,13 @@ class MapBuilder(QMainWindow):
     save_action = None
     open_action = None
 
+    # Traffic Light Menu Actions
+    traffic_light_menu = None
+    edit_yellow_light = None
+    add_cycle = None
+    remove_cycle = None
+    reset_light = None
+
     def __init__(self):
         super().__init__()
         self.title = 'Map Builder'
@@ -80,10 +87,26 @@ class MapBuilder(QMainWindow):
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
         self.selected_menu = menu_bar.addMenu("MapObject")
+        self.profile_menu = menu_bar.addMenu("Profile")
+        self.traffic_light_menu = menu_bar.addMenu("StopLight")
+
+        #StopLight Actions
+        self.edit_yellow_light = QAction("Edit Yellow Light Length", self)
+        self.add_cycle = QAction("Add Cycle", self)
+        self.remove_cycle = QAction("Remove Cycle", self)
+        self.reset_light = QAction("Reset Light", self)
+        self.traffic_light_menu.addAction(self.edit_yellow_light)
+        self.traffic_light_menu.addAction(self.add_cycle)
+        self.traffic_light_menu.addAction(self.remove_cycle)
+        self.traffic_light_menu.addAction(self.reset_light)
+        self.edit_yellow_light.triggered.connect(self.open_update_yellow_dialog)
+        self.add_cycle.triggered.connect(self.open_add_cycle_dialog)
+
         self.driver_profile_menu = menu_bar.addMenu("Driver Profile")
         self.vehicle_profile_menu = menu_bar.addMenu("Vehicle Profile")
         self.spawning_profile_menu = menu_bar.addMenu("Spawning Profile")
 
+        #File Actions
         new_action = QAction("New", self)
         self.open_action = QAction("Open", self)
         self.open_action.triggered.connect(self.import_to_file)
@@ -290,6 +313,17 @@ class MapBuilder(QMainWindow):
         dialog = AddDialog()
         dialog.exec_()
         dialog.show()
+
+    def open_update_yellow_dialog(self):
+        dialog = YellowDialog()
+        dialog.exec_()
+        dialog.show()
+
+    def open_add_cycle_dialog(self):
+        dialog = AddCycleDialog()
+        dialog.exec_()
+        dialog.show()
+
 
     def open_connect_dialog(self):
         dialog = ConnectDialog()
@@ -1149,6 +1183,112 @@ class AddDialog(QDialog):
             road.append(selected_object.add_connection(self.angle.value() * math.pi / 180, self.radius.value(),
                                            self.in_lanes.value(), self.out_lanes.value(), self.speed_limit.value(),
                                                        self.road_name.text()))
+
+        self.close()
+
+
+class YellowDialog(QDialog):
+    global intersection
+
+    yellow_length = None
+
+    def __init__(self):
+        super(YellowDialog, self).__init__()
+        self.createFormGroupBox()
+
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(self.formGroupBox)
+        mainLayout.addWidget(buttonBox)
+        self.setLayout(mainLayout)
+
+        self.setWindowTitle("Stop Light")
+
+    def createFormGroupBox(self):
+        global selected_object
+        layout = QFormLayout()
+
+        self.formGroupBox = QGroupBox("Yellow Light")
+        self.yellow_length = QSpinBox(self)
+        self.yellow_length.setMinimum(1000)
+        self.yellow_length.setMaximum(8000)
+        self.yellow_length.setValue(selected_object.yellow_light_length)
+        layout.addRow(QLabel("Time Length:"), self.yellow_length)
+
+        self.formGroupBox.setLayout(layout)
+
+    def accept(self):
+        global selected_object
+
+        selected_object.set_yellow_length(self.yellow_length.value())
+
+        self.close()
+
+
+class AddCycleDialog(QDialog):
+    global intersection
+
+    name = None
+    roads = []
+    time = None
+
+    def __init__(self):
+        super(AddCycleDialog, self).__init__()
+        self.createFormGroupBox()
+
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(self.formGroupBox)
+        mainLayout.addWidget(buttonBox)
+        self.setLayout(mainLayout)
+
+        self.setWindowTitle("Stop Light")
+
+    def createFormGroupBox(self):
+        global selected_object
+        layout = QFormLayout()
+
+        self.formGroupBox = QGroupBox("Add New Cycle")
+        self.name = QLineEdit(self)
+        self.name.insert("New Cycle")
+        layout.addRow(QLabel("Name:"), self.name)
+
+        self.time = QSpinBox(self)
+        self.time.setMinimum(5000)
+        self.time.setMaximum(60000)
+        self.time.setValue(10000)
+        layout.addRow(QLabel("Light Time:"), self.time)
+
+        i = 0
+
+        for r in selected_object.connections:
+            self.roads.append(QCheckBox(str(i)))
+            self.roads[i].setChecked(False)
+            layout.addRow(QLabel("Connection: "), self.roads[i])
+            i = i + 1
+
+        self.formGroupBox.setLayout(layout)
+
+    def accept(self):
+        global selected_object
+
+        r = []
+        i = 0
+
+        for road_widget in self.roads:
+            if road_widget.isChecked():
+                r.append(i)
+            i = i + 1
+
+        # if no roads are selected for cycle, do not add cycle!
+        if len(r) != 0:
+            selected_object.add_cycle(self.name.text(), r, self.time.value())
 
         self.close()
 

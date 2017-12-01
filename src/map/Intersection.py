@@ -16,6 +16,8 @@ class Intersection(object):
 
     """
 
+    default_yellow_length = 4000
+
     def __init__(self, central_point, radius, speed_limit):
         """
         Establishes an intersection object
@@ -31,8 +33,38 @@ class Intersection(object):
         self.speed_limit = speed_limit
         self.connections = []
         self.spawn_profiles = []
+        self.cycle_names = []
+        self.green_cycle_roads = []
+        self.green_cycle_times = []
+        self.yellow_light_length = self.default_yellow_length  # time in milliseconds
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
+
+    def add_cycle(self, name, roads, time):
+        self.cycle_names.append(name)
+        self.green_cycle_roads.append(roads)
+        self.green_cycle_times.append(time)
+
+    def remove_cycle(self, name):
+        i = 0
+
+        for cycle_name in self.cycle_names:
+            if name == cycle_name:
+                break
+            i = i + 1
+
+        self.cycle_names.pop(i)
+        self.green_cycle_roads.pop(i)
+        self.green_cycle_times.pop(i)
+
+    def reset_light(self):
+        self.cycle_names = []
+        self.green_cycle_roads = []
+        self.green_cycle_times = []
+        self.yellow_light_length = self.default_yellow_length
+
+    def set_yellow_length(self, length):
+        self.yellow_light_length = length
 
     def add_spawning_profile(self, spawning_profile):
         if spawning_profile is not None:
