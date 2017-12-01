@@ -163,6 +163,7 @@ class Intersection(object):
         """
         :return: list of map objects that are connected to this intersection
         """
+
         return self.connections
 
     def update_center(self, new_center):

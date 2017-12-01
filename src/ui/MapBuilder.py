@@ -198,6 +198,8 @@ class MapBuilder(QMainWindow):
 
         polygon = QtGui.QPolygonF()
 
+        print("This is an road: start" + str(road.start_coord.x) + ", " + str(road.start_coord.y) + " end" + str(road.end_coord.x) + ", " + str(road.end_coord.y) + " angle: " + str(road.angle) + "\n")
+
         for point in road.get_points():
             polygon.append(QtCore.QPoint(point.x, point.y))
 
@@ -210,10 +212,13 @@ class MapBuilder(QMainWindow):
         qp.setPen(Qt.black)
 
     def draw_intersection(self, center, radius, qp):
+        print("This is an intersection: " + str(center.x) + ", " + str(center.y) + "\n")
         qp.drawEllipse(center.x - radius, center.y - radius, radius * 2, radius * 2)
 
     def paintEvent(self, e):
         global selected_object
+        print("NEW PAINT \n")
+
         qp = QtGui.QPainter()
         qp.begin(self)
         qp.setBrush(Qt.darkGray)
@@ -232,7 +237,7 @@ class MapBuilder(QMainWindow):
         qp.end()
 
     def first_road(self):
-        start_coord = Coordinates(250, 250)
+        start_coord = Coordinates(400, 250)
 
         center = Coordinates(start_coord.x, start_coord.y)
         i = Intersection(center, 40, 25)
@@ -1255,6 +1260,8 @@ class AddCycleDialog(QDialog):
     def createFormGroupBox(self):
         global selected_object
         layout = QFormLayout()
+
+        self.roads = []
 
         self.formGroupBox = QGroupBox("Add New Cycle")
         self.name = QLineEdit(self)

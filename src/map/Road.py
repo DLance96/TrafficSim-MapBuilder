@@ -98,6 +98,12 @@ class Road(object):
         """
         return self.angle
 
+    def get_compatible_angle(self):
+        """
+        :return: angle from which this road projects from the center of its connected intersection (in radians)
+        """
+        return ((5*math.pi/2) - self.angle) % (2 * math.pi)
+
     def update_start_coords(self, new_start_coord):
         """
         Updates the start coordinates of the road

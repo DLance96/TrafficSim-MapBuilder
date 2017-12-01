@@ -45,7 +45,7 @@ def make_xml(roads, intersections, save_location):
         ET.SubElement(temp_road, "incoming_lanes").text = str(road.get_in_lanes())
         ET.SubElement(temp_road, "outgoing_lanes").text = str(road.get_out_lanes())
 
-        ET.SubElement(temp_road, "angle_radians").text = str(road.get_angle())
+        ET.SubElement(temp_road, "angle_radians").text = str(road.get_compatible_angle())
         ET.SubElement(temp_road, "anchor_point").text = \
             "{} {}".format(anchor_coordinate.get_x(), anchor_coordinate.get_y())
 
@@ -115,7 +115,7 @@ def convert_road_to_simulation_size(road):
         # gets angle that the anchor point is from the midpoint
         chord_angle = math.asin((road_width/2.0)/intersection_radius)
         # rotates to where the road is on the intersection
-        angle_to_anchor = road.get_angle() - chord_angle
+        angle_to_anchor = road.get_compatible_angle() - chord_angle
         # adds length between chord and original center point
         length += intersection_radius - math.cos(chord_angle) * intersection_radius
         # gets new anchor point with polar coordinates
@@ -125,9 +125,9 @@ def convert_road_to_simulation_size(road):
                                         math.sin(angle_to_anchor))
     else:
         anchor_coordinate = Coordinates(road.get_start_coords().get_x() +
-                                        math.cos(road.get_angle() - math.pi / 2) * (road_width / 2),
+                                        math.cos(road.get_compatible_angle() - math.pi / 2) * (road_width / 2),
                                         road.get_start_coords().get_y() +
-                                        math.sin(road.get_angle() - math.pi / 2) * (road_width / 2))
+                                        math.sin(road.get_compatible_angle() - math.pi / 2) * (road_width / 2))
     if road.get_end_connection() is not None:
         intersection_radius = road.get_end_connection().get_radius()
         chord_angle = math.asin((road_width / 2) / intersection_radius)
