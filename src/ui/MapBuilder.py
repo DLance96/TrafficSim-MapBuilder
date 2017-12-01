@@ -506,7 +506,7 @@ class ConnectDialog(QDialog):
 
             road_length = total_dist - (start_rad + end_rad)
 
-            new_road = selected_object.add_connection(angle, road_length, 1, 1, 50, 'ConnectingRoad')
+            new_road = selected_object.add_connection(angle, road_length, 2, 2, 50, 'ConnectingRoad')
 
             road.append(new_road)
 
