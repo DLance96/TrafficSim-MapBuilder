@@ -24,7 +24,7 @@ def is_on_intersection(intersection, coord):
     return intersection.is_on_intersection(coord)
 
 
-def add_connection(intersection, angle, distance, in_ln, out_ln, speed_limit):
+def add_connection(intersection, angle, distance, in_ln, out_ln, speed_limit, name):
     """
     Adds an outgoing road to the current intersection.
     :param intersection: intersection where road is added
@@ -41,7 +41,7 @@ def add_connection(intersection, angle, distance, in_ln, out_ln, speed_limit):
 
     :return: intersection with the new outgoing road connected
     """
-    intersection.add_connection(angle, distance, in_ln, out_ln, speed_limit)
+    intersection.add_connection(angle, distance, in_ln, out_ln, speed_limit, name)
 
 
 def add_incoming_connection(intersection, road):
@@ -136,7 +136,7 @@ def test_add_connection():
     in_ln2 = 1
     ang2 = 3 * math.pi / 2
 
-    separate_road = Road(start2, end2, len2, out_ln2, in_ln2, ang2, 20)
+    separate_road = Road(start2, end2, len2, out_ln2, in_ln2, ang2, 20, 'Test')
 
     ang3 = math.pi / 4
     len3 = 10
@@ -148,7 +148,7 @@ def test_add_connection():
     out_ln4 = 27
     ang4 = 3 * math.pi / 2
 
-    add_connection(i, ang1, len1, in_ln1, out_ln1, 10)
+    add_connection(i, ang1, len1, in_ln1, out_ln1, 10, 'Test')
 
     assert i.get_connections()
 
@@ -160,7 +160,7 @@ def test_add_connection():
     assert i.get_connections()[0].get_out_lanes() == out_ln1
     assert i.get_connections()[0].get_angle() == math.pi
 
-    add_connection(i, ang4, len4, in_ln4, out_ln4, 50)
+    add_connection(i, ang4, len4, in_ln4, out_ln4, 50, 'Test')
 
     assert i.get_connections()[0].get_length() == 20
     assert i.get_connections()[0].get_angle() == ang1
@@ -191,7 +191,7 @@ def test_add_connection():
     assert i.get_connections()[2].get_in_lanes() == in_ln2
     assert i.get_connections()[2].get_out_lanes() == out_ln2
 
-    add_connection(i, ang3, len3, in_ln3, out_ln3, 25)
+    add_connection(i, ang3, len3, in_ln3, out_ln3, 25, 'Test')
 
     assert len(i.get_connections()) == 4
 
@@ -251,9 +251,9 @@ def test_add_incoming_connection():
     out_ln3 = 27
     ang3 = 3 * math.pi / 2
 
-    r1 = Road(start1, end1, len1, out_ln1, in_ln1, ang1, 20)
-    r2 = Road(start2, end2, len2, out_ln2, in_ln2, ang2, 25)
-    r3 = Road(start3, end3, len3, out_ln3, in_ln3, ang3, 30)
+    r1 = Road(start1, end1, len1, out_ln1, in_ln1, ang1, 20, 'Test')
+    r2 = Road(start2, end2, len2, out_ln2, in_ln2, ang2, 25, 'Test')
+    r3 = Road(start3, end3, len3, out_ln3, in_ln3, ang3, 30, 'Test')
 
     add_incoming_connection(i, r1)
 
@@ -279,7 +279,7 @@ def test_add_incoming_connection():
     assert non_empty[1].get_in_lanes() == in_ln3
     assert non_empty[1].get_out_lanes() == out_ln3
 
-    add_connection(i, math.pi, 20, 21, 22, 40)
+    add_connection(i, math.pi, 20, 21, 22, 40, 'Test')
 
     assert len(i.get_connections()) == 3
     assert non_empty[0].get_length() == 10
@@ -335,7 +335,7 @@ def test_get_connections():
     out_ln1 = 27
     ang1 = 3 * math.pi / 2
 
-    incoming = Road(start1, end1, len1, out_ln1, in_ln1, ang1, 25)
+    incoming = Road(start1, end1, len1, out_ln1, in_ln1, ang1, 25, 'Test')
 
     i1 = Intersection(center, radius, 20)
 
@@ -344,7 +344,7 @@ def test_get_connections():
     assert not empty_connections
 
     i2 = Intersection(center, radius, 30)
-    add_connection(i2, angle, len, in_ln, out_ln, 40)
+    add_connection(i2, angle, len, in_ln, out_ln, 40, 'Test')
 
     non_empty_connections = get_connections(i2)
 
@@ -365,7 +365,7 @@ def test_get_connections():
     assert non_empty_connections[1].get_in_lanes() == in_ln1
     assert non_empty_connections[1].get_out_lanes() == out_ln1
 
-    add_connection(i2, math.pi, 15, 1, 4, 60)
+    add_connection(i2, math.pi, 15, 1, 4, 60, 'Test')
 
     assert non_empty_connections
     assert non_empty_connections[0].get_length() == 10
