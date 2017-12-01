@@ -65,26 +65,27 @@ def make_xml(roads, intersections, save_location):
         ET.SubElement(temp_intersection, "radius").text = str(intersection.get_radius())
         if intersection.get_spawning_profile_list() is not None and len(intersection.get_spawning_profile_list()) > 0:
             profiles = ET.SubElement(temp_intersection, "spawning_profiles")
+            ET.SubElement(temp_intersection, "frequency").text = str(intersection.get_frequency())
             for profile in intersection.get_spawning_profile_list():
                 temp_profile = ET.SubElement(profiles, "profile")
                 driver = ET.SubElement(temp_profile, "driver")
                 vehicle = ET.SubElement(temp_profile, "vehicle")
 
-                ET.SubElement(driver, "brake_factor").text = profile.driver_profile.over_braking_factor
-                ET.SubElement(driver, "follow_time").text = profile.driver_profile.following_time
-                ET.SubElement(driver, "max_accel").text = profile.driver_profile.max_accel
-                ET.SubElement(driver, "min_accel").text = profile.driver_profile.min_accel
-                ET.SubElement(driver, "max_speed").text = profile.driver_profile.max_speed
-                ET.SubElement(driver, "accel_time").text = profile.driver_profile.accel_time
-                ET.SubElement(driver, "update_time").text = profile.driver_profile.update_time_ms
+                ET.SubElement(driver, "brake_factor").text = str(profile.driver_profile.over_braking_factor)
+                ET.SubElement(driver, "follow_time").text = str(profile.driver_profile.following_time)
+                ET.SubElement(driver, "max_accel").text = str(profile.driver_profile.max_accel)
+                ET.SubElement(driver, "min_accel").text = str(profile.driver_profile.min_accel)
+                ET.SubElement(driver, "max_speed").text = str(profile.driver_profile.max_speed)
+                ET.SubElement(driver, "accel_time").text = str(profile.driver_profile.accel_time)
+                ET.SubElement(driver, "update_time").text = str(profile.driver_profile.update_time_ms)
 
-                ET.SubElement(vehicle, "width").text = profile.vehicle_profile.width
-                ET.SubElement(vehicle, "length").text = profile.vehicle_profile.length
-                ET.SubElement(vehicle, "max_accel").text = profile.vehicle_profile.max_accel
-                ET.SubElement(vehicle, "max_decel").text = profile.vehicle_profile.max_braking_decel
-                ET.SubElement(vehicle, "mass").text = profile.vehicle_profile.mass
-                ET.SubElement(vehicle, "max_speed").text = profile.vehicle_profile.max_speed
-                ET.SubElement(vehicle, "turn_speed").text = 3
+                ET.SubElement(vehicle, "width").text = str(profile.vehicle_profile.width)
+                ET.SubElement(vehicle, "length").text = str(profile.vehicle_profile.length)
+                ET.SubElement(vehicle, "max_accel").text = str(profile.vehicle_profile.max_accel)
+                ET.SubElement(vehicle, "max_decel").text = str(profile.vehicle_profile.max_braking_decel)
+                ET.SubElement(vehicle, "mass").text = str(profile.vehicle_profile.mass)
+                ET.SubElement(vehicle, "max_speed").text = str(profile.vehicle_profile.max_speed)
+                ET.SubElement(vehicle, "turn_speed").text = str(3)
 
         if len(intersection.green_cycle_roads) > 0:
             traffic_cycle = ET.SubElement(temp_intersection, "traffic_cycle")
