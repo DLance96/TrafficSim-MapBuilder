@@ -15,7 +15,7 @@ class Road(object):
 
     """
 
-    def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle, speed_limit):
+    def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle, speed_limit, name):
         """
         Establishes a road object
 
@@ -42,6 +42,7 @@ class Road(object):
         self.speed_limit = speed_limit
         self.start_connection = None
         self.end_connection = None
+        self.name = name
 
 
     @classmethod
@@ -54,6 +55,12 @@ class Road(object):
 
     def update_speed_limit(self, new_speed):
         self.speed_limit = new_speed
+
+    def get_name(self):
+        return self.name
+
+    def update_name(self, new_name):
+        self.name = new_name
 
     def get_start_coords(self):
         """
