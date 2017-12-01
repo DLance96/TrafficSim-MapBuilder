@@ -58,6 +58,7 @@ class MapBuilder(QMainWindow):
     auto_connect = None
     save_action = None
     open_action = None
+    new_action = None
 
     # Traffic Light Menu Actions
     traffic_light_menu = None
@@ -109,9 +110,11 @@ class MapBuilder(QMainWindow):
         self.spawning_profile_menu = menu_bar.addMenu("Spawning Profile")
 
         #File Actions
-        new_action = QAction("New", self)
+        self.new_action = QAction("New", self)
+        self.new_action.triggered.connect(self.reset_file)
         self.open_action = QAction("Open", self)
         self.open_action.triggered.connect(self.import_to_file)
+        self.open_action.setEnabled(False)
         self.save_action = QAction("Save", self)
         self.save_action.triggered.connect(self.export_to_file)
 
@@ -137,7 +140,7 @@ class MapBuilder(QMainWindow):
         self.delete_spawn = QAction("Delete Spawning Profile", self)
         self.auto_connect = QAction("Connect Intersections", self)
 
-        file_menu.addAction(new_action)
+        file_menu.addAction(self.new_action)
         file_menu.addAction(self.open_action)
         file_menu.addAction(self.save_action)
 
@@ -181,6 +184,13 @@ class MapBuilder(QMainWindow):
         self.setFixedSize(self.size())
 
         self.show()
+
+    def reset_file(self):
+        global road, intersection, selected_object
+        road = []
+        intersection = []
+        selected_object = None
+        self.first_road()
 
     def export_to_file(self):
         options = QFileDialog.Options()
