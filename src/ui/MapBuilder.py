@@ -126,7 +126,7 @@ class MapBuilder(QMainWindow):
         self.edit_action.triggered.connect(self.open_edit_dialog)
         self.add_spawn.triggered.connect(self.add_profile_to_intersection_dialog)
         self.delete_spawn.triggered.connect(self.delete_profile_from_intersection_dialog)
-        #self.auto_connect.triggered.connect(self. something something something)
+        self.auto_connect.triggered.connect(self.open_connect_dialog)
 
         self.add_driver_action.triggered.connect(self.open_add_driver_profile_dialog)
         self.add_vehicle_action.triggered.connect(self.open_add_vehicle_profile_dialog)
@@ -248,7 +248,12 @@ class MapBuilder(QMainWindow):
                 else:
                     self.add_action.setEnabled(False)
             else:
-                self.auto_connect.setEnabled(True)
+
+                if len(intersection) > 1:
+                    self.auto_connect.setEnabled(True)
+                else:
+                    self.auto_connect.setEnabled(False)
+
                 self.add_action.setEnabled(True)
                 self.add_spawn.setEnabled(True)
 
@@ -286,6 +291,10 @@ class MapBuilder(QMainWindow):
         dialog.exec_()
         dialog.show()
 
+    def open_connect_dialog(self):
+        dialog = ConnectDialog()
+        dialog.exec_()
+        dialog.show()
 
     def open_add_driver_profile_dialog(self):
         global profile_action_type
@@ -342,6 +351,121 @@ class MapBuilder(QMainWindow):
         dialog = ProfileDialog()
         dialog.exec_()
         dialog.show()
+
+class ConnectDialog(QDialog):
+
+    intersection_list = None
+
+    def __init__(self):
+        super(ConnectDialog, self).__init__()
+        self.createFormGroupBox()
+
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(self.formGroupBox)
+        mainLayout.addWidget(buttonBox)
+        self.setLayout(mainLayout)
+
+        self.setWindowTitle("Connect Intersections")
+
+    def createFormGroupBox(self):
+        global selected_object
+        global intersection
+        layout = QFormLayout()
+
+        self.formGroupBox = QGroupBox("Choose Intersection to Connect to")
+
+        index_of_selected_object = intersection.index(selected_object)
+
+        self.intersection_list = QComboBox(self)
+
+        for x in range(len(intersection)):
+            if x != index_of_selected_object:
+                self.intersection_list.addItem(str(x))
+
+        layout.addRow(QLabel("Intersection: "), self.intersection_list)
+
+        self.formGroupBox.setLayout(layout)
+
+    def accept(self):
+        global selected_object
+
+        start_roads = selected_object.get_connections()
+
+        num = int(self.intersection_list.currentText())
+
+        dest_intersect = intersection[num]
+
+        end_roads = intersection[num].get_connections()
+
+        connected = False
+
+        for road in start_roads:
+            if road in end_roads:
+                connected = True
+                break
+
+        if not connected:
+            start_center = selected_object.get_center()
+            end_center =  dest_intersect.get_center()
+
+            add_theta = None
+            theta = None
+            angle = None
+
+            deltax = end_center.get_x() - start_center.get_x()
+            deltay = end_center.get_y() - start_center.get_y()
+
+            if (deltax == 0) & (deltay > 0):
+                add_theta = math.pi
+                theta = 0
+                angle = add_theta
+            elif (deltax == 0) & (deltay < 0):
+                add_theta = 0
+                theta = 0
+                angle = add_theta
+            elif (deltax > 0) & (deltay == 0):
+                add_theta = math.pi / 2
+                theta = 0
+                angle = add_theta
+            elif (deltax < 0) & (deltay == 0):
+                add_theta = (3 * math.pi) / 2
+                theta = 0
+                angle = add_theta
+            elif (deltax > 0) & (deltay > 0):
+                add_theta = math.pi / 2
+                theta = math.tan((deltay / deltax))
+                angle = add_theta - theta
+            elif (deltax > 0) & (deltay < 0):
+                add_theta = math.pi / 2
+                theta = math.tan((deltay / deltax))
+                angle = add_theta + theta
+            elif (deltax < 0) & (deltay < 0):
+                add_theta = (3 * math.pi) / 2
+                theta = math.tan((deltay / deltax))
+                angle = add_theta - theta
+            else:
+                add_theta = (3 * math.pi) / 2
+                theta = math.tan((deltay / deltax))
+                angle = add_theta + theta
+
+            start_rad = selected_object.get_radius()
+            end_rad = dest_intersect.get_radius()
+
+            deltax_square = deltax * deltax
+            deltay_square = deltay * deltay
+            total_dist = math.sqrt(deltax_square + deltay_square)
+
+            road_length = total_dist - (start_rad + end_rad)
+
+            road = selected_object.add_connection(angle, road_length, 2, 2, 50, 'ConnectingRoad')
+
+            dest_intersect.add_incoming_connection(road)
+
+        self.close()
 
 class ProfileDialog(QDialog):
     vehicle_name = None
