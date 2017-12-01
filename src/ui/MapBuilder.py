@@ -1142,9 +1142,9 @@ class AddCycleDialog(QDialog):
         i = 0
 
         for r in selected_object.connections:
-            self.roads.append(QCheckBox("Connection " + str(i)))
-            self.roads[i].setChecked(false)
-            layout.addRow(QLabel("Connection " + str(i)), self.roads[i])
+            self.roads.append(QCheckBox(str(i)))
+            self.roads[i].setChecked(False)
+            layout.addRow(QLabel("Connection: "), self.roads[i])
             i = i + 1
 
         self.formGroupBox.setLayout(layout)
@@ -1156,13 +1156,13 @@ class AddCycleDialog(QDialog):
         i = 0
 
         for road_widget in self.roads:
-            if road_widget.value():
+            if road_widget.isChecked():
                 r.append(i)
             i = i + 1
 
         # if no roads are selected for cycle, do not add cycle!
         if len(r) != 0:
-            selected_object.add_cycle(name.text(), r, time.value())
+            selected_object.add_cycle(self.name.text(), r, self.time.value())
 
         self.close()
 
