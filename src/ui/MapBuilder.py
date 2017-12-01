@@ -465,11 +465,11 @@ class ConnectDialog(QDialog):
             deltay = end_center.get_y() - start_center.get_y()
 
             if (deltax == 0) & (deltay > 0):
-                add_theta = math.pi
+                add_theta = 0
                 theta = 0
                 angle = add_theta
             elif (deltax == 0) & (deltay < 0):
-                add_theta = 0
+                add_theta = math.pi
                 theta = 0
                 angle = add_theta
             elif (deltax > 0) & (deltay == 0):
