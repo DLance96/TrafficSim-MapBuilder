@@ -508,6 +508,9 @@ class ConnectDialog(QDialog):
 
             new_road = selected_object.add_connection(angle, road_length, 2, 2, 50, 'ConnectingRoad')
 
+            new_road.add_start_connection(selected_object)
+            new_road.add_end_connection(dest_intersect)
+
             road.append(new_road)
 
             dest_intersect.add_incoming_connection(new_road)
