@@ -8,6 +8,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from src.map.Intersection import Intersection
 from src.map.Coordinates import Coordinates
 from src.map.Road import Road
+from src.map.SpawningProfile import SpawningProfile
+from src.map.DriverProfile import DriverProfile
+from src.map.VehicleProfile import VehicleProfile
 
 
 def is_on_intersection(intersection, coord):
@@ -32,12 +35,16 @@ def add_connection(intersection, angle, distance, in_ln, out_ln, speed_limit, na
     :param distance: length of the new road
     :param in_ln: number of incoming lanes for the new road
     :param out_ln: number of outgoing lanes for the new road
+    :param: name of road
+    :param speed_limit: speed limit of the intersection
 
     :type intersection: Intersection
     :type angle: float
     :type distance: float
     :type in_ln: int
     :type out_ln: int
+    :type name: str
+    :type speed_limit: int
 
     :return: intersection with the new outgoing road connected
     """
@@ -59,8 +66,10 @@ def get_center(center, rad, speed_limit):
     Retrieves the center coordinate of the intersection
     :param center: center coordinate point of the intersection circle
     :param rad: radius of the intersection circle
+    :param speed_limit: speed limit of the intersection
     :type center: Coordinates
     :type rad: float
+    :type speed_limit: int
     :return: center coordinate point of the intersection circle
     """
     i = Intersection(center, rad, speed_limit)
@@ -72,12 +81,29 @@ def get_radius(center, rad, speed_limit):
     Retrieves the radius of the intersection circle
     :param center: center coordinate point of the intersection circle
     :param rad: radius of the intersection circle
+    :param speed_limit: speed limit of the intersection
     :type center: Coordinates
     :type rad: float
+    :type speed_limit: int
     :return: radius of the intersection circle
     """
     i = Intersection(center, rad, speed_limit)
     return i.get_radius()
+
+
+def get_speed_limit(center, rad, speed_limit):
+    """
+    Retrieves the speed limit of the intersection circle
+    :param center: center coordinate point of the intersection circle
+    :param rad: radius of the intersection circle
+    :param speed_limit: speed limit of the intersection
+    :type center: Coordinates
+    :type rad: float
+    :type speed_limit: int
+    :return: speed limit of the intersection circle
+    """
+    i = Intersection(center, rad, speed_limit)
+    return i.get_speed_limit()
 
 
 def get_connections(intersection):
@@ -89,7 +115,263 @@ def get_connections(intersection):
     return intersection.get_connections()
 
 
-def test_is_on_connection():
+def add_spawning_profile(intersection, spawning_profile):
+    """
+    Adds a spawning profile to an intersection
+    :param intersection: intersection
+    :param spawning_profile: spawning profile to be added to intersection
+    :type intersection: Intersection
+    :type spawning_profile: SpawningProfile
+    :return: Intersection with spawning profile added to spawning profile list
+    """
+    return intersection.add_spawning_profile(spawning_profile)
+
+
+def remove_spawning_profile(intersection, spawning_profile):
+    """
+    Removes a spawning profile to an intersection
+    :param intersection: intersection
+    :param spawning_profile: spawning profile to be removed from intersection
+    :type intersection: Intersection
+    :type spawning_profile: SpawningProfile
+    :return: Intersection with spawning profile removed from spawning profile list
+    """
+    return intersection.remove_spawning_profile(spawning_profile)
+
+
+def get_spawning_profile_list(intersection):
+    """
+    Returns the spawning profile list of the intersection
+    :param intersection: intersection
+    :type intersection: Intersection
+    :return: The spawning profile list of the intersection
+    """
+    return intersection.get_spawning_profile_list()
+
+
+def add_outgoing_connection(intersection, road):
+    """
+    Adds an outgoing road to the intersection
+    :param intersection: intersection that road will be added to
+    :param road: road that will be added to intersection
+    :type intersection: Intersection
+    :type road: Road
+    :return: Updated intersection with updated connections list
+    """
+    return intersection.add_outgoing_connection(road)
+
+
+def update_radius(intersection, new_rad):
+    """
+    Updates the radius of the intersection
+    :param intersection: intersection
+    :param new_rad: new radius value
+    :type intersection: Intersection
+    :type new_rad: float
+    :return: updated intersection
+    """
+    return intersection.update_radius(new_rad)
+
+
+def update_speed_limit(intersection, new_speed):
+    """
+    Updates the speed limit of the intersection
+    :param intersection: intersection
+    :param new_speed: new speed value
+    :type intersection: Intersection
+    :type new_speed: int
+    :return: updated intersection
+    """
+    return intersection.update_speed_limit(new_speed)
+
+
+def test_update_radius():
+    """
+    Tests the update_radius function
+    :return: Test passes if all assertions are true. Tests do not pass if otherwise
+    """
+    center = Coordinates(1, 1)
+    rad1 = 20.3
+    speed = 30
+
+    i = Intersection(center, rad1, speed)
+
+    assert i.get_radius() == 20.3
+
+    i.update_radius(56.5)
+
+    assert i.get_radius() == 56.5
+
+
+def test_update_speed_limit():
+    """
+    Tests the update_speed_limit function
+    :return: Test passes if all assertions are true. Tests do not pass if otherwise
+    """
+    center = Coordinates(1, 1)
+    rad1 = 20.3
+    speed = 30
+
+    i = Intersection(center, rad1, speed)
+
+    assert i.get_speed_limit() == speed
+
+    i.update_speed_limit(27.7)
+
+    assert i.get_speed_limit() == 27.7
+
+
+def test_add_outgoing_connection():
+    """
+    Tests the add_outgoing_connection function
+    :return: Test passes if all assertions are true. Tests do not pass if otherwise
+    """
+
+    center = Coordinates(1 , 1)
+    radius = 10
+    speed_limit = 20
+
+    i = Intersection(center, radius, speed_limit)
+    i2 = Intersection(center, radius, speed_limit)
+    i2.add_connection(10.0, 20, 2, 2, 40, 'test2')
+
+    start = Coordinates(1,1)
+    end = Coordinates(7, 9)
+    len = 15
+    out_ln = 2
+    in_ln = 1
+    ang = 3 * math.pi / 2
+
+    road = Road(start, end, len, out_ln, in_ln, ang, 20, 'Test')
+
+    l = i.get_connections()
+
+    assert not l
+
+    i.add_outgoing_connection(road)
+
+    assert l
+    assert l[0].get_length() == 15
+
+    l2 = i2.get_connections()
+
+    assert l2
+
+    i2.add_outgoing_connection(road)
+
+    assert l2
+    assert l2[1].get_length() == 15
+
+
+def test_get_speed_limit():
+    """
+    Tests the get_speed_limit function
+    :return: Test passes if all assertions are true. Tests do not pass if otherwise
+    """
+    center = Coordinates(1 , 1)
+    radius = 10
+    speed_limit = 20
+
+    assert get_speed_limit(center, radius, speed_limit) != center
+    assert get_speed_limit(center, radius, speed_limit) != radius
+    assert get_speed_limit(center, radius, speed_limit) == speed_limit
+
+
+def test_get_spawning_profile_list():
+    """
+    Tests the get_spawning_profile_list function
+    :return: Test passes if all assertions are true. Tests do not pass if otherwise
+    """
+    center = Coordinates(1 , 1)
+    radius = 10
+    speed_limit = 20
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+    default_spawn = SpawningProfile("Default", default_driver, default_vehicle)
+
+    i = Intersection(center, radius, speed_limit)
+
+    l = i.get_spawning_profile_list()
+
+    assert not l
+
+    i.add_spawning_profile(default_spawn)
+
+    assert l
+
+    assert len(l) == 1
+
+    i.remove_spawning_profile(default_spawn)
+
+    assert len(l) == 0
+    assert not l
+
+
+def test_add_spawning_profile():
+    """
+    Tests the add_spawning_profile function
+    :return: Test passes if all assertions are true. Tests do not pass if otherwise.
+    """
+    center = Coordinates(1 , 1)
+    radius = 10
+    speed_limit = 20
+
+    i = Intersection(center, radius, speed_limit)
+
+    assert not i.get_spawning_profile_list()
+
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+    default_spawn = SpawningProfile("Default", default_driver, default_vehicle)
+    spawn2 = SpawningProfile("spawn2", default_driver, default_vehicle)
+
+    i.add_spawning_profile(default_spawn)
+
+    assert i.get_spawning_profile_list()
+    assert len(i.get_spawning_profile_list()) == 1
+
+    i.add_spawning_profile(spawn2)
+
+    assert len(i.get_spawning_profile_list()) == 2
+
+
+def test_remove_spawning_profile():
+    """
+    Tests the remove_spawning_profile function
+    :return: Test passes if all assertions are ture. Tests do not pass if otherwise.
+    """
+    center = Coordinates(1 , 1)
+    radius = 10
+    speed_limit = 20
+
+    i = Intersection(center, radius, speed_limit)
+
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+    default_spawn = SpawningProfile("Default", default_driver, default_vehicle)
+    spawn2 = SpawningProfile("spawn2", default_driver, default_vehicle)
+    spawn_not_in_list = SpawningProfile("spawn3", default_driver, default_vehicle)
+
+    i.add_spawning_profile(default_spawn)
+    i.add_spawning_profile(spawn2)
+
+    assert len(i.get_spawning_profile_list()) == 2
+
+    i.remove_spawning_profile(spawn_not_in_list)
+
+    assert len(i.get_spawning_profile_list()) == 2
+
+    i.remove_spawning_profile(spawn2)
+
+    assert len(i.get_spawning_profile_list()) == 1
+
+    i.remove_spawning_profile(default_spawn)
+
+    assert len(i.get_spawning_profile_list()) == 0
+    assert not i.get_spawning_profile_list()
+
+
+def test_is_on_intersection():
     """
     Tests the is_on_connection function
     :return: Test passes if all assertions are true. Tests do not pass if otherwise.

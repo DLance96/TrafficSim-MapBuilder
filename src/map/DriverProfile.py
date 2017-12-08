@@ -132,3 +132,12 @@ class DriverProfile:
         :return: None
         """
         self.update_time_ms = new_update_time_ms
+
+    def update_driver_profile_name(self, new_name):
+        """
+        Update the profile name of the profile
+        :param new_name: new profile name
+        :type new_name: str
+        :return: updated profile
+        """
+        self.driver_profile_name = new_name

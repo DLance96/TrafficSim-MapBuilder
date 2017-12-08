@@ -116,3 +116,11 @@ class VehicleProfile:
         :return: None
         """
         self.max_speed = new_max_speed
+
+    def update_profile_name(self, new_name):
+        """
+        Updates the name of the vehicle profile. Should only be called prior to the simulation running.
+        :param new_name: The new name of the profile
+        :return: None
+        """
+        self.profile_name = new_name
