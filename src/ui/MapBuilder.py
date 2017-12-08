@@ -16,7 +16,7 @@ import math
 from PyQt5.QtWidgets import QApplication, QWidget, QAction, QMainWindow, \
     QPushButton, QGridLayout, QComboBox, QDialog, QButtonGroup, QDialogButtonBox, \
     QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QCheckBox, QLabel, QLineEdit, \
-    QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit, QVBoxLayout, QFileDialog
+    QMenu, QMenuBar, QPushButton, QSpinBox, QTextEdit, QVBoxLayout, QFileDialog, QMessageBox
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5 import QtGui, QtCore
 
@@ -245,11 +245,14 @@ class MapBuilder(QMainWindow):
         qp.end()
 
     def first_road(self):
+        global selected_object
         start_coord = Coordinates(400,250)
 
         center = Coordinates(start_coord.x, start_coord.y)
         i = Intersection(center, 40, 25)
         intersection.append(i)
+
+        selected_object = intersection[0]
         self.update()
 
     def mousePressEvent(self, QMouseEvent):
@@ -272,6 +275,7 @@ class MapBuilder(QMainWindow):
             self.edit_action.setEnabled(True)
             if type(selected_object) is Road:
                 self.traffic_light_menu.setEnabled(False)
+                self.add_spawn.setEnabled(False)
                 # check if start/end connection is present
                 self.auto_connect.setEnabled(False)
                 if selected_object.start_connection is None:
@@ -292,7 +296,7 @@ class MapBuilder(QMainWindow):
                     self.auto_connect.setEnabled(False)
                 self.traffic_light_menu.setEnabled(True)
                 self.remove_cycle.setEnabled(False)
-                self.auto_connect.setEnabled(True)
+                # self.auto_connect.setEnabled(True)
                 self.add_action.setEnabled(True)
                 self.add_spawn.setEnabled(True)
 
@@ -646,6 +650,8 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("Maximum Speed (km/hr): "), self.d_max_speed)
             layout.addRow(QLabel("Acceleration time (seconds): "), self.d_accel_time)
             layout.addRow(QLabel("How often Driver checks surroundings (seconds): "), self.update_time_ms)
+            layout.addRow(QLabel("WARNING: Only driver profiles with UNIQUE profile names will be stored!"))
+            layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
         elif profile_action_type == 1:
             self.formGroupBox = QGroupBox("Attribute Input - Please fill in appropriate values below")
@@ -684,6 +690,8 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("Maximum Braking Deceleration (m/s^2): "), self.v_max_braking_decel)
             layout.addRow(QLabel("Mass (kg): "), self.v_mass)
             layout.addRow(QLabel("Maximum Speed (km/hr): "), self.v_max_speed)
+            layout.addRow(QLabel("WARNING: Only vehicle profiles with UNIQUE profile names will be stored!"))
+            layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
         elif profile_action_type == 2:
             self.formGroupBox = QGroupBox("Select Driver Profile to delete")
@@ -701,6 +709,8 @@ class ProfileDialog(QDialog):
                 self.driver_name_list.addItem(name)
 
             layout.addRow(QLabel("Profile to be deleted: "), self.driver_name_list)
+            layout.addRow(QLabel("WARNING: If a spawning profile contains this driver profile, then it will also be deleted."))
+            layout.addRow(QLabel("The affected spawning profile will also be removed from any intersection that currently uses it."))
 
         elif profile_action_type == 3:
             self.formGroupBox = QGroupBox("Select Vehicle Profile to delete")
@@ -718,6 +728,8 @@ class ProfileDialog(QDialog):
                 self.vehicle_name_list.addItem(name)
 
             layout.addRow(QLabel("Profile to be deleted: "), self.vehicle_name_list)
+            layout.addRow(QLabel("WARNING: If a spawning profile contains this vehicle profile, then it will also be deleted."))
+            layout.addRow(QLabel("The affected spawning profile will also be removed from any intersection that currently uses it."))
 
         elif profile_action_type == 4:
             self.formGroupBox = QGroupBox("Attribute Input - Please select appropriate values below")
@@ -747,6 +759,8 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("Name of Spawning Profile"), self.spawn_name)
             layout.addRow(QLabel("Vehicle Profile: "), self.vehicle_for_spawn)
             layout.addRow(QLabel("Driver Profile: "), self.driver_for_spawn)
+            layout.addRow(QLabel("WARNING: Only spawning profiles with UNIQUE names will be stored!"))
+            layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
         elif profile_action_type == 5:
             self.formGroupBox = QGroupBox("Select Spawning Profile to delete")
@@ -764,6 +778,8 @@ class ProfileDialog(QDialog):
                 self.spawn_name_list.addItem(name)
 
             layout.addRow(QLabel("Profile to be deleted: "), self.spawn_name_list)
+            layout.addRow(QLabel("WARNING: Intersections that currently store this spawning profile will also remove said"))
+            layout.addRow(QLabel("profile from their lists."))
 
         elif profile_action_type == 6:
             self.formGroupBox = QGroupBox("Select Spawning Profile to add to Intersection")
@@ -796,8 +812,6 @@ class ProfileDialog(QDialog):
                 self.delete_spawn_intersection.addItem(name)
 
             layout.addRow(QLabel("Spawning Profile to be deleted:"), self.delete_spawn_intersection)
-
-
 
         self.formGroupBox.setLayout(layout)
 
