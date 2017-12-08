@@ -272,6 +272,9 @@ class MapBuilder(QMainWindow):
             self.y_offset = self.y_offset - 5
         elif key == QtCore.Qt.Key_D:
             self.x_offset = self.x_offset - 5
+        elif key == QtCore.Qt.Key_R:
+            self.x_offset = 0
+            self.y_offset = 0
         self.update()
 
     def mousePressEvent(self, QMouseEvent):
