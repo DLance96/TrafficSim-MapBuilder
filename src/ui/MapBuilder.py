@@ -687,28 +687,28 @@ class ProfileDialog(QDialog):
 
 
             self.following_time = QSpinBox(self)
-            self.following_time.setMinimum(2)
-            self.following_time.setMaximum(25)
+            self.following_time.setMinimum(1)
+            self.following_time.setMaximum(8)
 
             self.d_max_accel = QSpinBox(self)
-            self.d_max_accel.setMinimum(2)
-            self.d_max_accel.setMaximum(14)
+            self.d_max_accel.setMinimum(4)
+            self.d_max_accel.setMaximum(30)
 
             self.d_min_accel = QSpinBox(self)
             self.d_min_accel.setMinimum(0)
             self.d_min_accel.setMaximum(4)
 
             self.d_max_speed = QSpinBox(self)
-            self.d_max_speed.setMinimum(30)
-            self.d_max_speed.setMaximum(200)
+            self.d_max_speed.setMinimum(100)
+            self.d_max_speed.setMaximum(400)
 
             self.d_accel_time = QSpinBox(self)
-            self.d_accel_time.setMinimum(3)
-            self.d_accel_time.setMaximum(30)
+            self.d_accel_time.setMinimum(1)
+            self.d_accel_time.setMaximum(10)
 
             self.update_time_ms = QSpinBox(self)
-            self.update_time_ms.setMinimum(1)
-            self.update_time_ms.setMaximum(20)
+            self.update_time_ms.setMinimum(500)
+            self.update_time_ms.setMaximum(5000)
 
             layout.addRow(QLabel("Driver Profile Name: "), self.driver_name)
             layout.addRow(QLabel("Over-Braking Factor: "), self.over_braking_factor)
@@ -717,7 +717,7 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("Minimum Acceleration (m/s^2): "), self.d_min_accel)
             layout.addRow(QLabel("Maximum Speed (km/hr): "), self.d_max_speed)
             layout.addRow(QLabel("Acceleration time (seconds): "), self.d_accel_time)
-            layout.addRow(QLabel("How often Driver checks surroundings (seconds): "), self.update_time_ms)
+            layout.addRow(QLabel("How often Driver checks surroundings (milliseconds): "), self.update_time_ms)
             layout.addRow(QLabel("WARNING: Only driver profiles with UNIQUE profile names will be stored!"))
             layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
@@ -731,28 +731,28 @@ class ProfileDialog(QDialog):
             self.vehicle_name.insert('testVehicleName')
 
             self.width = QSpinBox(self)
-            self.width.setMinimum(5)
-            self.width.setMaximum(8)
+            self.width.setMinimum(3)
+            self.width.setMaximum(5)
 
             self.length = QSpinBox(self)
-            self.length.setMinimum(15)
-            self.length.setMaximum(60)
+            self.length.setMinimum(4)
+            self.length.setMaximum(15)
 
             self.v_max_accel = QSpinBox(self)
-            self.v_max_accel.setMinimum(2)
-            self.v_max_accel.setMaximum(20)
+            self.v_max_accel.setMinimum(1)
+            self.v_max_accel.setMaximum(25)
 
             self.v_max_braking_decel = QSpinBox(self)
-            self.v_max_braking_decel.setMinimum(2)
-            self.v_max_braking_decel.setMaximum(8)
+            self.v_max_braking_decel.setMinimum(3)
+            self.v_max_braking_decel.setMaximum(20)
 
             self.v_mass = QSpinBox(self)
             self.v_mass.setMinimum(1000)
-            self.v_mass.setMaximum(10000)
+            self.v_mass.setMaximum(6000)
 
             self.v_max_speed = QSpinBox(self)
-            self.v_max_speed.setMinimum(65)
-            self.v_max_speed.setMaximum(200)
+            self.v_max_speed.setMinimum(100)
+            self.v_max_speed.setMaximum(400)
 
             layout.addRow(QLabel("Vehicle Profile Name: "), self.vehicle_name)
             layout.addRow(QLabel("Width (m): "), self.width)
