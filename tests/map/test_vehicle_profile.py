@@ -263,3 +263,180 @@ def test_get_max_speed():
     assert get_max_speed('test', 20, 22, 5.2, 12.5, 2500, 95) != 5.2
     assert get_max_speed('test', 20, 22, 5.2, 12.5, 2500, 95) != 12.5
     assert get_max_speed('test', 20, 22, 5.2, 12.5, 2500, 95) != 2500
+
+
+def update_width(vehicle, width):
+    """
+    Updates the width of the vehicle
+    :param vehicle: vehicle
+    :param width: new vehicle width
+    :type vehicle: VehicleProfile
+    :type width: int
+    :return: Updated vehicle
+    """
+    return vehicle.update_width(width)
+
+
+def update_length(vehicle, length):
+    """
+    Updates the length of the vehicle
+    :param vehicle: vehicle
+    :param length: new vehicle length
+    :type vehicle: VehicleProfile
+    :type length: int
+    :return: Updated vehicle
+    """
+    return vehicle.update_length(length)
+
+
+def update_max_accel(vehicle, ma):
+    """
+    Updates the max accel of the vehicle
+    :param vehicle: vehicle
+    :param ma: new max accel
+    :type vehicle: VehicleProfile
+    :return: Updated vehicle
+    """
+    return vehicle.update_max_accel(ma)
+
+
+def update_max_braking_decel(vehicle, mbd):
+    """
+    Updates the max braking decel of the vehicle
+    :param vehicle: vehicle
+    :param mbd: new max braking decel
+    :type vehicle: VehicleProfile
+    :return: Updated vehicle
+    """
+    return vehicle.update_max_braking_decel(mbd)
+
+
+def update_mass(vehicle, mass):
+    """
+    Updates the mass of the vehicle
+    :param vehicle: vehicle
+    :param mass: new mass
+    :type vehicle: VehicleProfile
+    :return: Updated vehicle
+    """
+    return vehicle.update_mass(mass)
+
+
+def update_max_speed(vehicle, speed):
+    """
+    Updates the max speed of the vehicle
+    :param vehicle: vehicle
+    :param speed: new max speed
+    :type vehicle: VehicleProfile
+    :return: Updated vehicle
+    """
+    return vehicle.update_max_speed(speed)
+
+
+def update_profile_name(vehicle, name):
+    """
+    Updates the name of the vehicle
+    :param vehicle: vehicle
+    :param name: new name
+    :type vehicle: VehicleProfile
+    :return: Updated vehicle
+    """
+    return vehicle.update_profile_name(name)
+
+
+def test_update_width():
+    """
+    Tests the update_width function
+    :return: Passes if width is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_width() == 5
+
+    update_width(default_vehicle, 10)
+
+    assert default_vehicle.get_width() == 10
+
+
+def test_update_name():
+    """
+    Tests the update_name function
+    :return: Passes if name is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_vehicle_profile_name() == "Default"
+
+    update_profile_name(default_vehicle, "updatenametest")
+
+    assert default_vehicle.get_vehicle_profile_name() == "updatenametest"
+
+
+def test_update_max_accel():
+    """
+    Tests the update_max_accel function
+    :return: Passes if max accel is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_max_accel() == 2
+
+    update_max_accel(default_vehicle, 22)
+
+    assert default_vehicle.get_max_accel() == 22
+
+
+def test_update_length():
+    """
+    Tests the update_length function
+    :return: Passes if length is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_length() == 15
+
+    update_length(default_vehicle, 25)
+
+    assert default_vehicle.get_length() == 25
+
+
+def test_update_max_braking_decel():
+    """
+    Tests the update_max_braking_decel function
+    :return: Passes if braking decel is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_max_braking_decel() == 2
+
+    update_max_braking_decel(default_vehicle, 40)
+
+    assert default_vehicle.get_max_braking_decel() == 40
+
+
+def test_update_mass():
+    """
+    Tests the update_mass function
+    :return: Passes if mass is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_mass() == 1000
+
+    update_mass(default_vehicle, 500)
+
+    assert default_vehicle.get_mass() == 500
+
+
+def test_update_max_speed():
+    """
+    Tests the update_max_speed function
+    :return: Passes if max speed is properly updated
+    """
+    default_vehicle = VehicleProfile("Default", 5, 15, 2, 2, 1000, 65)
+
+    assert default_vehicle.get_max_speed() == 65
+
+    update_max_speed(default_vehicle, 80)
+
+    assert default_vehicle.get_max_speed() == 80

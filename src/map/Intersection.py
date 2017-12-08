@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.map.Road import Road
 from src.map.Coordinates import Coordinates
+from src.map.SpawningProfile import SpawningProfile
 
 
 class Intersection(object):
@@ -24,9 +25,11 @@ class Intersection(object):
 
         :param central_point: center point of the intersection circle
         :param radius: radius of the intersection circle
+        :param speed_limit: speed limit
 
         :type central_point: Coordinates
         :type radius: float
+        :type speed_limit: int
         """
         self.center = central_point
         self.radius = radius
@@ -39,12 +42,10 @@ class Intersection(object):
         self.yellow_light_length = self.default_yellow_length  # time in milliseconds
 
     # need to create another constructor to handle a central point and its connecting object (CHECK IF THAT IS TRUE)
-
     def add_cycle(self, name, roads, time):
         self.cycle_names.append(name)
         self.green_cycle_roads.append(roads)
         self.green_cycle_times.append(time)
-
 
     def get_frequency(self):
         return 10000
@@ -71,10 +72,22 @@ class Intersection(object):
         self.yellow_light_length = length
 
     def add_spawning_profile(self, spawning_profile):
+        """
+        Adds a spawning profile to the intersection
+        :param spawning_profile: Spawning profile to be added to intersection
+        :type spawning_profile: SpawningProfile
+        :return: Updated spawning profile list of intersection
+        """
         if spawning_profile is not None:
             self.spawn_profiles.append(spawning_profile)
 
     def remove_spawning_profile(self, deleted_profile):
+        """
+        Removes a spawning profile from an intersection
+        :param deleted_profile: Spawning profile to be removed from intersection
+        :type deleted_profile: SpawningProfile
+        :return: Updated spawning profile list without removed spawning profile
+        """
 
         is_in_list = False
 
@@ -90,12 +103,26 @@ class Intersection(object):
                 print('Profile not found in list!')
 
     def get_spawning_profile_list(self):
+        """
+        Get the spawning profiles attached to this intersection
+        :return: spawning profiles attached to this intersection
+        """
         return self.spawn_profiles
 
     def get_speed_limit(self):
+        """
+        Get the speed limit of this intersection
+        :return: speed limit of this intersection
+        """
         return self.speed_limit
 
     def update_speed_limit(self, new_speed):
+        """
+        Update the speed limit of this intersection
+        :param new_speed: new speed limit
+        :type new_speed: int
+        :return: None
+        """
         self.speed_limit = new_speed
 
     def add_connection(self, angle, distance, in_lanes, out_lanes, speed_limit, name):
@@ -173,17 +200,6 @@ class Intersection(object):
 
         return self.connections
 
-    def update_center(self, new_center):
-        """
-        Updates the center point of the intersection circle
-
-        :param new_center: new center point of the intersection circle
-        :type new_center: Coordinates
-
-        :return: None
-        """
-        self.center = new_center
-
     def update_radius(self, new_radius):
         """
         Updates the radius of the intersection circle
@@ -194,17 +210,6 @@ class Intersection(object):
         :return: None
         """
         self.radius = new_radius
-
-    def update_connections(self, new_connections):
-        """
-        Updates the list of outgoings connections for the intersection
-
-        :param new_connections: new list of connections for the intersection
-        :type new_connections: list consisting of map objects
-
-        :return: None
-        """
-        self.connections = new_connections
 
     def is_on_intersection(self, coordinate):
         """
