@@ -60,13 +60,13 @@ def test_populate_vehicle_profile_list():
 
     first_added_vehicle_profile = vehicle_profiles[1]
 
-    assert first_added_vehicle_profile.get_width() == 5
+    assert first_added_vehicle_profile.get_width() == 3
     assert first_added_vehicle_profile.get_vehicle_profile_name() == 'testVehicleName'
-    assert first_added_vehicle_profile.get_length() == 15
-    assert first_added_vehicle_profile.get_max_accel() == 2
-    assert first_added_vehicle_profile.get_max_braking_decel() == 2
+    assert first_added_vehicle_profile.get_length() == 4
+    assert first_added_vehicle_profile.get_max_accel() == 1
+    assert first_added_vehicle_profile.get_max_braking_decel() == 3
     assert first_added_vehicle_profile.get_mass() == 1000
-    assert first_added_vehicle_profile.get_max_speed() == 65
+    assert first_added_vehicle_profile.get_max_speed() == 100
 
     assert vehicle_profiles[0].get_vehicle_profile_name() == 'Default'
 
@@ -87,12 +87,12 @@ def test_populate_driver_profile_list():
 
     assert first_driver_profile.get_driver_profile_name() == 'testDriverName'
     assert first_driver_profile.get_over_braking_factor() == 1
-    assert first_driver_profile.get_following_time() == 2
-    assert first_driver_profile.get_max_accel() == 2
+    assert first_driver_profile.get_following_time() == 1
+    assert first_driver_profile.get_max_accel() == 4
     assert first_driver_profile.get_min_accel() == 0
-    assert first_driver_profile.get_max_speed() == 30
-    assert first_driver_profile.get_accel_time() == 3
-    assert first_driver_profile.get_update_time_ms() == 1
+    assert first_driver_profile.get_max_speed() == 100
+    assert first_driver_profile.get_accel_time() == 1
+    assert first_driver_profile.get_update_time_ms() == 500
 
 
 def test_delete_driver_profile_not_in_list():
