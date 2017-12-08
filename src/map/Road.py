@@ -53,15 +53,33 @@ class Road(object):
         return obj
 
     def get_speed_limit(self):
+        """
+        :return: speed limit of the road
+        """
         return self.speed_limit
 
     def update_speed_limit(self, new_speed):
+        """
+        Updates the speed limit of the road
+        :param new_speed: new speed limit
+        :type new_speed: int
+        :return: None
+        """
         self.speed_limit = new_speed
 
     def get_name(self):
+        """
+        :return: name of the road
+        """
         return self.name
 
     def update_name(self, new_name):
+        """
+        Updates the name of the road
+        :param new_name: new name
+        :type new_name: str
+        :return: None
+        """
         self.name = new_name
 
     def get_start_coords(self):
@@ -106,33 +124,6 @@ class Road(object):
         """
         return ((5*math.pi/2) - self.angle) % (2 * math.pi)
 
-    def update_start_coords(self, new_start_coord):
-        """
-        Updates the start coordinates of the road
-        :param new_start_coord: new start coordinates of the road
-        :type new_start_coord: Coordinates
-        :return: None
-        """
-        self.start_coord = new_start_coord
-
-    def update_end_coords(self, new_end_coord):
-        """
-        Updates the end coordinates of the road
-        :param new_end_coord: new end coordinates of the road
-        :type new_end_coord: Coordinates
-        :return: None
-        """
-        self.end_coord = new_end_coord
-
-    def update_length(self, new_length):
-        """
-        Updates the length of the road
-        :param new_length: new length of the road
-        :type new_length: float
-        :return: None
-        """
-        self.length = new_length
-
     def update_out_lanes(self, new_out_lanes):
         """
         Updates the number of outgoing lanes of the road
@@ -150,15 +141,6 @@ class Road(object):
         :return: None
         """
         self.in_lanes = new_in_lanes
-
-    def update_angle(self, new_angle):
-        """
-        Updates the angle from which the road projects from the center of the intersection.
-        :param new_angle: new angle of the road (in radians)
-        :type new_angle: float
-        :return: None
-        """
-        self.angle = new_angle
 
     def is_on_road(self, coordinate):
         """

@@ -327,3 +327,203 @@ def test_get_update_time_ms():
     assert get_update_time_ms('test', 1.2, 3.4, 25.2, 2.2, 75.0, 5.4, 7.77) != 2.2
     assert get_update_time_ms('test', 1.2, 3.4, 25.2, 2.2, 75.0, 5.4, 7.77) != 75.0
     assert get_update_time_ms('test', 1.2, 3.4, 25.2, 2.2, 75.0, 5.4, 7.77) != 5.4
+
+
+def update_over_braking_factor(driver, obf):
+    """
+    Updates the over braking factor of the driver
+    :param driver: driver
+    :param obf: new over braking factor
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_over_breaking_factor(obf)
+
+
+def test_update_over_braking_factor():
+    """
+    Tests the update_over_braking_factor method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_over_braking_factor() == 8
+
+    update_over_braking_factor(default_driver, 15)
+
+    assert default_driver.get_over_braking_factor() == 15
+
+
+def update_following_time(driver, ft):
+    """
+    Updates the following time of the driver
+    :param driver: driver
+    :param ft: following time
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_following_time(ft)
+
+
+def test_update_following_time():
+    """
+    Tests the update_following_time method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_following_time() == 2
+
+    update_following_time(default_driver, 5)
+
+    assert default_driver.get_following_time() == 5
+
+
+def update_max_accel(driver, ma):
+    """
+    Updates the max accel of the driver
+    :param driver: driver
+    :param ma: new max accel
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_max_accel(ma)
+
+
+def test_update_max_accel():
+    """
+    Tests the update_max_accel method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_max_accel() == 2
+
+    update_max_accel(default_driver, 7)
+
+    assert default_driver.get_max_accel() == 7
+
+
+def update_min_accel(driver, min_a):
+    """
+    Updates the min accel of the driver
+    :param driver: driver
+    :param min_a: min accel
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_min_accel(min_a)
+
+
+def test_update_min_accel():
+    """
+    Tests the update_min_accel method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_min_accel() == 0
+
+    update_min_accel(default_driver, 3)
+
+    assert default_driver.get_min_accel() == 3
+
+
+def update_max_speed(driver, speed):
+    """
+    Updates the max speed of the driver
+    :param driver: driver
+    :param speed: new max speed
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_max_speed(speed)
+
+
+def test_update_max_speed():
+    """
+    Tests the update_max_speed method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_max_speed() == 30
+
+    update_max_speed(default_driver, 60)
+
+    assert default_driver.get_max_speed() == 60
+
+
+def update_accel_time(driver, at):
+    """
+    Updates the accel time of the driver
+    :param driver: driver
+    :param at: new accel time
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_accel_time(at)
+
+
+def test_update_accel_time():
+    """
+    Tests the update_accel_time method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_accel_time() == 3
+
+    update_accel_time(default_driver, 9)
+
+    assert default_driver.get_accel_time() == 9
+
+
+def update_update_time_ms(driver, utm):
+    """
+    Updates the update time of the driver
+    :param driver: driver
+    :param utm: new update time
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_update_time_ms(utm)
+
+
+def test_update_update_time_ms():
+    """
+    Tests the update_update_time_ms method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_update_time_ms() == 1
+
+    update_update_time_ms(default_driver, 4)
+
+    assert default_driver.get_update_time_ms() == 4
+
+
+def update_driver_profile_name(driver, name):
+    """
+    Updates the name of the driver
+    :param driver: driver
+    :param name: new name
+    :type driver: DriverProfile
+    :return: updated driver profile
+    """
+    return driver.update_driver_profile_name(name)
+
+
+def test_update_driver_profile_name():
+    """
+    Tests the update_driver_profile_name method
+    :return: Tests if cases pass
+    """
+    default_driver = DriverProfile("Default", 8, 2, 2, 0, 30, 3, 1)
+
+    assert default_driver.get_driver_profile_name() == "Default"
+
+    update_driver_profile_name(default_driver, "updatedname")
+
+    assert default_driver.get_driver_profile_name() == "updatedname"
