@@ -95,6 +95,179 @@ def test_populate_driver_profile_list():
     assert first_driver_profile.get_update_time_ms() == 1
 
 
+def test_delete_driver_profile_not_in_list():
+    """
+    Tests to see what happens when a driver profile as attempted to be removed from a list,
+    even though it does not exist in the list.
+    :return: Test passes if assertions pass.
+    """
+    tester = TestClass()
+    driver_profiles = tester.delete_driver_profile()
+
+    assert driver_profiles
+    assert len(driver_profiles) == 1
+    assert driver_profiles[0].get_driver_profile_name() == 'Default'
+
+
+def test_delete_driver_profile_in_list():
+    """
+    Tests to see what happens when a driver profile as attempted to be removed from a list
+    :return: Test passes if assertions pass.
+    """
+    tester = TestClass()
+    driver_profiles = tester.populate_driver_profile_list()
+
+    assert len(driver_profiles) == 2
+    assert driver_profiles[1].get_driver_profile_name() == 'testDriverName'
+
+    tester.delete_driver_profile()
+
+    assert len(driver_profiles) == 1
+    assert driver_profiles[0].get_driver_profile_name() == 'Default'
+
+
+def test_delete_vehicle_profile_not_in_list():
+    """
+    Tests to see what happens when a vehicle profile as attempted to be removed from a list,
+    even though it does not exist in the list.
+    :return: Test passes if assertions pass.
+    """
+    tester = TestClass()
+    vehicle_profiles = tester.delete_vehicle_profile()
+
+    assert vehicle_profiles
+    assert len(vehicle_profiles) == 1
+    assert vehicle_profiles[0].get_vehicle_profile_name() == 'Default'
+
+
+def test_delete_vehicle_profile_in_list():
+    """
+    Tests to see what happens when a vehicle profile as attempted to be removed from a list
+    :return: Test passes if assertions pass.
+    """
+    tester = TestClass()
+    vehicle_profiles = tester.populate_vehicle_profile_list()
+
+    assert len(vehicle_profiles) == 2
+    assert vehicle_profiles[1].get_vehicle_profile_name() == 'testVehicleName'
+
+    tester.delete_vehicle_profile()
+
+    assert len(vehicle_profiles) == 1
+    assert vehicle_profiles[0].get_vehicle_profile_name() == 'Default'
+
+
+def test_populate_spawning_profile_list():
+    """
+    Tests to see if a spawning profile can be successfully stored in our system
+    :return: Test passes if assertions pass.
+    """
+
+    tester = TestClass()
+    spawning_profiles = tester.populate_spawning_profile_list()
+
+    assert spawning_profiles
+
+    assert len(spawning_profiles) == 2
+
+    assert spawning_profiles[1].get_spawning_profile_name() == 'testSpawnName'
+
+    assert spawning_profiles[0].get_spawning_profile_name() == 'Default'
+
+
+def test_delete_spawning_profile_not_in_list():
+    """
+    Tests to see what happens when a spawning profile as attempted to be removed from a list,
+    even though it does not exist in the list.
+    :return: Test passes if assertions pass.
+    """
+    tester = TestClass()
+    spawning_profiles = tester.delete_spawning_profile()
+
+    assert spawning_profiles
+
+    assert len(spawning_profiles) == 1
+
+    assert spawning_profiles[0].get_spawning_profile_name() == 'Default'
+
+
+def test_delete_spawning_profile_in_list():
+    """
+    Tests to see what happens when a spawning profile as attempted to be removed from a list
+    :return: Test passes if assertions pass.
+    """
+    tester = TestClass()
+    spawning_profiles = tester.populate_spawning_profile_list()
+
+    assert len(spawning_profiles) == 2
+    assert spawning_profiles[1].get_spawning_profile_name() == 'testSpawnName'
+
+    tester.delete_spawning_profile()
+
+    assert len(spawning_profiles) == 1
+    assert spawning_profiles[0].get_spawning_profile_name() == 'Default'
+
+
+def test_add_spawning_profile_to_intersection():
+    """
+    Tests to see if a spawning profile can be properly attached to an intersection
+    :return: Test passes if assertions pass
+    """
+    tester = TestClass()
+    intersections = tester.add_spawning_profile_to_intersection()
+
+    attached = False
+
+    for i in intersections:
+        for spawn in i.get_spawning_profile_list():
+            if spawn.get_spawning_profile_name() == 'Default':
+                attached = True
+                break;
+
+    assert attached
+
+
+def test_remove_spawning_profile_from_intersection():
+    """
+    Tests to see if a spawning profile can be properly removed to an intersection
+    :return: Test passes if assertions pass
+    """
+    tester = TestClass()
+    intersections = tester.add_spawning_profile_to_intersection()
+
+    for i in intersections:
+        if len(i.get_spawning_profile_list()) != 0:
+            assert True
+
+        for spawn in i.get_spawning_profile_list():
+            if spawn.get_spawning_profile_name() == 'Default':
+                assert True
+                break
+
+    tester.delete_spawning_profile_from_intersection()
+
+    for i in intersections:
+        if len(i.get_spawning_profile_list()) == 0:
+            assert True
+
+
+def test_connect_intersections():
+    """
+    Tests to see if intersections can be properly connected.
+    :return: Test passes if assertions pass
+    """
+    tester = TestClass()
+    tester.add_dialog_road()
+    connector = tester.add_dialog_intersection()
+
+    tester.connect_intersections()
+
+    assert connector[0].get_connections()
+    assert connector[1].get_connections()
+
+    assert connector[0].get_connections()[0].get_name() == 'example_name'
+    assert connector[1].get_connections()[0].get_name() == 'example_name'
+
 
 # def test_add_dialog_road():
 #     """

@@ -827,6 +827,7 @@ class ProfileDialog(QDialog):
                 driver_profile_name_list.append(name)
 
             self.spawn_name = QLineEdit(self)
+            self.spawn_name.insert('testSpawnName')
             self.driver_for_spawn = QComboBox(self)
             self.vehicle_for_spawn = QComboBox(self)
 
@@ -1561,6 +1562,94 @@ class TestClass:
         pd.accept()
 
         return vehicle_profiles
+
+    def delete_driver_profile(self):
+        global profile_action_type
+        global driver_profiles
+
+        profile_action_type = 2
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return driver_profiles
+
+    def delete_vehicle_profile(self):
+        global  profile_action_type
+        global  vehicle_profiles
+
+        profile_action_type = 3
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return vehicle_profiles
+
+    def populate_spawning_profile_list(self):
+        global profile_action_type
+        global vehicle_profiles
+        global driver_profiles
+        global spawning_profiles
+
+        profile_action_type = 4
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return spawning_profiles
+
+    def delete_spawning_profile(self):
+        global profile_action_type
+        global vehicle_profiles
+        global driver_profiles
+        global spawning_profiles
+
+        profile_action_type = 5
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return spawning_profiles
+
+    def add_spawning_profile_to_intersection(self):
+        global intersection
+        global profile_action_type
+
+        profile_action_type = 6
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return intersection
+
+    def delete_spawning_profile_from_intersection(self):
+        global intersection
+        global profile_action_type
+
+        profile_action_type = 7
+
+        pd = ProfileDialog()
+        pd.createFormGroupBox()
+        pd.accept()
+
+        return intersection
+
+    def connect_intersections(self):
+        global intersection
+        global selected_object
+
+        selected_object = intersection[0]
+
+        cd = ConnectDialog()
+        cd.createFormGroupBox()
+        cd.accept()
+
+        return selected_object
 
 
 if __name__ == '__main__':
