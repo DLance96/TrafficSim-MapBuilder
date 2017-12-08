@@ -106,6 +106,7 @@ class Intersection(object):
         :param in_lanes: number of incoming lanes that the road contains
         :param out_lanes: number of outgoing lanes that the road contains
 
+        :type name: str
         :type angle: float
         :type distance: float
         :type in_lanes: int
@@ -135,6 +136,7 @@ class Intersection(object):
         """
         Adds an incoming road
         :param road: road that is incoming
+        :type road: Road
         :return: the road that was input
         """
         self.connections.append(road)
@@ -145,6 +147,7 @@ class Intersection(object):
         """
         Adds an outgoing road
         :param road: road that is outgoing
+        :type road: Road
         :return: the road that was input
         """
         self.connections.append(road)

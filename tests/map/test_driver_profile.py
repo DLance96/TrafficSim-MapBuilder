@@ -17,6 +17,7 @@ def get_driver_profile_name(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -58,6 +59,7 @@ def get_over_braking_factor(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -98,6 +100,7 @@ def get_following_time(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -137,6 +140,7 @@ def get_max_accel(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -176,6 +180,7 @@ def get_min_accel(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -215,6 +220,7 @@ def get_max_speed(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -254,6 +260,7 @@ def get_accel_time(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float
@@ -293,6 +300,7 @@ def get_update_time_ms(name, o_b_f, f_t, max_a, min_a, max_s, a_t, u_t_ms):
     :param max_s: max speed that the driver is comfortable with
     :param a_t: the amount of time it takes for the driver to accelerate to a desired speed
     :param u_t_ms: intervals in which the driver checks its surroundings
+    :type name: str
     :type o_b_f: float
     :type f_t: float
     :type max_a: float

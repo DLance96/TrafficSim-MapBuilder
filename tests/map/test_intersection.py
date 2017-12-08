@@ -32,12 +32,14 @@ def add_connection(intersection, angle, distance, in_ln, out_ln, speed_limit, na
     :param distance: length of the new road
     :param in_ln: number of incoming lanes for the new road
     :param out_ln: number of outgoing lanes for the new road
+    :param: name of road
 
     :type intersection: Intersection
     :type angle: float
     :type distance: float
     :type in_ln: int
     :type out_ln: int
+    :type name: str
 
     :return: intersection with the new outgoing road connected
     """
@@ -89,7 +91,7 @@ def get_connections(intersection):
     return intersection.get_connections()
 
 
-def test_is_on_connection():
+def test_is_on_intersection():
     """
     Tests the is_on_connection function
     :return: Test passes if all assertions are true. Tests do not pass if otherwise.

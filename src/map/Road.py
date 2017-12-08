@@ -25,6 +25,7 @@ class Road(object):
         :param out_lanes: number of outgoing lanes of the road
         :param in_lanes: number of incoming lanes of the road
         :param angle: angle at which the road projects from the center of its connected intersection (in radians)
+        :param name: name of the road
 
         :type start_coord: Coordinates
         :type end_coord: Coordinates
@@ -32,6 +33,7 @@ class Road(object):
         :type out_lanes: int
         :type in_lanes: int
         :type angle: float
+        :type name: str
         """
         self.start_coord = start_coord
         self.end_coord = end_coord
