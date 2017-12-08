@@ -43,6 +43,9 @@ class MapBuilder(QMainWindow):
     global spawning_profiles
     global app
 
+    y_offset = 0
+    x_offset = 0
+
     selected_object = None
     profile_action_num = None
     add_driver_action = None
@@ -215,18 +218,18 @@ class MapBuilder(QMainWindow):
         polygon = QtGui.QPolygonF()
 
         for point in road.get_points():
-            polygon.append(QtCore.QPoint(point.x, point.y))
+            polygon.append(QtCore.QPoint(point.x + self.x_offset, point.y + self.y_offset))
 
         qp.drawPolygon(polygon)
 
         qp.setPen(Qt.lightGray)
-        point_one = QtCore.QPoint(road.start_coord.x, road.start_coord.y)
-        point_two = QtCore.QPoint(road.end_coord.x, road.end_coord.y)
+        point_one = QtCore.QPoint(road.start_coord.x + self.x_offset, road.start_coord.y + self.y_offset)
+        point_two = QtCore.QPoint(road.end_coord.x + self.x_offset, road.end_coord.y + self.y_offset)
         qp.drawLine(point_one, point_two)
         qp.setPen(Qt.black)
 
     def draw_intersection(self, center, radius, qp):
-        qp.drawEllipse(center.x - radius, center.y - radius, radius * 2, radius * 2)
+        qp.drawEllipse(center.x - radius + self.x_offset, center.y - radius + self.y_offset, radius * 2, radius * 2)
 
     def paintEvent(self, e):
         global selected_object
@@ -259,10 +262,22 @@ class MapBuilder(QMainWindow):
         selected_object = intersection[0]
         self.update()
 
+    def keyPressEvent(self, event):
+        key = event.key()
+        if key == QtCore.Qt.Key_W:
+            self.y_offset = self.y_offset + 5
+        elif key == QtCore.Qt.Key_A:
+            self.x_offset = self.x_offset + 5
+        elif key == QtCore.Qt.Key_S:
+            self.y_offset = self.y_offset - 5
+        elif key == QtCore.Qt.Key_D:
+            self.x_offset = self.x_offset - 5
+        self.update()
+
     def mousePressEvent(self, QMouseEvent):
         global selected_object
         print(QMouseEvent.pos())
-        converted_position = Coordinates(QMouseEvent.pos().x(), QMouseEvent.pos().y())
+        converted_position = Coordinates(QMouseEvent.pos().x() - self.x_offset, QMouseEvent.pos().y() - self.y_offset)
         for obj in road:
             if obj.is_on_road(converted_position):
                 selected_object = obj
