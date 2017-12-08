@@ -32,6 +32,10 @@ app = None
 testing = False
 
 class MapBuilder(QMainWindow):
+    """
+    The main class for the MapBuilder. Instantiates the UI that is used to construct traffic maps.
+    """
+
     global road
     global intersection
     global driver_profiles
@@ -351,11 +355,19 @@ class MapBuilder(QMainWindow):
 
 
     def open_connect_dialog(self):
+        """
+        Helper method that links the "Connect Intersections" button to its prompt.
+        :return: the prompt that allows users to connect two intersections
+        """
         dialog = ConnectDialog()
         dialog.exec_()
         dialog.show()
 
     def open_add_driver_profile_dialog(self):
+        """
+        Helper method that links the "Add Driver Profile" button to its prompt
+        :return: the prompt that allows users to create a driver profile
+        """
         global profile_action_type
         profile_action_type = 0
         dialog = ProfileDialog()
@@ -363,6 +375,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def open_add_vehicle_profile_dialog(self):
+        """
+        Helper method that links the "Add Vehicle Profile" button to its prompt
+        :return: the prompt that allows users to create a vehicle profile
+        """
         global profile_action_type
         profile_action_type = 1
         dialog = ProfileDialog()
@@ -370,6 +386,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def open_delete_driver_profile_dialog(self):
+        """
+        Helper method that links the "Delete Driver Profile" button to its prompt
+        :return: the prompt that allows users to delete a driver profile
+        """
         global profile_action_type
         profile_action_type = 2
         dialog = ProfileDialog()
@@ -377,6 +397,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def open_delete_vehicle_profile_dialog(self):
+        """
+        Helper method that links the "Delete Vehicle Profile" button to its prompt
+        :return: the prompt that allows users to delete a vehicle profile
+        """
         global profile_action_type
         profile_action_type = 3
         dialog = ProfileDialog()
@@ -384,6 +408,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def open_add_spawn_profile_dialog(self):
+        """
+        Helper method that links the "Add Spawning Profile" button to its prompt
+        :return: the prompt that allows users to create a spawning profile
+        """
         global profile_action_type
         profile_action_type = 4
         dialog = ProfileDialog()
@@ -391,6 +419,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def open_delete_spawn_profile_dialog(self):
+        """
+        Helper method that links the "Delete Spawning Profile" button to its prompt
+        :return: the prompt that allows users to delete a spawning profile
+        """
         global profile_action_type
         profile_action_type = 5
         dialog = ProfileDialog()
@@ -398,6 +430,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def add_profile_to_intersection_dialog(self):
+        """
+        Helper method that links the "Add Spawning Profile" button (in MapObject dropdown) to its prompt
+        :return: the prompt that allows users to add a spawning profile to an intersection
+        """
         global profile_action_type
         profile_action_type = 6
         dialog = ProfileDialog()
@@ -405,6 +441,10 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
     def delete_profile_from_intersection_dialog(self):
+        """
+        Helper method that links the "Remove Spawning Profile" button (in MapObject dropdown) to its prompt
+        :return: the prompt that allows users to remove a spawning profile from an intersection
+        """
         global profile_action_type
         profile_action_type = 7
         dialog = ProfileDialog()
@@ -412,6 +452,9 @@ class MapBuilder(QMainWindow):
         dialog.show()
 
 class ConnectDialog(QDialog):
+    """
+    Dialog for a user to connect two intersections together
+    """
 
     intersection_list = None
 
@@ -431,6 +474,12 @@ class ConnectDialog(QDialog):
         self.setWindowTitle("Connect Intersections")
 
     def createFormGroupBox(self):
+        """
+        This section allows the user to select which intersection to connect to, relative to the
+        intersection that is currently selected
+        :return: Connected intersections
+        """
+
         global selected_object
         global intersection
         layout = QFormLayout()
@@ -450,6 +499,11 @@ class ConnectDialog(QDialog):
         self.formGroupBox.setLayout(layout)
 
     def accept(self):
+        """
+        After the user selects the intersection to connect to and hits "accept", this method then
+        connects two intersections together via a road.
+        :return: Connected intersections.
+        """
         global selected_object
 
         start_roads = selected_object.get_connections()
@@ -532,6 +586,11 @@ class ConnectDialog(QDialog):
         self.close()
 
 class ProfileDialog(QDialog):
+    """
+    This class is used for ALL profile operations. Specifically, it is used to add and delete vehicle, driver
+    and spawning profiles. This class is also used to attach/remove spawning profiles to/from intersections.
+    """
+
     vehicle_name = None
     width = None
     length = None
@@ -602,12 +661,21 @@ class ProfileDialog(QDialog):
             self.setWindowTitle("Remove Spawning Profile from Intersection")
 
     def createFormGroupBox(self):
+        """
+        This function is where a majority of the user input is determined. Depending on the circumstance, users will
+        use this function to create/delete spawning, vehicle and driver profiles, as well as attach/remove spawning
+        profiles from intersections
+        :return: A modified state of the MapBuilder scene depending on which variables are affected.
+        """
         global profile_action_type
         global selected_object
         layout = QFormLayout()
 
 
         if profile_action_type == 0:
+            """
+            In this instance, a user is able to create a driver profile
+            """
             self.formGroupBox = QGroupBox("Attribute Input - Please fill in appropriate values below")
 
             self.driver_name = QLineEdit(self)
@@ -654,6 +722,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
         elif profile_action_type == 1:
+            """
+            In this instance, the user is able to create a vehicle profile
+            """
             self.formGroupBox = QGroupBox("Attribute Input - Please fill in appropriate values below")
 
             self.vehicle_name = QLineEdit(self)
@@ -694,6 +765,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
         elif profile_action_type == 2:
+            """
+            In this case, a user is able to select which pre-existing driver profile to delete.
+            """
             self.formGroupBox = QGroupBox("Select Driver Profile to delete")
 
             driver_profile_names = []
@@ -713,6 +787,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("The affected spawning profile will also be removed from any intersection that currently uses it."))
 
         elif profile_action_type == 3:
+            """
+            In this case, a user is able to select which pre-existing vehicle profile to delete.
+            """
             self.formGroupBox = QGroupBox("Select Vehicle Profile to delete")
 
             vehicle_profile_names = []
@@ -732,6 +809,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("The affected spawning profile will also be removed from any intersection that currently uses it."))
 
         elif profile_action_type == 4:
+            """
+            In this case, a user is able to create a spawning profile
+            """
             self.formGroupBox = QGroupBox("Attribute Input - Please select appropriate values below")
 
             vehicle_profile_name_list = []
@@ -763,6 +843,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("(i.e. names that are not currently in use)"))
 
         elif profile_action_type == 5:
+            """
+            In this case, a user is able to select which pre-existing spawning profile to delete.
+            """
             self.formGroupBox = QGroupBox("Select Spawning Profile to delete")
 
             spawning_profile_names = []
@@ -782,6 +865,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("profile from their lists."))
 
         elif profile_action_type == 6:
+            """
+            In this case, a user is able to select which pre-existing driver profile to add to an intersection.
+            """
             self.formGroupBox = QGroupBox("Select Spawning Profile to add to Intersection")
 
             spawning_profile_names = []
@@ -798,6 +884,9 @@ class ProfileDialog(QDialog):
             layout.addRow(QLabel("Spawning Profile to be added:"), self.add_spawn_intersection)
 
         else:
+            """
+            In this case, a user is able to select which pre-existing driver profile to remove from an intersection.
+            """
             self.formGroupBox = QGroupBox("Select Spawning Profile to delete from Intersection")
 
             spawning_profile_names = []
@@ -818,6 +907,11 @@ class ProfileDialog(QDialog):
 
 
     def accept(self):
+        """
+        Once a user selects "accept" at the end of the createGroupFormBox method, this method is then used
+        to modify the current state of the system based of the actions of the user.
+        :return: a modified state
+        """
         global profile_action_type
         global driver_profiles
         global vehicle_profiles
@@ -826,6 +920,9 @@ class ProfileDialog(QDialog):
         global intersection
 
         if profile_action_type == 0:
+            """
+            A driver profile is instantiated and stored.
+            """
             driver = DriverProfile(self.driver_name.text(), self.over_braking_factor.value(),
                                    self.following_time.value(), self.d_max_accel.value(),
                                    self.d_min_accel.value(), self.d_max_speed.value(),
@@ -845,6 +942,9 @@ class ProfileDialog(QDialog):
                 # need to display error message of some sort when no name is given
 
         elif profile_action_type == 1:
+            """
+            A vehicle profile is instantiated and stored.
+            """
             vehicle = VehicleProfile(self.vehicle_name.text(), self.width.value(), self.length.value(),
                                      self.v_max_accel.value(), self.v_max_braking_decel.value(),
                                      self.v_mass.value(), self.v_max_speed.value())
@@ -860,6 +960,10 @@ class ProfileDialog(QDialog):
                 vehicle_profiles.append(vehicle)
 
         elif profile_action_type == 2:
+            """
+            A driver profile is deleted. Other objects using the driver profile are also deleted (i.e. spawning
+            profile).
+            """
             self.deleted_driver = self.driver_name_list.currentText()
 
             deleted_profile = None
@@ -896,6 +1000,10 @@ class ProfileDialog(QDialog):
                 print(str(profile.get_driver_profile_name()) + ' ')
 
         elif profile_action_type == 3:
+            """
+            A vehicle profile is deleted. Other objects using the vehicle profile are also deleted (i.e. spawning
+            profile).
+            """
             self.deleted_vehicle = self.vehicle_name_list.currentText()
 
             deleted_profile = None
@@ -931,6 +1039,9 @@ class ProfileDialog(QDialog):
                 print(str(profile.get_vehicle_profile_name()) + ' ')
 
         elif profile_action_type == 4:
+            """
+            A spawning profile is created and stored in the system. 
+            """
             # spawn = SpawningProfile(self.spawn_name.text(), None, None)
             self.vehicle_name_for_spawn = self.vehicle_for_spawn.currentText()
             self.driver_name_for_spawn = self.driver_for_spawn.currentText()
@@ -968,6 +1079,10 @@ class ProfileDialog(QDialog):
                 print(str(profile.get_spawning_profile_name()) + ' ')
 
         elif profile_action_type == 5:
+            """
+            A spawning profile is deleted. Intersections will also remove the spawning profile from their list of
+            connected spawning profiles. 
+            """
             self.deleted_spawn = self.spawn_name_list.currentText()
 
             deleted_profile = None
@@ -994,6 +1109,9 @@ class ProfileDialog(QDialog):
                 print(str(profile.get_spawning_profile_name()) + ' ')
 
         elif profile_action_type == 6:
+            """
+            This section connects a spawning profile to an intersection.
+            """
             self.intersection_add_spawn = self.add_spawn_intersection.currentText()
 
             added_profile = None
@@ -1015,6 +1133,9 @@ class ProfileDialog(QDialog):
                 selected_object.add_spawning_profile(added_profile)
 
         else:
+            """
+            This section removes a spawning profile form an intersection
+            """
             self.intersection_deleted_spawn = self.delete_spawn_intersection.currentText()
 
             profile_to_delete = None
