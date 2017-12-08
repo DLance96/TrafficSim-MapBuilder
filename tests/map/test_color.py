@@ -174,5 +174,5 @@ def test_update_b():
     update_b(color, 47)
 
     assert color.get_r() == 100
-    assert color.get_g() == 143
+    assert color.get_g() == 142
     assert color.get_b() == 47

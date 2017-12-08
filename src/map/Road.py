@@ -174,10 +174,22 @@ class Road(object):
         p_2 = point_list[1]
 
         # right of the ending point
-        p_3 = point_list[2]
+        p_3 = point_list[3]
 
         # left of the ending point
-        p_4 = point_list[3]
+        p_4 = point_list[2]
+
+        cx = coordinate.get_x()
+        cy = coordinate.get_y()
+
+        p1x = p_1.get_x()
+        p1y = p_1.get_y()
+        p2x = p_2.get_x()
+        p2y = p_2.get_y()
+        p3x = p_3.get_x()
+        p3y = p_3.get_y()
+        p4x = p_4.get_x()
+        p4y = p_4.get_y()
 
         # this chunk of code determines the area of the rectangle
         width_delta_x = p_2.get_x() - p_1.get_x()
@@ -193,57 +205,58 @@ class Road(object):
 
         # this next chunk of code determines the lengths of triangles created between rect sides and the coord point
         # for reference, point 1 = A, point 2 = B, point 3 = C, and point 4 = D
-        ab_delta_x = p_2.get_x() - p_1.get_x()
-        ab_delta_y = p_2.get_y() - p_1.get_y()
+        ab_delta_x = p2x - p1x
+        ab_delta_y = p2y - p1y
 
-        dc_delta_x = p_4.get_x() - p_3.get_x()
-        dc_delta_y = p_4.get_y() - p_3.get_y()
+        cd_delta_x = p4x - p3x
+        cd_delta_y = p4y - p3y
 
-        ad_delta_x = p_4.get_x() - p_1.get_x()
-        ad_delta_y = p_4.get_y() - p_1.get_y()
+        ac_delta_x = p3x - p1x
+        ac_delta_y = p3y - p1y
 
-        bc_delta_x = p_3.get_x() - p_2.get_x()
-        bc_delta_y = p_3.get_y() - p_2.get_y()
+        bd_delta_x = p4x - p2x
+        bd_delta_y = p4y - p2y
 
-        length_ab = math.sqrt((ab_delta_x * ab_delta_x) + (ab_delta_y * ab_delta_y))
-        length_dc = math.sqrt((dc_delta_x * dc_delta_x) + (dc_delta_y * dc_delta_y))
-        length_ad = math.sqrt((ad_delta_x * ad_delta_x) + (ad_delta_y * ad_delta_y))
-        length_bc = math.sqrt((bc_delta_x * bc_delta_x) + (bc_delta_y * bc_delta_y))
+        lab = math.sqrt((ab_delta_x * ab_delta_x) + (ab_delta_y * ab_delta_y))
+        lcd = math.sqrt((cd_delta_x * cd_delta_x) + (cd_delta_y * cd_delta_y))
+        lac = math.sqrt((ac_delta_x * ac_delta_x) + (ac_delta_y * ac_delta_y))
+        lbd = math.sqrt((bd_delta_x * bd_delta_x) + (bd_delta_y * bd_delta_y))
 
-        pa_delta_x = coordinate.get_x() - p_1.get_x()
-        pa_delta_y = coordinate.get_y() - p_1.get_y()
+        pa_delta_x = cx - p1x
+        pa_delta_y = cy - p1y
 
-        pb_delta_x = coordinate.get_x() - p_2.get_x()
-        pb_delta_y = coordinate.get_y() - p_2.get_y()
+        pb_delta_x = cx - p2x
+        pb_delta_y = cy - p2y
 
-        pc_delta_x = coordinate.get_x() - p_3.get_x()
-        pc_delta_y = coordinate.get_y() - p_3.get_y()
+        pc_delta_x = cx - p3x
+        pc_delta_y = cy - p3y
 
-        pd_delta_x = coordinate.get_x() - p_4.get_x()
-        pd_delta_y = coordinate.get_y() - p_4.get_y()
+        pd_delta_x = cx - p4x
+        pd_delta_y = cy - p4y
 
-        length_pa = math.sqrt((pa_delta_x * pa_delta_x) + (pa_delta_y * pa_delta_y))
-        length_pb = math.sqrt((pb_delta_x * pb_delta_x) + (pb_delta_y * pb_delta_y))
-        length_pc = math.sqrt((pc_delta_x * pc_delta_x) + (pc_delta_y * pc_delta_y))
-        length_pd = math.sqrt((pd_delta_x * pd_delta_x) + (pd_delta_y * pd_delta_y))
+        lpa = math.sqrt((pa_delta_x * pa_delta_x) + (pa_delta_y * pa_delta_y))
+        lpb = math.sqrt((pb_delta_x * pb_delta_x) + (pb_delta_y * pb_delta_y))
+        lpc = math.sqrt((pc_delta_x * pc_delta_x) + (pc_delta_y * pc_delta_y))
+        lpd = math.sqrt((pd_delta_x * pd_delta_x) + (pd_delta_y * pd_delta_y))
 
         # this chunk of code determines the sum of the area of the triangles generated above
-        pab_half_perim = (length_pa + length_ab + length_pb) / 2.0
-        pbc_half_perim = (length_pb + length_pc + length_bc) / 2.0
-        pcd_half_perim = (length_pc + length_pd + length_dc) / 2.0
-        pad_half_perim = (length_pa + length_pd + length_ad) / 2.0
+        pab_half_perim = (lpa + lab + lpb) / 2.0
+        pbd_half_perim = (lbd + lpb + lpd) / 2.0
+        pcd_half_perim = (lcd + lpc + lpd) / 2.0
+        pac_half_perim = (lac + lpa + lpc) / 2.0
 
-        sqrt_inner_pab = pab_half_perim * (pab_half_perim - length_pa) * (pab_half_perim - length_ab) * (pab_half_perim - length_pb)
-        sqrt_inner_pbc = pbc_half_perim * (pbc_half_perim - length_pb) * (pbc_half_perim - length_bc) * (pbc_half_perim - length_pc)
-        sqrt_inner_pcd = pcd_half_perim * (pcd_half_perim - length_pc) * (pcd_half_perim - length_pd) * (pcd_half_perim - length_dc)
-        sqrt_inner_pad = pad_half_perim * (pad_half_perim - length_pa) * (pad_half_perim - length_pd) * (pad_half_perim - length_ad)
+        sqrt_inner_pab = pab_half_perim * (pab_half_perim - lpa) * (pab_half_perim - lab) * (pab_half_perim - lpb)
+        sqrt_inner_pbd = pbd_half_perim * (pbd_half_perim - lbd) * (pbd_half_perim - lpb) * (pbd_half_perim - lpd)
+        sqrt_inner_pcd = pcd_half_perim * (pcd_half_perim - lcd) * (pcd_half_perim - lpc) * (pcd_half_perim - lpd)
+        sqrt_inner_pac = pac_half_perim * (pac_half_perim - lac) * (pac_half_perim - lpa) * (pac_half_perim - lpc)
 
         area_pab = math.sqrt(sqrt_inner_pab)
-        area_pbc = math.sqrt(sqrt_inner_pbc)
+        area_pbd = math.sqrt(sqrt_inner_pbd)
         area_pcd = math.sqrt(sqrt_inner_pcd)
-        area_pad = math.sqrt(sqrt_inner_pad)
+        area_pac = math.sqrt(sqrt_inner_pac)
 
-        tot_triangle_sum = area_pab + area_pbc + area_pcd + area_pad
+        # the sum of all calculated triangles
+        tot_triangle_sum = area_pab + area_pbd + area_pcd + area_pac
 
         if tot_triangle_sum <= rect_area:
             return True
