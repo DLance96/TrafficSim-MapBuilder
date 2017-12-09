@@ -100,11 +100,11 @@ class MapBuilder(QMainWindow):
         #StopLight Actions
         self.edit_yellow_light = QAction("Edit Yellow Light Length", self)
         self.add_cycle = QAction("Add Cycle", self)
-        self.remove_cycle = QAction("Remove Cycle", self)
+        # self.remove_cycle = QAction("Remove Cycle", self)
         self.reset_light = QAction("Reset Light", self)
         self.traffic_light_menu.addAction(self.edit_yellow_light)
         self.traffic_light_menu.addAction(self.add_cycle)
-        self.traffic_light_menu.addAction(self.remove_cycle)
+        # self.traffic_light_menu.addAction(self.remove_cycle)
         self.traffic_light_menu.addAction(self.reset_light)
         self.edit_yellow_light.triggered.connect(self.open_update_yellow_dialog)
         self.add_cycle.triggered.connect(self.open_add_cycle_dialog)
@@ -313,7 +313,7 @@ class MapBuilder(QMainWindow):
                 else:
                     self.auto_connect.setEnabled(False)
                 self.traffic_light_menu.setEnabled(True)
-                self.remove_cycle.setEnabled(False)
+                # self.remove_cycle.setEnabled(False)
                 # self.auto_connect.setEnabled(True)
                 self.add_action.setEnabled(True)
                 self.add_spawn.setEnabled(True)
