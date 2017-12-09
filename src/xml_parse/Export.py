@@ -120,17 +120,3 @@ def valid_intersections(intersections):
     """
     # TODO check to make sure no overlapping roads on any intersection
     return True
-
-
-if __name__ == '__main__':
-    # roads = []
-    # intersections = []
-    # intersection = Intersection(Coordinates(50, 70), 20)
-    # road = Road(Coordinates(90, 70), Coordinates(70, 70), 20, 1, 1, math.pi)
-    # intersection.add_incoming_connection(road)
-    # road.add_end_connection(intersection)
-    # roads.append(road)
-    # intersections.append(intersection)
-    # export_xml(roads, intersections, "temp.xml")
-    pass
-

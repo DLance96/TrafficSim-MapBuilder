@@ -52,6 +52,12 @@ def remove_visited_roads(roads, visited_roads):
 
 
 def add_angles(angle1, angle2):
+    """
+    Adds to angles and keeps them in the range 0 < x < 2*PI
+    :param angle1: double angle in radians
+    :param angle2: double angle in radians
+    :return: angle result of the addition
+    """
     return_angle = angle1 + angle2
     if return_angle >= 2 * math.pi:
         return_angle -= 2 * math.pi
