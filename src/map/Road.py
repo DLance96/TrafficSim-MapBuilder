@@ -15,7 +15,7 @@ class Road(object):
 
     """
 
-    def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle):
+    def __init__(self, start_coord, end_coord, length, out_lanes, in_lanes, angle, speed_limit, name):
         """
         Establishes a road object
 
@@ -25,6 +25,7 @@ class Road(object):
         :param out_lanes: number of outgoing lanes of the road
         :param in_lanes: number of incoming lanes of the road
         :param angle: angle at which the road projects from the center of its connected intersection (in radians)
+        :param name: name of the road
 
         :type start_coord: Coordinates
         :type end_coord: Coordinates
@@ -32,6 +33,7 @@ class Road(object):
         :type out_lanes: int
         :type in_lanes: int
         :type angle: float
+        :type name: str
         """
         self.start_coord = start_coord
         self.end_coord = end_coord
@@ -39,13 +41,46 @@ class Road(object):
         self.out_lanes = out_lanes
         self.in_lanes = in_lanes
         self.angle = angle
+        self.speed_limit = speed_limit
         self.start_connection = None
         self.end_connection = None
+        self.name = name
+
 
     @classmethod
     def create_import_road(cls, length, out_lanes, in_lanes, angle):
         obj = cls(Coordinates(0, 0), Coordinates(0, 0), length, out_lanes, in_lanes, angle)
         return obj
+
+    def get_speed_limit(self):
+        """
+        :return: speed limit of the road
+        """
+        return self.speed_limit
+
+    def update_speed_limit(self, new_speed):
+        """
+        Updates the speed limit of the road
+        :param new_speed: new speed limit
+        :type new_speed: int
+        :return: None
+        """
+        self.speed_limit = new_speed
+
+    def get_name(self):
+        """
+        :return: name of the road
+        """
+        return self.name
+
+    def update_name(self, new_name):
+        """
+        Updates the name of the road
+        :param new_name: new name
+        :type new_name: str
+        :return: None
+        """
+        self.name = new_name
 
     def get_start_coords(self):
         """
@@ -83,32 +118,11 @@ class Road(object):
         """
         return self.angle
 
-    def update_start_coords(self, new_start_coord):
+    def get_compatible_angle(self):
         """
-        Updates the start coordinates of the road
-        :param new_start_coord: new start coordinates of the road
-        :type new_start_coord: Coordinates
-        :return: None
+        :return: angle from which this road projects from the center of its connected intersection (in radians)
         """
-        self.start_coord = new_start_coord
-
-    def update_end_coords(self, new_end_coord):
-        """
-        Updates the end coordinates of the road
-        :param new_end_coord: new end coordinates of the road
-        :type new_end_coord: Coordinates
-        :return: None
-        """
-        self.end_coord = new_end_coord
-
-    def update_length(self, new_length):
-        """
-        Updates the length of the road
-        :param new_length: new length of the road
-        :type new_length: float
-        :return: None
-        """
-        self.length = new_length
+        return ((5*math.pi/2) - self.angle) % (2 * math.pi)
 
     def update_out_lanes(self, new_out_lanes):
         """
@@ -128,15 +142,6 @@ class Road(object):
         """
         self.in_lanes = new_in_lanes
 
-    def update_angle(self, new_angle):
-        """
-        Updates the angle from which the road projects from the center of the intersection.
-        :param new_angle: new angle of the road (in radians)
-        :type new_angle: float
-        :return: None
-        """
-        self.angle = new_angle
-
     def is_on_road(self, coordinate):
         """
         Determines if a given coordinate point is within the boundaries of the current road
@@ -146,27 +151,101 @@ class Road(object):
         """
         point_list = self.get_points()
 
-        incoming_start = point_list[0]
-        outgoing_start = point_list[1]
-        incoming_end = point_list[2]
-        outgoing_end = point_list[3]
+        # left of the starting point
+        p_1 = point_list[0]
 
-        min_x_min_y = Coordinates(incoming_start.get_x(), outgoing_start.get_y())
-        min_x_max_y = Coordinates(incoming_start.get_x(), incoming_end.get_y())
-        max_x_max_y = Coordinates(outgoing_end.get_x(), incoming_end.get_y())
-        max_x_min_y = Coordinates(outgoing_start.get_x(), outgoing_end.get_y())
+        # right of the starting point
+        p_2 = point_list[1]
 
-        if (coordinate.x > self.start_coord.x) & (coordinate.x < self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
-                    return True
+        # right of the ending point
+        p_3 = point_list[3]
 
-        if (coordinate.x < self.start_coord.x) & (coordinate.x > self.end_coord.x):
-            if coordinate.y > (self.start_coord.get_y() - (self.in_lanes * LANE_WIDTH)):
-                if coordinate.y < (self.start_coord.get_y() + (self.out_lanes * LANE_WIDTH)):
-                    return True
+        # left of the ending point
+        p_4 = point_list[2]
 
-        return False
+        cx = coordinate.get_x()
+        cy = coordinate.get_y()
+
+        p1x = p_1.get_x()
+        p1y = p_1.get_y()
+        p2x = p_2.get_x()
+        p2y = p_2.get_y()
+        p3x = p_3.get_x()
+        p3y = p_3.get_y()
+        p4x = p_4.get_x()
+        p4y = p_4.get_y()
+
+        # this chunk of code determines the area of the rectangle
+        width_delta_x = p_2.get_x() - p_1.get_x()
+        width_delta_y = p_2.get_y() - p_1.get_y()
+        length_delta_x = p_4.get_x() - p_1.get_x()
+        length_delta_y = p_4.get_y() - p_1.get_y()
+
+        rect_width = math.sqrt((width_delta_x * width_delta_x) + (width_delta_y * width_delta_y))
+        rect_length = math.sqrt((length_delta_x * length_delta_x) + (length_delta_y * length_delta_y))
+
+        # area of the rectangle (road)
+        rect_area = rect_width * rect_length
+
+        # this next chunk of code determines the lengths of triangles created between rect sides and the coord point
+        # for reference, point 1 = A, point 2 = B, point 3 = C, and point 4 = D
+        ab_delta_x = p2x - p1x
+        ab_delta_y = p2y - p1y
+
+        cd_delta_x = p4x - p3x
+        cd_delta_y = p4y - p3y
+
+        ac_delta_x = p3x - p1x
+        ac_delta_y = p3y - p1y
+
+        bd_delta_x = p4x - p2x
+        bd_delta_y = p4y - p2y
+
+        lab = math.sqrt((ab_delta_x * ab_delta_x) + (ab_delta_y * ab_delta_y))
+        lcd = math.sqrt((cd_delta_x * cd_delta_x) + (cd_delta_y * cd_delta_y))
+        lac = math.sqrt((ac_delta_x * ac_delta_x) + (ac_delta_y * ac_delta_y))
+        lbd = math.sqrt((bd_delta_x * bd_delta_x) + (bd_delta_y * bd_delta_y))
+
+        pa_delta_x = cx - p1x
+        pa_delta_y = cy - p1y
+
+        pb_delta_x = cx - p2x
+        pb_delta_y = cy - p2y
+
+        pc_delta_x = cx - p3x
+        pc_delta_y = cy - p3y
+
+        pd_delta_x = cx - p4x
+        pd_delta_y = cy - p4y
+
+        lpa = math.sqrt((pa_delta_x * pa_delta_x) + (pa_delta_y * pa_delta_y))
+        lpb = math.sqrt((pb_delta_x * pb_delta_x) + (pb_delta_y * pb_delta_y))
+        lpc = math.sqrt((pc_delta_x * pc_delta_x) + (pc_delta_y * pc_delta_y))
+        lpd = math.sqrt((pd_delta_x * pd_delta_x) + (pd_delta_y * pd_delta_y))
+
+        # this chunk of code determines the sum of the area of the triangles generated above
+        pab_half_perim = (lpa + lab + lpb) / 2.0
+        pbd_half_perim = (lbd + lpb + lpd) / 2.0
+        pcd_half_perim = (lcd + lpc + lpd) / 2.0
+        pac_half_perim = (lac + lpa + lpc) / 2.0
+
+        sqrt_inner_pab = pab_half_perim * (pab_half_perim - lpa) * (pab_half_perim - lab) * (pab_half_perim - lpb)
+        sqrt_inner_pbd = pbd_half_perim * (pbd_half_perim - lbd) * (pbd_half_perim - lpb) * (pbd_half_perim - lpd)
+        sqrt_inner_pcd = pcd_half_perim * (pcd_half_perim - lcd) * (pcd_half_perim - lpc) * (pcd_half_perim - lpd)
+        sqrt_inner_pac = pac_half_perim * (pac_half_perim - lac) * (pac_half_perim - lpa) * (pac_half_perim - lpc)
+
+        area_pab = math.sqrt(sqrt_inner_pab)
+        area_pbd = math.sqrt(sqrt_inner_pbd)
+        area_pcd = math.sqrt(sqrt_inner_pcd)
+        area_pac = math.sqrt(sqrt_inner_pac)
+
+        # the sum of all calculated triangles
+        tot_triangle_sum = area_pab + area_pbd + area_pcd + area_pac
+
+        if tot_triangle_sum <= rect_area:
+            return True
+        else:
+            return False
 
     def add_start_connection(self, start_connection):
         """
@@ -177,27 +256,27 @@ class Road(object):
         """
         self.start_connection = start_connection
 
-    def generate_start_connection(self, length):
+    def generate_start_connection(self, length, speed_limit):
         """
         Adds a connecting object to the start of the road
         :param length: length of intersection connection to be created
         :return: new Intersection map object
         """
-        corrected_angle = angle + math.pi
+        corrected_angle = self.angle + math.pi
 
         start_x = self.start_coord.x + (length * math.sin(corrected_angle))
         start_y = self.start_coord.y + (length * math.cos(corrected_angle))
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = traffic_map.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length, speed_limit)
 
         intersection.add_incoming_connection(self)
         self.start_connection = intersection
 
         return intersection
 
-    def generate_end_connection(self, length):
+    def generate_end_connection(self, length, speed_limit):
         """
         Adds a connecting object to the start of the road
         :param length: length of intersection connection to be created
@@ -208,7 +287,7 @@ class Road(object):
 
         central_point = Coordinates(start_x, start_y)
 
-        intersection = traffic_map.Intersection.Intersection(central_point, length)
+        intersection = traffic_map.Intersection.Intersection(central_point, length, speed_limit)
 
         intersection.add_incoming_connection(self)
         self.end_connection = intersection
@@ -272,88 +351,3 @@ class Road(object):
         points.append(Coordinates(x_left_of_end, y_left_of_end))
 
         return points
-
-
-def main():
-    """
-    Main method for the road class
-    :return: Prints attribute values for the current road
-    """
-    start_coord = Coordinates(3, 1)
-    end_coord = Coordinates(4, 8)
-    out_lanes = 4
-    in_lanes = 3
-    length = 2
-    angle = 45.0
-
-    r = Road(start_coord, end_coord, length, out_lanes, in_lanes, angle)
-    r2 = Road(start_coord, end_coord, 12, 23, 54, 90.0)
-
-    road_coord = r.get_start_coords()
-    end_road_coord = r.get_end_coords()
-
-    start_x = road_coord.get_x()
-    start_y = road_coord.get_y()
-    end_x = end_road_coord.get_x()
-    end_y = end_road_coord.get_y()
-
-    print('start coords: (' + str(start_x) + ', ' + str(start_y) + ')')
-    print('out lanes: ' + str(r.get_out_lanes()))
-    print('in lanes: ' + str(r.get_in_lanes()))
-    print('length: ' + str(r.get_length()))
-    print('end coords: (' + str(end_x) + ', ' + str(end_y) + ')')
-    print(' ')
-
-    new_coord = Coordinates(7, 4)
-    new_end_coord = Coordinates(17, 9)
-
-    r.update_start_coords(new_coord)
-    r.update_end_coords(new_end_coord)
-    r.update_length(10)
-    r.update_out_lanes(96)
-    r.update_in_lanes(12)
-
-    new_road_coord = r.get_start_coords()
-    new_road_end_coord = r.get_end_coords()
-    new_x = new_road_coord.get_x()
-    new_y = new_road_coord.get_y()
-    new_end_x = new_road_end_coord.get_x()
-    new_end_y = new_road_end_coord.get_y()
-
-    print('new coords: (' + str(new_x) + ', ' + str(new_y) + ')')
-    print('out lanes: ' + str(r.get_out_lanes()))
-    print('in lanes: ' + str(r.get_in_lanes()))
-    print('length: ' + str(r.get_length()))
-    print('end coords: (' + str(new_end_x) + ', ' + str(new_end_y) + ')')
-    print(' ')
-
-    print('angle of road in radians: ' + str(r.angle))
-    print('angle of road in degrees: ' + str(r.get_angle() * (180.0/math.pi)))
-    print(' ')
-
-    r.update_angle(87.5)
-
-    print('updated angle of road in radians: ' + str(r.angle))
-    print('updated angle of road in degrees: ' + str(r.get_angle() * (180.0/math.pi)))
-    print(' ')
-
-    p_start_coord = Coordinates(1, 1)
-    p_end_coord = Coordinates(1, 5)
-    p_length = 4
-    p_out_lanes = 2
-    p_in_lanes = 3
-    p_angle = 90.0
-
-    p = Road(p_start_coord, p_end_coord, p_length, p_out_lanes, p_in_lanes, p_angle)
-
-    p_points = p.get_points()
-
-    for point in p_points:
-        print('( ' + str(point.get_x()) + ', ' + str(point.get_y()) + ' )')
-
-    print(' ')
-    print(str(r.is_on_road(p_start_coord)))
-
-
-if __name__ == '__main__':
-    main()

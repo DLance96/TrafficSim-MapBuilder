@@ -81,7 +81,7 @@ def get_end_connection(road):
     return road.get_end_connection()
 
 
-def get_start_coords(start_coords, end_coords, length, out_ln, in_ln, angle):
+def get_start_coords(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
     :param start_coords: start coordinates of a road
     :param end_coords: end coordinates of a road
@@ -89,6 +89,8 @@ def get_start_coords(start_coords, end_coords, length, out_ln, in_ln, angle):
     :param out_ln: number of outgoing lanes of the road
     :param in_ln: number of incoming lanes of the road
     :param angle: angle of the road protruding from the intersection
+    :param speed_limit: speed limit of road
+    :param name: name of road
 
     :type start_coords: Coordinates
     :type end_coords: Coordinates
@@ -96,14 +98,16 @@ def get_start_coords(start_coords, end_coords, length, out_ln, in_ln, angle):
     :type out_ln: int
     :type in_ln: int
     :type angle: float
+    :type name: str
+    :type speed_limit: int
 
     :return: Start coordinates of a road
     """
-    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle)
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
     return road.get_start_coords()
 
 
-def get_end_coords(start_coords, end_coords, length, out_ln, in_ln, angle):
+def get_end_coords(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
     :param start_coords: start coordinates of a road
     :param end_coords: end coordinates of a road
@@ -111,6 +115,8 @@ def get_end_coords(start_coords, end_coords, length, out_ln, in_ln, angle):
     :param out_ln: number of outgoing lanes of the road
     :param in_ln: number of incoming lanes of the road
     :param angle: angle of the road protruding from the intersection
+    :param speed_limit: speed limit of road
+    :param: name of road
 
     :type start_coords: Coordinates
     :type end_coords: Coordinates
@@ -118,14 +124,16 @@ def get_end_coords(start_coords, end_coords, length, out_ln, in_ln, angle):
     :type out_ln: int
     :type in_ln: int
     :type angle: float
+    :type name: str
+    :type speed_limit: int
 
     :return: end coordinates of a road
     """
-    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle)
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
     return road.get_end_coords()
 
 
-def get_length(start_coords, end_coords, length, out_ln, in_ln, angle):
+def get_length(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
     :param start_coords: start coordinates of a road
     :param end_coords: end coordinates of a road
@@ -133,6 +141,8 @@ def get_length(start_coords, end_coords, length, out_ln, in_ln, angle):
     :param out_ln: number of outgoing lanes of the road
     :param in_ln: number of incoming lanes of the road
     :param angle: angle of the road protruding from the intersection
+    :param: name of road
+    :param speed_limit: speed limit of road
 
     :type start_coords: Coordinates
     :type end_coords: Coordinates
@@ -140,14 +150,16 @@ def get_length(start_coords, end_coords, length, out_ln, in_ln, angle):
     :type out_ln: int
     :type in_ln: int
     :type angle: float
+    :type name: str
+    :type speed_limit: int
 
     :return: length of the road
     """
-    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle)
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
     return road.get_length()
 
 
-def get_out_lanes(start_coords, end_coords, length, out_ln, in_ln, angle):
+def get_out_lanes(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
     :param start_coords: start coordinates of a road
     :param end_coords: end coordinates of a road
@@ -155,6 +167,8 @@ def get_out_lanes(start_coords, end_coords, length, out_ln, in_ln, angle):
     :param out_ln: number of outgoing lanes of the road
     :param in_ln: number of incoming lanes of the road
     :param angle: angle of the road protruding from the intersection
+    :param: name of road
+    :param speed_limit: speed limit of road
 
     :type start_coords: Coordinates
     :type end_coords: Coordinates
@@ -162,14 +176,16 @@ def get_out_lanes(start_coords, end_coords, length, out_ln, in_ln, angle):
     :type out_ln: int
     :type in_ln: int
     :type angle: float
+    :type name: str
+    :type speed_limit: int
 
     :return: number of outgoing lanes for a road
     """
-    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle)
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
     return road.get_out_lanes()
 
 
-def get_in_lanes(start_coords, end_coords, length, out_ln, in_ln, angle):
+def get_in_lanes(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
     :param start_coords: start coordinates of a road
     :param end_coords: end coordinates of a road
@@ -177,6 +193,8 @@ def get_in_lanes(start_coords, end_coords, length, out_ln, in_ln, angle):
     :param out_ln: number of outgoing lanes of the road
     :param in_ln: number of incoming lanes of the road
     :param angle: angle of the road protruding from the intersection
+    :param: name of road
+    :param speed_limit: speed limit of road
 
     :type start_coords: Coordinates
     :type end_coords: Coordinates
@@ -184,14 +202,16 @@ def get_in_lanes(start_coords, end_coords, length, out_ln, in_ln, angle):
     :type out_ln: int
     :type in_ln: int
     :type angle: float
+    :type name: str
+    :type speed_limit: int
 
     :return: number of incoming lanes for a road
     """
-    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle)
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
     return road.get_in_lanes()
 
 
-def get_angle(start_coords, end_coords, length, out_ln, in_ln, angle):
+def get_angle(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
     :param start_coords: start coordinates of a road
     :param end_coords: end coordinates of a road
@@ -199,6 +219,8 @@ def get_angle(start_coords, end_coords, length, out_ln, in_ln, angle):
     :param out_ln: number of outgoing lanes of the road
     :param in_ln: number of incoming lanes of the road
     :param angle: angle of the road protruding from the intersection
+    :param: name of road
+    :param speed_limit: speed limit of road
 
     :type start_coords: Coordinates
     :type end_coords: Coordinates
@@ -206,17 +228,265 @@ def get_angle(start_coords, end_coords, length, out_ln, in_ln, angle):
     :type out_ln: int
     :type in_ln: int
     :type angle: float
+    :type name: str
+    :type speed_limit: int
 
     :return: angle that the road protrudes from the center of the intersection.
     """
-    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle)
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
     return road.get_angle()
 
 
-def test_get_points():
+def get_name(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
     """
-    Tests the get_points function
-    :return: Asserts true if test cases pass, false if otherwise
+    :param start_coords: start coordinates of a road
+    :param end_coords: end coordinates of a road
+    :param length: length of the road
+    :param out_ln: number of outgoing lanes of the road
+    :param in_ln: number of incoming lanes of the road
+    :param angle: angle of the road protruding from the intersection
+    :param: name of road
+    :param speed_limit: speed limit of road
+
+    :type start_coords: Coordinates
+    :type end_coords: Coordinates
+    :type length: float
+    :type out_ln: int
+    :type in_ln: int
+    :type angle: float
+    :type name: str
+    :type speed_limit: int
+
+    :return: name of the road
+    """
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
+    return road.get_name()
+
+
+def get_speed_limit(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name):
+    """
+    :param start_coords: start coordinates of a road
+    :param end_coords: end coordinates of a road
+    :param length: length of the road
+    :param out_ln: number of outgoing lanes of the road
+    :param in_ln: number of incoming lanes of the road
+    :param angle: angle of the road protruding from the intersection
+    :param: name of road
+    :param speed_limit: speed limit of road
+
+    :type start_coords: Coordinates
+    :type end_coords: Coordinates
+    :type length: float
+    :type out_ln: int
+    :type in_ln: int
+    :type angle: float
+    :type name: str
+    :type speed_limit: int
+
+    :return: speed limit of the road
+    """
+    road = Road(start_coords, end_coords, length, out_ln, in_ln, angle, speed_limit, name)
+    return road.get_speed_limit()
+
+
+def update_out_lanes(road, ol):
+    """
+    Updates the number of out lanes on the road
+    :param road: road
+    :param ol: new number of out lanes
+    :type road: Road
+    :type ol: int
+    :return: updated road
+    """
+    road.update_out_lanes(ol)
+
+
+def test_update_out_lanes():
+    """
+    Tests the update_out_lanes function
+    :return: Tests pass if assertions pass
+    """
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 2
+    in_ln = 1
+    angle = math.pi / 2
+    speed_limit = 50
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, "test")
+
+    assert road.get_out_lanes() == 2
+
+    update_out_lanes(road, 4)
+
+    assert road.get_out_lanes() == 4
+
+
+def update_in_lanes(road, il):
+    """
+    Updates the number of in lanes on the road
+    :param road: road
+    :param il: new number of in lanes
+    :type road: Road
+    :type il: int
+    :return: updated road
+    """
+    road.update_in_lanes(il)
+
+
+def test_update_in_lanes():
+    """
+    Tests the update_in_lanes function
+    :return: Tests pass if assertions pass
+    """
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 2
+    in_ln = 1
+    angle = math.pi / 2
+    speed_limit = 50
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, "test")
+
+    assert road.get_in_lanes() == 1
+
+    update_in_lanes(road, 5)
+
+    assert road.get_in_lanes() == 5
+
+
+def update_speed_limit(road, sl):
+    """
+    Updates the speed limit of the road
+    :param road: road
+    :param sl: new speed limit
+    :type road: Road
+    :type sl: int
+    :return: updated road
+    """
+    road.update_speed_limit(sl)
+
+
+def test_update_speed_limit():
+    """
+    Tests the update_speed_limit function
+    :return: Tests pass if assertions pass
+    """
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 2
+    in_ln = 1
+    angle = math.pi / 2
+    speed_limit = 50
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, "test")
+
+    assert road.get_speed_limit() == 50
+
+    update_speed_limit(road, 85)
+
+    assert road.get_speed_limit() == 85
+
+
+def update_name(road, name):
+    """
+    Updates the name of the road
+    :param road: road
+    :param name: new name
+    :type road: Road
+    :type name: str
+    :return: updated road
+    """
+    road.update_name(name)
+
+
+def test_update_name():
+    """
+    Tests the update_name function
+    :return: Tests pass if assertions pass
+    """
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 2
+    in_ln = 1
+    angle = math.pi / 2
+    speed_limit = 50
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, "test")
+
+    assert road.get_name() == "test"
+
+    update_name(road, "updatedname")
+
+    assert road.get_name() == "updatedname"
+
+
+def generate_start_connection(road, radius, speed_limit):
+    """
+    Generates an intersection at the start of a road
+    :param road: Road that the intersection will be added to
+    :param radius: Radius of the intersection
+    :param speed_limit: speed limit of intersection
+
+    :type road: Road
+    :type radius: float
+    :type speed_limit: int
+
+    :return: A road with an updated start connection
+    """
+    road.generate_start_connection(radius, speed_limit)
+
+
+def generate_end_connection(road, radius, speed_limit):
+    """
+    Generates an intersection at the end of a road
+    :param road: Road that the intersection will be connected to
+    :param radius: Radius of the intersection
+    :param speed_limit: Speed limit of intersection
+
+    :type road: Road
+    :type radius: float
+    :type speed_limit: int
+    :return: A road with an updated end connection
+    """
+    road.generate_end_connection(radius, speed_limit)
+
+
+def test_generate_start_connection():
+    """
+    Tests the generate_start_connection function of Road
+    :return: Tests pass if start connection is generated properly. Fail if otherwise.
+    """
+
+    start = Coordinates(90, 70)
+    end = Coordinates(70, 70)
+    length = 20
+    out_ln = 1
+    in_ln = 1
+    angle = math.pi / 2
+    speed_limit = 50
+
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
+
+    assert (road.get_start_connection() is None)
+    assert (road.get_end_connection() is None)
+
+    generate_start_connection(road, 10, 35)
+
+    assert (road.get_start_connection() is not None)
+    assert (road.get_end_connection() is None)
+
+    i = road.get_start_connection()
+
+    assert i.get_radius() == 10
+    assert i.get_center().get_x() == 80
+    assert i.get_center().get_y() == 70
+
+
+def test_generate_end_connection():
+    """
+    Tests the generate_end_connection function of Road
+    :return: Tests pass if end connection is generated properly. Fail if otherwise.
     """
     start = Coordinates(90, 70)
     end = Coordinates(70, 70)
@@ -224,45 +494,58 @@ def test_get_points():
     out_ln = 1
     in_ln = 1
     angle = math.pi / 2
+    speed_limit = 40
 
-    road = Road(start, end, length, out_ln, in_ln, angle)
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
+
+    assert (road.get_start_connection() is None)
+    assert (road.get_end_connection() is None)
+
+    generate_end_connection(road, 15, 25)
+
+    assert (road.get_start_connection() is None)
+    assert (road.get_end_connection() is not None)
+
+    i = road.get_end_connection()
+
+    assert i.get_radius() == 15
+    assert i.get_center().get_x() == 85
+    assert i.get_center().get_y() == 70
+
+
+def test_get_points():
+    """
+    Tests the get_points function
+    :return: Asserts true if test cases pass, false if otherwise
+    """
+    start = Coordinates(70, 70)
+    end = Coordinates(90, 70)
+    length = 20
+    out_ln = 1
+    in_ln = 1
+    angle = math.pi / 2
+    speed_limit = 40
+
+    road = Road(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     road_points = road.get_points()
 
-    start_x = start.get_x()
-    start_y = start.get_y()
-    end_x = end.get_x()
-    end_y = end.get_y()
+    left_start = Coordinates(70, 60)
+    right_start = Coordinates(70, 80)
+    left_end = Coordinates(90, 60)
+    right_end = Coordinates(90, 80)
 
-    left = in_ln * LANE_WIDTH
-    right = out_ln * LANE_WIDTH
+    assert road_points[0].get_x() == right_start.get_x()
+    assert road_points[0].get_y() == right_start.get_y()
 
-    right_angle = angle + (math.pi / 2.0)
-    left_angle = angle - (math.pi / 2.0)
+    assert road_points[1].get_x() == left_start.get_x()
+    assert road_points[1].get_y() == left_start.get_y()
 
-    x_left_of_start = start_x + (left * math.sin(left_angle))
-    y_left_of_start = start_y + (left * math.cos(left_angle))
+    assert road_points[2].get_x() == left_end.get_x()
+    assert road_points[2].get_y() == left_end.get_y()
 
-    x_right_of_start = start_x + (right * math.sin(right_angle))
-    y_right_of_start = start_y + (right * math.cos(right_angle))
-
-    x_left_of_end = end_x + (left * math.sin(left_angle))
-    y_left_of_end = end_y + (left * math.cos(left_angle))
-
-    x_right_of_end = end_x + (right * math.sin(right_angle))
-    y_right_of_end = end_y + (right * math.cos(right_angle))
-
-    assert road_points[0].get_x() == x_left_of_start
-    assert road_points[0].get_y() == y_left_of_start
-
-    assert road_points[1].get_x() == x_right_of_start
-    assert road_points[1].get_y() == y_right_of_start
-
-    assert road_points[2].get_x() == x_right_of_end
-    assert road_points[2].get_y() == y_right_of_end
-
-    assert road_points[3].get_x() == x_left_of_end
-    assert road_points[3].get_y() == y_left_of_end
+    assert road_points[3].get_x() == right_end.get_x()
+    assert road_points[3].get_y() == right_end.get_y()
 
 
 def test_is_on_road():
@@ -270,20 +553,29 @@ def test_is_on_road():
     Tests the is_on_road function
     :return: Asserts true if test cases pass, false if otherwise
     """
-    start = Coordinates(1, 5)
-    end = Coordinates(1, 10)
-    len = 10
-    out_ln = 3
-    in_ln = 2
-    angle = math.pi/2
 
-    road = Road(start, end, len, out_ln, in_ln, angle)
+    center = Coordinates(1, 1)
+    radius = 4
+    speed_limit = 25
+    i = Intersection(center, radius, speed_limit)
 
-    out_of_bounds = Coordinates(14, 25)
+    i.add_connection(math.pi/2, 3, 3, 4, 20, 'Test')
 
-    assert not is_on_road(road, out_of_bounds)
+    road = i.get_connections()[0]
 
-    # more testing will need to be conducted after is_on_road is fully implemented.
+    on_border = Coordinates(5.0, -79.0)
+    on_border2 = Coordinates(5, 50)
+    outside_border = Coordinates(100, 61.01)
+    inside_border = Coordinates(7.9, 60.9)
+    within_road = Coordinates(6.5, 0)
+    outside_road = Coordinates(-70, -70)
+
+    assert road.is_on_road(on_border)
+    assert road.is_on_road(within_road)
+    assert road.is_on_road(inside_border)
+    assert road.is_on_road(on_border2)
+    assert not road.is_on_road(outside_border)
+    assert not road.is_on_road(outside_road)
 
 
 def test_add_start_connection():
@@ -297,13 +589,14 @@ def test_add_start_connection():
     out_ln = 5
     in_ln = 4
     angle = math.pi
+    speed_limit = 20
 
     center = Coordinates(1, 2)
     radius = 15
 
-    road = Road(start, end, len, out_ln, in_ln, angle)
+    road = Road(start, end, len, out_ln, in_ln, angle, speed_limit, 'Test')
 
-    intersection = Intersection(center, radius)
+    intersection = Intersection(center, radius, 25)
 
     assert (road.get_start_connection() is None)
 
@@ -327,13 +620,14 @@ def test_add_end_connection():
     out_ln = 5
     in_ln = 4
     angle = math.pi
+    speed_limit = 30
 
     center = Coordinates(1, 2)
     radius = 15
 
-    road = Road(start, end, len, out_ln, in_ln, angle)
+    road = Road(start, end, len, out_ln, in_ln, angle, speed_limit, 'Test')
 
-    intersection = Intersection(center, radius)
+    intersection = Intersection(center, radius, 15)
 
     assert (road.get_end_connection() is None)
 
@@ -357,13 +651,14 @@ def test_get_start_connection():
     out_ln = 3
     in_ln = 2
     angle = math.pi / 4
+    speed_limit = 35
 
-    road = Road(start, end, len, out_ln, in_ln, angle)
+    road = Road(start, end, len, out_ln, in_ln, angle, speed_limit, 'Test')
 
     center = Coordinates(1, 2)
     radius = 10
 
-    intersection = Intersection(center, radius)
+    intersection = Intersection(center, radius, 20)
 
     assert (get_start_connection(road) is None)
 
@@ -389,13 +684,14 @@ def test_get_end_connection():
     out_ln = 3
     in_ln = 2
     angle = math.pi / 4
+    speed_limit = 35
 
-    road = Road(start, end, len, out_ln, in_ln, angle)
+    road = Road(start, end, len, out_ln, in_ln, angle, speed_limit, 'Test')
 
     center = Coordinates(1, 2)
     radius = 10
 
-    intersection = Intersection(center, radius)
+    intersection = Intersection(center, radius, 25)
 
     assert (get_end_connection(road) is None)
 
@@ -421,13 +717,60 @@ def test_get_angle():
     out_ln = 3
     in_ln = 2
     angle = (math.pi/2)
+    speed_limit = 10
 
-    returned_angle = get_angle(start, end, length, out_ln, in_ln, angle)
+    returned_angle = get_angle(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     assert returned_angle == angle
     assert returned_angle != in_ln
     assert returned_angle != length
     assert returned_angle != out_ln
+
+
+def test_get_name():
+    """
+    Tests the get_name function
+    :return: Asserts true if test cases pass, false if otherwise
+    """
+    start = Coordinates(4, 5)
+    end = Coordinates(9, 16)
+    length = 7
+    out_ln = 3
+    in_ln = 2
+    angle = (math.pi/2)
+    speed_limit = 10
+
+    name = get_name(start, end, length, out_ln, in_ln, angle, speed_limit, 'getnametest')
+
+    assert name != angle
+    assert name != in_ln
+    assert name != length
+    assert name != out_ln
+    assert name != speed_limit
+    assert name == 'getnametest'
+
+
+def test_get_speed_limit():
+    """
+    Tests the get_speed_limit function
+    :return: Asserts true if test cases pass, false if otherwise
+    """
+    start = Coordinates(4, 5)
+    end = Coordinates(9, 16)
+    length = 7
+    out_ln = 3
+    in_ln = 2
+    angle = (math.pi/2)
+    speed_limit = 10
+
+    speed = get_speed_limit(start, end, length, out_ln, in_ln, angle, speed_limit, 'getnametest')
+
+    assert speed != angle
+    assert speed != in_ln
+    assert speed != length
+    assert speed != out_ln
+    assert speed == speed_limit
+    assert speed != 'getnametest'
 
 
 def test_get_in_lanes():
@@ -441,8 +784,9 @@ def test_get_in_lanes():
     out_ln = 3
     in_ln = 2
     angle = (math.pi/2)
+    speed_limit = 15
 
-    returned_in = get_in_lanes(start, end, length, out_ln, in_ln, angle)
+    returned_in = get_in_lanes(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     assert returned_in == in_ln
     assert returned_in != out_ln
@@ -460,8 +804,9 @@ def test_get_out_lanes():
     out_ln = 3
     in_ln = 2
     angle = (math.pi/2)
+    speed_limit = 30
 
-    returned_out = get_out_lanes(start, end, length, out_ln, in_ln, angle)
+    returned_out = get_out_lanes(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     assert returned_out == out_ln
     assert returned_out != in_ln
@@ -479,8 +824,9 @@ def test_get_length():
     out_ln = 3
     in_ln = 2
     angle = (math.pi/2)
+    speed_limit = 40
 
-    returned_len = get_length(start, end, length, out_ln, in_ln, angle)
+    returned_len = get_length(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     assert returned_len == length
     assert returned_len != out_ln
@@ -498,8 +844,9 @@ def test_get_start_coords():
     out_ln = 3
     in_ln = 2
     angle = (math.pi/2)
+    speed_limit = 20
 
-    test_coords = get_start_coords(start, end, length, out_ln, in_ln, angle)
+    test_coords = get_start_coords(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     assert test_coords.get_x() == start.get_x()
     assert test_coords.get_y() == start.get_y()
@@ -518,8 +865,9 @@ def test_get_end_coords():
     out_ln = 3
     in_ln = 2
     angle = (math.pi/2)
+    speed_limit = 10
 
-    test_coords = get_end_coords(start, end, length, out_ln, in_ln, angle)
+    test_coords = get_end_coords(start, end, length, out_ln, in_ln, angle, speed_limit, 'Test')
 
     assert test_coords.get_x() == end.get_x()
     assert test_coords.get_y() == end.get_y()

@@ -1,8 +1,11 @@
 import math
+from src.map.Constants import LANE_WIDTH
+from src.xml_parse.Exceptions import XMLFormatError
 from src.xml_parse.Constants import SIG_FIGS
 
 
 def is_connected_traffic_map(roads, intersections):
+    # return True
     """
     Verifies that a collection of intersections and roads is fully connected
     :param roads: list of roads in the map
@@ -23,6 +26,7 @@ def is_connected_traffic_map(roads, intersections):
 
     while len(to_visit_roads) > 0:
         road = to_visit_roads.pop()
+        visited_roads.append(road)
         new_roads = []
         if road.get_start_connection() is not None and road.get_start_connection() not in visited_intersections:
             new_roads.extend(road.get_start_connection().get_connections())
@@ -30,13 +34,31 @@ def is_connected_traffic_map(roads, intersections):
         if road.get_end_connection() is not None and road.get_end_connection() not in visited_intersections:
             new_roads.extend(road.get_end_connection().get_connections())
             visited_intersections.append(road.get_end_connection())
+        new_roads = list(set(new_roads))
         remove_visited_roads(new_roads, visited_roads)
-        visited_roads.append(road)
+        remove_visited_roads(new_roads, to_visit_roads)
+        for new_road in new_roads:
+            to_visit_roads.append(new_road)
 
     if len(roads) == len(visited_roads) and len(intersections) == len(visited_intersections):
         return True
     else:
         return False
+
+
+def check_overload_intersection(intersection):
+    # road_angle_pairs = list()  # List of of angles where the roads edges intersect the intersection
+    #
+    # for road in intersection.get_connections():
+    #     width = (road.get_out_lanes() + road.get_in_lanes()) * LANE_WIDTH
+    #     if road.get_start_connection() is intersection:
+    #         angle = road.get_angle()
+    #         angle_to_edge = math.
+    #     elif road.get_end_connection() is intersection:
+    #         angle = add_angles(road.get_angle(), math.pi)
+    #     else:
+    #         raise XMLFormatError("Intersection has a road connected but not vice versa")
+    return
 
 
 def remove_visited_roads(roads, visited_roads):

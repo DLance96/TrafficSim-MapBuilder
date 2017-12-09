@@ -75,7 +75,7 @@ def generate_intersection(intersection):
         raise XMLFormatError('Center coordinates not floats in format \"{float} {float}\"')
     if intersection.find('radius') is None:
         raise XMLFormatError('Missing radius in a intersection')
-    radius = float(intersection.find('radius').text)
+    radius = int(intersection.find('radius').text)
 
     return Intersection(center_point, radius)
 
@@ -93,7 +93,8 @@ def validate_geometry(roads, intersections):
             if not math.isclose(distance(road.get_end_coords(), end_intersection.get_center()),
                                 end_intersection.get_radius(), rel_tol=IMPORT_ROAD_TOLERANCE):
                 raise XMLFormatError('Road end point not on intersection edge')
-        # TODO: add overloaded intersections
+    for intersection in intersections:
+        check_overload_intersection(intersection)
     return True
 
 
@@ -149,6 +150,10 @@ def convert_to_mapbuilder_size(road, anchor_point):
     road.update_end_coords(end)
     road.update_length(length)
     pass
+
+
+def check_overload_intersection(intersection):
+    road_angle_pairs = list()  # List of of angles where the roads edges intersect the intersection
 
 
 def get_chord_center(angle_of_perpendicular, chord_length, anchor_point):
