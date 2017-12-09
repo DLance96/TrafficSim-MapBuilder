@@ -7,9 +7,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.xml_parse.Utils import is_connected_traffic_map
 from src.map.Coordinates import Coordinates
-from src.map.Road import Road
-from src.map.Intersection import Intersection
 from src.map.Constants import LANE_WIDTH
+from src.xml_parse.Exceptions import XMLFormatError
 
 
 def export_xml(roads, intersections, save_location):
@@ -23,8 +22,7 @@ def export_xml(roads, intersections, save_location):
     if is_connected_traffic_map(roads, intersections) and valid_intersections(intersections):
         make_xml(roads, intersections, save_location)
     else:
-        print("Fail export")
-        return  # TODO decide what to do with incomplete map
+        raise XMLFormatError('Map is not connected')
 
 
 def make_xml(roads, intersections, save_location):

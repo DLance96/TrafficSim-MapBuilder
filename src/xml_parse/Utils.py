@@ -35,8 +35,8 @@ def is_connected_traffic_map(roads, intersections):
             new_roads.extend(road.get_end_connection().get_connections())
             visited_intersections.append(road.get_end_connection())
         new_roads = list(set(new_roads))
-        remove_visited_roads(new_roads, visited_roads)
-        remove_visited_roads(new_roads, to_visit_roads)
+        new_roads = remove_visited_roads(new_roads, visited_roads)
+        new_roads = remove_visited_roads(new_roads, to_visit_roads)
         for new_road in new_roads:
             to_visit_roads.append(new_road)
 
@@ -68,9 +68,7 @@ def remove_visited_roads(roads, visited_roads):
     :param visited_roads: list of roads that have already been visited
     :return: removes duplicates between visted roads and roads
     """
-    for road in roads:
-        if road in visited_roads:
-            roads.remove(road)
+    return [road for road in roads if road not in visited_roads]
 
 
 def add_angles(angle1, angle2):
@@ -81,11 +79,7 @@ def add_angles(angle1, angle2):
     :return: angle result of the addition
     """
     return_angle = angle1 + angle2
-    if return_angle >= 2 * math.pi:
-        return_angle -= 2 * math.pi
-    if return_angle < 0:
-        return_angle += 2 * math.pi
-    return return_angle
+    return return_angle % (2 * math.pi)
 
 
 def distance(coord1, coord2):
