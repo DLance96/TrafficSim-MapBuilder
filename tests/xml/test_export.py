@@ -58,7 +58,8 @@ def test_make_xml():
     road.add_end_connection(intersection)
     roads.append(road)
     intersections.append(intersection)
-    os.remove("{}/temp.xml".format(os.path.dirname(__file__)))
+    if os.path.isfile("{}/temp.xml".format(os.path.dirname(__file__))):
+        os.remove("{}/temp.xml".format(os.path.dirname(__file__)))
     export_xml(roads, intersections, "{}/temp.xml".format(os.path.dirname(__file__)))
 
     assert filecmp.cmp("{}/temp.xml".format(os.path.dirname(__file__)),
@@ -87,7 +88,8 @@ def test_export_xml():
     road = Road(Coordinates(90, 70), Coordinates(70, 70), 20, 1, 1, math.pi, 60, "road")
     roads.append(road)
     intersections.append(intersection)
-    os.remove("{}/temp.xml".format(os.path.dirname(__file__)))
+    if os.path.isfile("{}/temp.xml".format(os.path.dirname(__file__))):
+        os.remove("{}/temp.xml".format(os.path.dirname(__file__)))
     assert not os.path.isfile("{}/temp.xml".format(os.path.dirname(__file__)))
     with pytest.raises(EX.XMLFormatError) as context:
         export_xml(roads, intersections, "{}/temp.xml".format(os.path.dirname(__file__)))
