@@ -7,9 +7,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.xml_parse.Utils import is_connected_traffic_map
 from src.map.Coordinates import Coordinates
-from src.map.Road import Road
-from src.map.Intersection import Intersection
 from src.map.Constants import LANE_WIDTH
+from src.xml_parse.Exceptions import XMLFormatError
 
 
 def export_xml(roads, intersections, save_location):
@@ -23,8 +22,7 @@ def export_xml(roads, intersections, save_location):
     if is_connected_traffic_map(roads, intersections) and valid_intersections(intersections):
         make_xml(roads, intersections, save_location)
     else:
-        print("Fail export")
-        return  # TODO decide what to do with incomplete map
+        raise XMLFormatError('Map is not connected')
 
 
 def make_xml(roads, intersections, save_location):
@@ -147,44 +145,3 @@ def valid_intersections(intersections):
     """
     # TODO check to make sure no overlapping roads on any intersection
     return True
-
-
-if __name__ == '__main__':
-    roads = []
-    intersections = []
-    intersection1 = Intersection(Coordinates(100, 640), 30)
-    intersection2 = Intersection(Coordinates(640, 640), 30)
-    intersection3 = Intersection(Coordinates(640, 100), 30)
-    intersection4 = Intersection(Coordinates(100, 100), 30)
-    road1 = Road(Coordinates(130, 640), Coordinates(610, 640), 480, 2, 2, 0)
-    road2 = Road(Coordinates(640, 610), Coordinates(640, 130), 480, 2, 2, 3 * math.pi / 2)
-    road3 = Road(Coordinates(610, 100), Coordinates(130, 100), 480, 2, 2, math.pi)
-    road4 = Road(Coordinates(100, 130), Coordinates(100, 610), 480, 2, 2, math.pi / 2)
-    intersection1.add_outgoing_connection(road1)
-    intersection1.add_incoming_connection(road4)
-    intersection2.add_outgoing_connection(road2)
-    intersection2.add_incoming_connection(road1)
-    intersection3.add_outgoing_connection(road3)
-    intersection3.add_incoming_connection(road2)
-    intersection4.add_outgoing_connection(road4)
-    intersection4.add_incoming_connection(road3)
-    road1.add_start_connection(intersection1)
-    road1.add_end_connection(intersection2)
-    road2.add_start_connection(intersection2)
-    road2.add_end_connection(intersection3)
-    road3.add_start_connection(intersection3)
-    road3.add_end_connection(intersection4)
-    road4.add_start_connection(intersection4)
-    road4.add_end_connection(intersection1)
-
-    roads.append(road1)
-    roads.append(road2)
-    roads.append(road3)
-    roads.append(road4)
-    intersections.append(intersection1)
-    intersections.append(intersection2)
-    intersections.append(intersection3)
-    intersections.append(intersection4)
-    export_xml(roads, intersections, "temp.xml")
-    pass
-

@@ -9,7 +9,6 @@ from src.map.DriverProfile import DriverProfile
 from src.map.VehicleProfile import VehicleProfile
 from src.map.SpawningProfile import SpawningProfile
 from src.map.Constants import LANE_WIDTH
-from src.xml_parse.Import import import_xml
 from src.xml_parse.Export import export_xml
 import math
 
@@ -119,9 +118,6 @@ class MapBuilder(QMainWindow):
         #File Actions
         self.new_action = QAction("New", self)
         self.new_action.triggered.connect(self.reset_file)
-        self.open_action = QAction("Open", self)
-        self.open_action.triggered.connect(self.import_to_file)
-        self.open_action.setEnabled(False)
         self.save_action = QAction("Save", self)
         self.save_action.triggered.connect(self.export_to_file)
 
